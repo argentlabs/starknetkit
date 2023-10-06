@@ -83,7 +83,7 @@ await disconnect({ clearLastWallet: true })
 
 ## 📕 Guides
 
-Guides can be found [here](https://www.starknetkit.com/docs/getting-started)
+Guides can be found [here](https://www.starknetkit.com/docs)
 
 ## ✏️ Contributing
 
