@@ -1,0 +1,110 @@
+{
+  "name": "starknetkit",
+  "version": "1.0.0",
+  "repository": "github:argentlabs/starknetkit",
+  "private": false,
+  "browser": {
+    "crypto": false
+  },
+  "keywords": [
+    "starknet",
+    "starkware",
+    "l2",
+    "zk",
+    "rollup",
+    "wallet",
+    "dapp"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css,md,yml,json}": "prettier --write",
+    "*.{ts,tsx}": "eslint --cache --ext .ts,.tsx"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/starknetkit.d.ts",
+      "import": "./dist/starknetkit.js",
+      "require": "./dist/starknetkit.cjs"
+    },
+    "./webwallet": {
+      "types": "./dist/webwalletConnector.d.ts",
+      "import": "./dist/webwalletConnector.js",
+      "require": "./dist/webwalletConnector.cjs"
+    },
+    "./argentMobile": {
+      "types": "./dist/argentMobile.d.ts",
+      "import": "./dist/argentMobile.js",
+      "require": "./dist/argentMobile.cjs"
+    },
+    "./injected": {
+      "types": "./dist/injectedConnector.d.ts",
+      "import": "./dist/injectedConnector.js",
+      "require": "./dist/injectedConnector.cjs"
+    }
+  },
+  "main": "./dist/starknetkit.cjs",
+  "module": "./dist/starknetkit.js",
+  "types": "./dist/starknetkit.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@trpc/client": "^10.38.1",
+    "@trpc/server": "^10.38.1",
+    "@walletconnect/sign-client": "^2.10.1",
+    "bowser": "^2.11.0",
+    "detect-browser": "^5.3.0",
+    "eventemitter3": "^5.0.1",
+    "events": "^3.3.0",
+    "get-starknet-core": "^3.1.0",
+    "lodash-es": "^4.17.21",
+    "svelte-forms": "^2.3.1",
+    "trpc-browser": "^1.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@semantic-release/git": "^10.0.1",
+    "@sveltejs/vite-plugin-svelte": "^2.2.0",
+    "@tsconfig/svelte": "^5.0.0",
+    "@types/async-retry": "^1.4.5",
+    "@types/lodash-es": "^4.17.8",
+    "@types/node": "^20.5.7",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@walletconnect/ethereum-provider": "^2.7.7",
+    "@walletconnect/jsonrpc-provider": "^1.0.13",
+    "@walletconnect/signer-connection": "^2.7.7",
+    "@walletconnect/types": "^2.7.7",
+    "@walletconnect/utils": "^2.10.0",
+    "autoprefixer": "^10.4.7",
+    "eslint": "^8.48.0",
+    "eslint-config-next": "^13.4.19",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "postcss": "^8.4.21",
+    "postcss-load-config": "^4.0.1",
+    "prettier": "^3.0.3",
+    "prettier-plugin-import-sort": "^0.0.7",
+    "semantic-release": "^21.1.1",
+    "svelte": "^4.0.0",
+    "svelte-check": "^3.5.1",
+    "svelte-preprocess": "^5.0.4",
+    "tailwindcss": "^3.1.6",
+    "tslib": "^2.4.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.3.8",
+    "vite-plugin-dts": "^3.0.0",
+    "ws": "^8.8.1",
+    "zod": "^3.20.6"
+  },
+  "peerDependencies": {
+    "starknet": "5.18.0"
+  },
+  "gitHead": "b16688a8638cc138938e74e1a39d004760165d75"
+}
