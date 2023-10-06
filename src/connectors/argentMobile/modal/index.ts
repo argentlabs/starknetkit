@@ -1,4 +1,7 @@
-import type { StarknetWindowObject } from "get-starknet-core"
+import type {
+  StarknetWindowObject,
+  ConnectedStarknetWindowObject,
+} from "get-starknet-core"
 
 import { login } from "./login"
 import type { IArgentLoginOptions } from "./login"
@@ -8,4 +11,4 @@ export type { StarknetWindowObject, IArgentLoginOptions }
 
 export const getStarknetWindowObject = async (
   options: IArgentLoginOptions,
-): Promise<StarknetWindowObject> => login(options, StarknetAdapter)
+): Promise<ConnectedStarknetWindowObject> => login(options, StarknetAdapter)

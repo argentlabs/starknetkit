@@ -126,8 +126,9 @@ export class StarknetAdapter
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  get isConnected(): boolean {
-    return this.signerConnection.connected
+  get isConnected(): true {
+    // needed to be implemented returning true since it's implementing ConnectedStarknetWindowObject
+    return true
   }
 
   async isPreauthorized(): Promise<boolean> {

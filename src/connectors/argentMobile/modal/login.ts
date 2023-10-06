@@ -8,6 +8,7 @@ const Network: typeof constants.NetworkName = constants.NetworkName
 
 import type { NamespaceAdapter, NamespaceAdapterOptions } from "./adapter"
 import { argentModal } from "./argentModal"
+import { resetWalletConnect } from "../../../helpers/resetWalletConnect"
 
 export interface IArgentLoginOptions {
   projectId?: string
@@ -79,6 +80,10 @@ export const login = async <TAdapter extends NamespaceAdapter>(
     }
 
     const params = { requiredNamespaces: adapter.getRequiredNamespaces() }
+
+    resetWalletConnect()
+    // wait for cookies to be removed and reset the websocket for walletconnect
+    await new Promise((resolve) => setTimeout(resolve, 200))
     const { uri, approval } = await client.connect(params)
 
     // Open QRCode modal if a URI was returned (i.e. we're not connecting an existing pairing).
