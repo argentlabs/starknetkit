@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - uses: pnpm/action-setup@v2
-        name: Install pnpm
+        name: install-pnpm
         id: pnpm-install
         with:
           version: 8
@@ -24,7 +26,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: semantic-release
         run: npx semantic-release --debug true --dry-run false
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
