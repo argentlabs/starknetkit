@@ -102,11 +102,9 @@ export class StarknetAdapter
     if (chainId === "SN_GOERLI") {
       return constants.NetworkName.SN_GOERLI
     }
-    if (chainId === "SN_GOERLI2") {
-      return constants.NetworkName.SN_GOERLI
-    }
+
     if (chainId === "SN_MAIN") {
-      return constants.NetworkName.SN_GOERLI
+      return constants.NetworkName.SN_MAIN
     }
     throw new Error(`Unknown starknet.js network name for chainId ${chainId}`)
   }

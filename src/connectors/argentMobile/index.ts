@@ -3,6 +3,7 @@ import type {
   StarknetWindowObject,
 } from "get-starknet-core"
 import type { AccountInterface } from "starknet"
+import { constants } from "starknet"
 import { DEFAULT_PROJECT_ID } from "../../constants"
 import {
   ConnectorNotConnectedError,
@@ -15,7 +16,7 @@ import { Connector } from "../connector"
 export interface ArgentMobileConnectorOptions {
   dappName?: string
   projectId?: string
-  chainId?: "SN_GOERLI" | "SN_GOERLI2" | "SN_MAINNET"
+  chainId?: constants.NetworkName
   description?: string
   url?: string
 }
