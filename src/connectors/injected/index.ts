@@ -11,6 +11,7 @@ import {
   UserRejectedRequestError,
 } from "../../errors"
 import { Connector } from "../connector"
+import { setStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
@@ -50,6 +51,7 @@ export class InjectedConnector extends Connector {
 
     try {
       await this._wallet.enable({ starknetVersion: "v5" })
+      setStarknetLastConnectedWallet(this._wallet.id)
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()

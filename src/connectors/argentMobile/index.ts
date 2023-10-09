@@ -12,6 +12,7 @@ import {
 } from "../../errors"
 import { resetWalletConnect } from "../../helpers/resetWalletConnect"
 import { Connector } from "../connector"
+import { setStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 
 export interface ArgentMobileConnectorOptions {
   dappName?: string
@@ -81,6 +82,7 @@ export class ArgentMobileConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
+    setStarknetLastConnectedWallet(this._wallet.id)
     return this._wallet.account as unknown as AccountInterface
   }
 

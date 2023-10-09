@@ -9,6 +9,7 @@ import { mapModalWallets } from "./helpers/mapModalWallets"
 import { resetWalletConnect } from "./helpers/resetWalletConnect"
 import Modal from "./modal/Modal.svelte"
 import type { ConnectOptions, ModalWallet } from "./types/modal"
+import { removeStarknetLastConnectedWallet } from "./helpers/lastConnected"
 
 export const connect = async ({
   modalMode = "canAsk",
@@ -28,9 +29,9 @@ export const connect = async ({
         })
       : connectors
 
-  const lastWallet = await sn.getLastConnectedWallet()
+  const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {
-    const connector = availableConnectors.find((c) => c.id === lastWallet?.id)
+    const connector = availableConnectors.find((c) => c.id === lastWalletId)
     await connector?.connect()
     return connector?.wallet || null
   }
@@ -38,19 +39,19 @@ export const connect = async ({
   const installedWallets = await sn.getAvailableWallets(restOptions)
 
   // we return/display wallet options once per first-dapp (ever) connect
-  if (modalMode === "canAsk" && lastWallet) {
+  if (modalMode === "canAsk" && lastWalletId) {
     const preAuthorizedWallets = await sn.getPreAuthorizedWallets({
       ...restOptions,
     })
 
     const wallet =
-      preAuthorizedWallets.find((w) => w.id === lastWallet?.id) ??
+      preAuthorizedWallets.find((w) => w.id === lastWalletId) ??
       installedWallets.length === 1
         ? installedWallets[0]
         : undefined
 
     if (wallet) {
-      const connector = availableConnectors.find((c) => c.id === lastWallet?.id)
+      const connector = availableConnectors.find((c) => c.id === lastWalletId)
       await connector?.connect()
       return wallet
     } // otherwise fallback to modal
@@ -84,5 +85,6 @@ export const connect = async ({
 
 export function disconnect(options: DisconnectOptions = {}): Promise<void> {
   resetWalletConnect()
+  removeStarknetLastConnectedWallet()
   return sn.disconnect(options)
 }
