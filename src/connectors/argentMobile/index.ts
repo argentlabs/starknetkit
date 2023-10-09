@@ -145,6 +145,21 @@ export class ArgentMobileConnector extends Connector {
       url,
     }
 
+    if (projectId === DEFAULT_PROJECT_ID) {
+      console.log("========= NOTICE =========")
+      console.log(
+        "While your application will continue to function, we highly recommended",
+      )
+      console.log("signing up for your own API keys.")
+      console.log(
+        "Go to WalletConnect Cloud (https://cloud.walletconnect.com) and create a new account.",
+      )
+      console.log(
+        "Once your account is created, create a new project and collect the Project ID",
+      )
+      console.log("==========================")
+    }
+
     const _wallet = await getStarknetWindowObject(options)
     this._wallet = _wallet
   }
