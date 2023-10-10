@@ -36,8 +36,8 @@ export class StarknetAdapter
   extends NamespaceAdapter
   implements ConnectedStarknetWindowObject
 {
-  id = "starknetkit"
-  name = "Starknet Kit"
+  id = "argentMobile"
+  name = "Argent Mobile"
   version = "0.1.0"
   icon = ""
   provider: ProviderInterface
