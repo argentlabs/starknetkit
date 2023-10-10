@@ -46,7 +46,7 @@
       (theme === null &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
-      darkModeControlClass = "dark"
+      darkModeControlClass = "starknetkit-dark"
     } else {
       darkModeControlClass = ""
     }
@@ -74,8 +74,8 @@
 {#if !isInAppBrowser && !emailOnly}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
-    class={"backdrop-blur-sm fixed inset-0 flex items-center justify-center bg-black/25 z-[9999] " +
-      darkModeControlClass}
+    class={`starknetkit-font starknetkit-backdrop-blur-sm starknetkit-fixed starknetkit-inset-0 starknetkit-flex starknetkit-items-center 
+            starknetkit-justify-center starknetkit-bg-black/25 starknetkit-z-[9999] ${darkModeControlClass}`}
     on:click={() => cb(null)}
     on:keyup={(e) => {
       if (e.key === "Escape") {
@@ -86,21 +86,39 @@
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <main
       role="dialog"
-      class={`bg-slate-50 rounded-3xl shadow-modal dark:shadow-none w-full max-w-[380px] mx-6 p-6 pb-8 text-center z-50 dark:bg-neutral-900 text-neutral-900 dark:text-white`}
+      class={`starknetkit-rounded-3xl starknetkit-shadow-modal dark:shadow-none 
+              starknetkit-w-full starknetkit-max-w-[380px] starknetkit-z-50 
+              starknetkit-mx-6 starknetkit-p-6 starknetkit-pb-8 starknetkit-text-center 
+              starknetkit-bg-slate-50 dark:starknetkit-bg-neutral-900 
+            starknetkit-text-neutral-900 dark:starknetkit-text-white`}
       on:click={(e) => e.stopPropagation()}
       on:keyup={(e) => {
         e.stopPropagation()
       }}
     >
-      <header class="flex items-center justify-center flex-col mb-2 relative">
-        <h2 class="text-sm text-gray-400 font-semibold">Connect to</h2>
+      <header
+        class={`starknetkit-flex starknetkit-items-center starknetkit-justify-center starknetkit-flex-col starknetkit-mb-2 starknetkit-relative`}
+      >
+        <h2
+          class="starknetkit-text-sm starknetkit-text-gray-400 starknetkit-font-semibold"
+        >
+          Connect to
+        </h2>
         <h1
-          class="text-xl font-semibold mb-6 max-w-[240px] overflow-hidden whitespace-nowrap text-ellipsis"
+          class={`starknetkit-text-xl starknetkit-font-semibold starknetkit-mb-6 
+                  starknetkit-max-w-[240px] starknetkit-overflow-hidden 
+                  starknetkit-whitespace-nowrap starknetkit-text-ellipsis`}
         >
           {dappName}
         </h1>
         <span
-          class="absolute top-0 right-0 p-2 cursor-pointer rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-200 dark:focus:ring-neutral-700 transition-colors"
+          class={`starknetkit-absolute starknetkit-top-0 starknetkit-right-0 starknetkit-p-2 starknetkit-cursor-pointer
+                  starknetkit-rounded-full starknetkit-bg-neutral-100 dark:starknetkit-bg-neutral-800
+                  starknetkit-text-neutral-400 dark:starknetkit-text-white
+                  hover:starknetkit-bg-neutral-100 dark:hover:starknetkit-bg-neutral-700
+                  focus:starknetkit-outline-none focus:starknetkit-ring-2
+                focus:starknetkit-ring-neutral-200 dark:focus:starknetkit-ring-neutral-700
+                  starknetkit-transition-colors`}
           role="button"
           tabindex="0"
           aria-label="Close"
@@ -126,7 +144,7 @@
         </span>
       </header>
 
-      <ul class="flex flex-col gap-3">
+      <ul class="starknetkit-flex starknetkit-flex-col starknetkit-gap-3">
         {#each modalWallets as wallet}
           <ConnectorButton {wallet} {loadingItem} {cb} />
         {/each}
@@ -142,7 +160,7 @@
 
   @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@500;600&display=swap");
 
-  * {
+  .starknetkit-font {
     font-family: "Barlow", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
       Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
       sans-serif;
@@ -152,7 +170,7 @@
     font-feature-settings: "kern";
   }
 
-  .l2 {
+  .starknetkit-l2 {
     color: #8c8c8c;
     font-size: 12px;
     font-weight: 500;
@@ -161,7 +179,7 @@
     text-align: left;
   }
 
-  p {
+  .starknetkit-p {
     margin: 0;
   }
 </style>
