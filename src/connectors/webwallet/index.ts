@@ -13,7 +13,7 @@ import {
   UserRejectedRequestError,
 } from "../../errors"
 import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
-import { setStarknetLastConnectedWallet } from "../../helpers/lastConnected"
+import {} from "../../helpers/lastConnected"
 
 const DEFAULT_WEBWALLET_URL = "https://web.argent.xyz"
 
@@ -98,7 +98,6 @@ export class WebWalletConnector extends Connector {
 
     try {
       await this._wallet.enable({ starknetVersion: "v4" })
-      setStarknetLastConnectedWallet(this._wallet.id)
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()

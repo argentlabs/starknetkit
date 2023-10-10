@@ -9,7 +9,10 @@ import { mapModalWallets } from "./helpers/mapModalWallets"
 import { resetWalletConnect } from "./helpers/resetWalletConnect"
 import Modal from "./modal/Modal.svelte"
 import type { ConnectOptions, ModalWallet } from "./types/modal"
-import { removeStarknetLastConnectedWallet } from "./helpers/lastConnected"
+import {
+  removeStarknetLastConnectedWallet,
+  setStarknetLastConnectedWallet,
+} from "./helpers/lastConnected"
 
 export const connect = async ({
   modalMode = "canAsk",
@@ -71,6 +74,7 @@ export const connect = async ({
         dappName,
         callback: async (value: StarknetWindowObject | null) => {
           try {
+            setStarknetLastConnectedWallet(value.id)
             resolve(value)
           } finally {
             setTimeout(() => modal.$destroy())
