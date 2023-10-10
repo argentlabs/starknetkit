@@ -2,12 +2,13 @@
 module.exports = {
   content: ["./src/**/*.{svelte,ts}"],
   darkMode: "class",
+  prefix: "starknetkit-",
   theme: {
     extend: {
       boxShadow: {
         "list-item": "0px 2px 12px rgba(0, 0, 0, 0.12)",
-        "modal": "0px 4px 20px rgba(0, 0, 0, 0.5)"
-      }
+        modal: "0px 4px 20px rgba(0, 0, 0, 0.5)",
+      },
     },
   },
   plugins: [],
