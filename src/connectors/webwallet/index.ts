@@ -13,7 +13,6 @@ import {
   UserRejectedRequestError,
 } from "../../errors"
 import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
-import {} from "../../helpers/lastConnected"
 
 const DEFAULT_WEBWALLET_URL = "https://web.argent.xyz"
 
