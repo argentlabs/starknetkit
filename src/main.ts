@@ -74,7 +74,9 @@ export const connect = async ({
         dappName,
         callback: async (value: StarknetWindowObject | null) => {
           try {
-            setStarknetLastConnectedWallet(value.id)
+            if (value.id !== "argentWebWallet") {
+              setStarknetLastConnectedWallet(value.id)
+            }
             resolve(value)
           } finally {
             setTimeout(() => modal.$destroy())
