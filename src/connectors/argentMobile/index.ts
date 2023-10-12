@@ -4,7 +4,7 @@ import type {
 } from "get-starknet-core"
 import type { AccountInterface } from "starknet"
 import { constants } from "starknet"
-import { DEFAULT_PROJECT_ID } from "../../constants"
+import { DEFAULT_PROJECT_ID } from "./constants"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,

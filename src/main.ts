@@ -3,7 +3,7 @@ import sn from "get-starknet-core"
 
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 
-import { DEFAULT_WEBWALLET_URL } from "./constants"
+import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import { resetWalletConnect } from "./helpers/resetWalletConnect"
