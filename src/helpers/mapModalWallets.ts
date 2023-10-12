@@ -1,6 +1,6 @@
 import type { StarknetWindowObject, WalletProvider } from "get-starknet-core"
 import { Connector } from "../connectors/connector"
-import { ARGENT_X_ICON } from "../constants"
+import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
 
 interface SetConnectorsExpandedParams {
