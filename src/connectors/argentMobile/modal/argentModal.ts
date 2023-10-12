@@ -60,7 +60,7 @@ interface Urls {
 
 class ArgentModal {
   public bridgeUrl = "https://login.argent.xyz"
-  public mobileUrl = "https://www.argent.xyz/"
+  public mobileUrl = "argent://"
   public type: "overlay" | "window" = "overlay"
   public wcUri?: string
 
