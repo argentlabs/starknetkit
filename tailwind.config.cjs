@@ -2,7 +2,6 @@
 module.exports = {
   content: ["./src/**/*.{svelte,ts}"],
   darkMode: "class",
-  prefix: "starknetkit-",
   theme: {
     extend: {
       boxShadow: {

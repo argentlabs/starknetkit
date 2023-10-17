@@ -14,15 +14,15 @@
     href={wallet.download}
     target="_blank"
     rel="noopener noreferrer"
-    class={`starknetkit-rounded-md focus:starknetkit-outline-none  focus:starknetkit-ring-2 
-    focus:starknetkit-ring-neutral-200  dark:focus:starknetkit-ring-neutral-700 starknetkit-transition-colors`}
+    class={`rounded-md focus:outline-none  focus:ring-2 
+    focus:ring-neutral-200  dark:focus:ring-neutral-700 transition-colors`}
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <li
-      class={`starknetkit-flex starknetkit-flex-row-reverse starknetkit-justify-between starknetkit-items-center 
-              starknetkit-p-3 starknetkit-rounded-md starknetkit-cursor-pointer starknetkit-shadow-list-item 
-              dark:starknetkit-shadow-none dark:starknetkit-bg-neutral-800 dark:starknetkit-text-white 
-            hover:starknetkit-bg-neutral-100 dark:hover:starknetkit-bg-neutral-700`}
+      class={`flex flex-row-reverse justify-between items-center 
+              p-3 rounded-md cursor-pointer shadow-list-item 
+              dark:shadow-none dark:bg-neutral-800 dark:text-white 
+            hover:bg-neutral-100 dark:hover:bg-neutral-700`}
       on:click={() => {
         cb(null)
       }}
@@ -33,26 +33,22 @@
       }}
     >
       <span class="w-8 h-8" />
-      <p class="starknetkit-font-semibold starknetkit-text-base starknetkit-p">
+      <p class="font-semibold text-base p">
         Install {wallet.name}
       </p>
-      <img
-        alt={wallet.name}
-        src={wallet.icon}
-        class="starknetkit-w-8 starknetkit-h-8 starknetkit-rounded-full"
-      />
+      <img alt={wallet.name} src={wallet.icon} class="w-8 h-8 rounded-full" />
     </li>
   </a>
 {:else}
   <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
   <li
-    class={`starknetkit-flex starknetkit-flex-row-reverse starknetkit-justify-between starknetkit-items-center 
-            starknetkit-p-3 starknetkit-rounded-md starknetkit-cursor-pointer starknetkit-shadow-list-item 
-            dark:starknetkit-shadow-none dark:starknetkit-bg-neutral-800 dark:starknetkit-text-white 
-          hover:starknetkit-bg-neutral-100 dark:hover:starknetkit-bg-neutral-700 
-          focus:starknetkit-outline-none focus:starknetkit-ring-2 
-        focus:starknetkit-ring-neutral-200 dark:focus:starknetkit-ring-neutral-700 
-          starknetkit-transition-colors`}
+    class={`flex flex-row-reverse justify-between items-center 
+            p-3 rounded-md cursor-pointer shadow-list-item 
+            dark:shadow-none dark:bg-neutral-800 dark:text-white 
+          hover:bg-neutral-100 dark:hover:bg-neutral-700 
+          focus:outline-none focus:ring-2 
+        focus:ring-neutral-200 dark:focus:ring-neutral-700 
+          transition-colors`}
     role="button"
     tabindex="0"
     on:click={async () => {
@@ -65,13 +61,11 @@
     }}
   >
     <span class="w-8 h-8" />
-    <div
-      class="starknetkit-flex starknetkit-flex-col starknetkit-justify-center starknetkit-items-center"
-    >
-      <p class="starknetkit-font-semibold starknetkit-text-base starknetkit-p">
+    <div class="flex flex-col justify-center items-center">
+      <p class="font-semibold text-base p">
         {wallet.title ?? wallet.name}
       </p>
-      <p class="starknetkit-l2 starknetkit-p" style="text-align: center;">
+      <p class="l2 p" style="text-align: center;">
         {wallet.subtitle ?? ""}
       </p>
     </div>
@@ -80,7 +74,7 @@
       <div role="status">
         <svg
           aria-hidden="true"
-          class="starknetkit-w-8 starknetkit-h-8 starknetkit-text-neutral-300 starknetkit-animate-spin dark:starknetkit-text-neutral-600 starknetkit-fill-neutral-600 dark:starknetkit-fill-neutral-300"
+          class="w-8 h-8 text-neutral-300 animate-spin dark:text-neutral-600 fill-neutral-600 dark:fill-neutral-300"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -94,16 +88,12 @@
             fill="currentFill"
           />
         </svg>
-        <span class="starknetkit-sr-only">Loading...</span>
+        <span class="sr-only">Loading...</span>
       </div>
     {:else if isSvg}
       <div style="position: relative;">{@html wallet.icon}</div>
     {:else}
-      <img
-        alt={wallet?.name}
-        src={wallet?.icon}
-        class="starknetkit-w-8 starknetkit-h-8 starknetkit-rounded"
-      />
+      <img alt={wallet?.name} src={wallet?.icon} class="w-8 h-8 rounded" />
     {/if}
   </li>
 {/if}
