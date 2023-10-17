@@ -97,25 +97,3 @@
     {/if}
   </li>
 {/if}
-
-<!-- <style>
-  @tailwind utilities;
-  @tailwind components;
-  @tailwind base;
-
-  @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@500;600&display=swap");
-
-  .l2 {
-    color: #8c8c8c;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 14px;
-    letter-spacing: 0em;
-    text-align: left;
-  }
-
-  .p {
-    margin: 0;
-  }
-</style>
- -->

@@ -146,22 +146,3 @@
     </main>
   </div>
 {/if}
-
-<!-- <style>
-  @tailwind utilities;
-  @tailwind components;
-  @tailwind base;
-
-  @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@500;600&display=swap");
-
-  .modal-font {
-    font-family: "Barlow", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-      Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    text-size-adjust: 100%;
-    font-feature-settings: "kern";
-  }
-</style>
- -->
