@@ -14,6 +14,8 @@ import {
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
 
+import css from "./theme.css?inline"
+
 export const connect = async ({
   modalMode = "canAsk",
   storeVersion = getStoreVersionFromBrowser(),
@@ -67,9 +69,15 @@ export const connect = async ({
     storeVersion,
   })
 
+  const element = document.createElement("div")
+  document.body.appendChild(element)
+  const target = element.attachShadow({ mode: "open" })
+
+  target.innerHTML = `<style>${css}</style>`
+
   return new Promise((resolve) => {
     const modal = new Modal({
-      target: document.body,
+      target,
       props: {
         dappName,
         callback: async (value: StarknetWindowObject | null) => {
