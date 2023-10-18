@@ -177,7 +177,7 @@ export class ArgentMobileConnector extends Connector {
       this._wallet = null
       removeStarknetLastConnectedWallet()
       // dapp should listen to this event and update the UI accordingly
-      document.dispatchEvent(new Event("snDappDisconnectedFromMobile"))
+      document.dispatchEvent(new Event("wallet_disconnected"))
     })
   }
 }
