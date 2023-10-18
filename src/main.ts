@@ -3,7 +3,7 @@ import sn from "get-starknet-core"
 
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 
-import { DEFAULT_WEBWALLET_URL } from "./constants"
+import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import { resetWalletConnect } from "./helpers/resetWalletConnect"
@@ -13,6 +13,8 @@ import {
   removeStarknetLastConnectedWallet,
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
+
+import css from "./theme.css?inline"
 
 export const connect = async ({
   modalMode = "canAsk",
@@ -67,9 +69,15 @@ export const connect = async ({
     storeVersion,
   })
 
+  const element = document.createElement("div")
+  document.body.appendChild(element)
+  const target = element.attachShadow({ mode: "open" })
+
+  target.innerHTML = `<style>${css}</style>`
+
   return new Promise((resolve) => {
     const modal = new Modal({
-      target: document.body,
+      target,
       props: {
         dappName,
         callback: async (value: StarknetWindowObject | null) => {
