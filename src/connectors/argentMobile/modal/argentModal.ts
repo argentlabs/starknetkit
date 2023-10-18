@@ -120,7 +120,11 @@ class ArgentModal {
     }
 
     if (device === "android" || device === "ios") {
-      window.open(urls[device])
+      const toMobileApp = document.createElement("a")
+      toMobileApp.setAttribute("href", urls[device])
+      toMobileApp.setAttribute("target", "_blank")
+      toMobileApp.click()
+
       return
     }
     if (this.type === "window") {
