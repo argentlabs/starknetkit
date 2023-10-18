@@ -70,10 +70,11 @@ class ArgentModal {
 
   public showConnectionModal(wcUri: string) {
     const wcParam = encodeURIComponent(wcUri)
+    const href = encodeURIComponent(window.location.href)
     this.showModal({
       desktop: `${this.bridgeUrl}?wc=${wcParam}`,
-      ios: `${this.mobileUrl}app/wc?uri=${wcParam}`,
-      android: `${this.mobileUrl}app/wc?uri=${wcParam}`,
+      ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}`,
+      android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}`,
     })
   }
 
