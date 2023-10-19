@@ -98,7 +98,6 @@ export const connect = async ({
             }
             selectedConnector =
               availableConnectors.find((c) => c.id === value.id) ?? null
-
             resolve(value)
           } finally {
             setTimeout(() => modal.$destroy())
@@ -113,10 +112,7 @@ export const connect = async ({
 
 export const disconnect = async (options: DisconnectOptions = {}) => {
   removeStarknetLastConnectedWallet()
-  if (selectedConnector.id === "argentMobile") {
-    const mobileConnector = selectedConnector as ArgentMobileConnector
-    await mobileConnector.disconnect()
-  }
+  await selectedConnector.disconnect()
   selectedConnector = null
 
   return sn.disconnect(options)

@@ -102,7 +102,6 @@ export class InjectedConnector extends Connector {
   }
 
   get name(): string {
-    this.ensureWallet()
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
@@ -110,7 +109,6 @@ export class InjectedConnector extends Connector {
   }
 
   get icon(): string {
-    this.ensureWallet()
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
@@ -118,7 +116,6 @@ export class InjectedConnector extends Connector {
   }
 
   get wallet(): StarknetWindowObject {
-    this.ensureWallet()
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
