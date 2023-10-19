@@ -97,8 +97,8 @@ class ArgentModal {
     */
     this.showModal({
       desktop: `${this.bridgeUrl}?action=sign&device=desktop`,
-      ios: `${this.mobileUrl}app/wc?uri=${href}&device=mobile`,
-      android: `${this.mobileUrl}app/wc?uri=${href}&device=mobile`,
+      ios: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
+      android: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
     })
   }
 
