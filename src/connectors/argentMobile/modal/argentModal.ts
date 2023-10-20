@@ -70,10 +70,12 @@ class ArgentModal {
 
   public showConnectionModal(wcUri: string) {
     const wcParam = encodeURIComponent(wcUri)
+    const href = encodeURIComponent(window.location.href)
+
     this.showModal({
-      desktop: `${this.bridgeUrl}?wc=${wcParam}`,
-      ios: `${this.mobileUrl}app/wc?uri=${wcParam}`,
-      android: `${this.mobileUrl}app/wc?uri=${wcParam}`,
+      desktop: `${this.bridgeUrl}?wc=${wcParam}&device=desktop`,
+      ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+      android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
     })
   }
 
@@ -94,9 +96,9 @@ class ArgentModal {
     this should be ignored and not considered valid as it's only used for automatically redirecting the users to approve or reject a signing request.
     */
     this.showModal({
-      desktop: `${this.bridgeUrl}?action=sign`,
-      ios: `${this.mobileUrl}app/wc?uri=${href}`,
-      android: `${this.mobileUrl}app/wc?uri=${href}`,
+      desktop: `${this.bridgeUrl}?action=sign&device=desktop`,
+      ios: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
+      android: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
     })
   }
 
@@ -119,7 +121,11 @@ class ArgentModal {
     }
 
     if (device === "android" || device === "ios") {
-      window.open(urls[device])
+      const toMobileApp = document.createElement("a")
+      toMobileApp.setAttribute("href", urls[device])
+      toMobileApp.setAttribute("target", "_blank")
+      toMobileApp.click()
+
       return
     }
     if (this.type === "window") {
