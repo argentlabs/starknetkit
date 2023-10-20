@@ -72,7 +72,6 @@ export class WebWalletConnector extends Connector {
   }
 
   get wallet(): StarknetWindowObject {
-    this.ensureWallet()
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }

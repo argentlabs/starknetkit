@@ -12,6 +12,8 @@ import {
 } from "../../errors"
 import { resetWalletConnect } from "../../helpers/resetWalletConnect"
 import { Connector } from "../connector"
+import type { StarknetAdapter } from "./modal/starknet/adapter"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 
 export interface ArgentMobileConnectorOptions {
   dappName?: string
@@ -67,7 +69,6 @@ export class ArgentMobileConnector extends Connector {
   }
 
   get wallet(): StarknetWindowObject {
-    this.ensureWallet()
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
@@ -85,6 +86,8 @@ export class ArgentMobileConnector extends Connector {
   }
 
   async disconnect(): Promise<void> {
+    // wallet connect rpc enable
+    await (this._wallet as StarknetAdapter).disable()
     resetWalletConnect()
 
     if (!this.available() && !this._wallet) {
@@ -162,5 +165,18 @@ export class ArgentMobileConnector extends Connector {
 
     const _wallet = await getStarknetWindowObject(options)
     this._wallet = _wallet
+
+    // wallet connect rpc enable
+    const snProvider = this._wallet as StarknetAdapter
+    await snProvider.enable()
+    snProvider.client.on("session_delete", () => {
+      // Session was deleted -> reset the dapp state, clean up from user session, etc.
+      // not calling disconnect(), because .disable() is already done by the mobile app
+      resetWalletConnect()
+      this._wallet = null
+      removeStarknetLastConnectedWallet()
+      // dapp should listen to this event and update the UI accordingly
+      document.dispatchEvent(new Event("wallet_disconnected"))
+    })
   }
 }
