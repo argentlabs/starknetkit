@@ -18,7 +18,7 @@ import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
 import type { ConnectOptions, ModalWallet } from "./types/modal"
 
-import { ArgentMobileConnector, Connector } from "./connectors"
+import { Connector } from "./connectors"
 import css from "./theme.css?inline"
 
 let selectedConnector: Connector | null = null
@@ -109,6 +109,10 @@ export const connect = async ({
     })
   })
 }
+
+// Should be used after a sucessful connect
+export const getSelectedConnectorWallet = () =>
+  selectedConnector ? selectedConnector.wallet : null
 
 export const disconnect = async (options: DisconnectOptions = {}) => {
   removeStarknetLastConnectedWallet()
