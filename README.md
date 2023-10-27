@@ -81,6 +81,19 @@ const wallet = await connect({ modalMode: "neverAsk" })
 await disconnect({ clearLastWallet: true })
 ```
 
+## Listen to account change
+
+```js
+const selectedConnectorWallet = getSelectedConnectorWallet()
+selectedConnectorWallet.on("accountsChanged", () => {
+  setWallet(prevState => {
+    const updatedWallet = { ...prevState }
+    updatedWallet.account = selectedConnectorWallet.account
+    return updatedWallet
+  })
+})
+```
+
 ## 📕 Guides
 
 Guides can be found [here](https://www.starknetkit.com/docs)
