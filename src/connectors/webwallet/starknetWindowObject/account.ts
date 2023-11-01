@@ -9,7 +9,7 @@ import {
 } from "starknet"
 import type { StarknetMethods } from "../../../types/window"
 
-import type { AppRouter } from "../../../helpers/trpc"
+import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 
 class UnimplementedSigner implements SignerInterface {
   async getPubKey(): Promise<string> {
@@ -50,6 +50,24 @@ export class MessageAccount extends Account implements AccountInterface {
     transactionsDetail,
   ) => {
     try {
+      /* updatePopupDimensions(385, 775)
+      updatePopupLocation("/review") */
+      setPopupOptions({
+        width: 385,
+        height: 775,
+        location: "/review",
+      })
+      if (calls[0] && calls[0].entrypoint === "use_offchain_session") {
+        /* updatePopupDimensions(1, 1)
+        updatePopupLocation("/executeSessionTx") */
+        setPopupOptions({
+          width: 1,
+          height: 1,
+          location: "/executeSessionTx",
+          atLeftBottom: true,
+        })
+      }
+
       const txHash = await this.proxyLink.execute.mutate([
         calls,
         abis,
@@ -70,6 +88,13 @@ export class MessageAccount extends Account implements AccountInterface {
     typedData: typedData.TypedData,
   ): Promise<Signature> => {
     try {
+      /* updatePopupDimensions(385, 440)
+      updatePopupLocation("/signMessage") */
+      setPopupOptions({
+        width: 385,
+        height: 440,
+        location: "/signMessage",
+      })
       return await this.proxyLink.signMessage.mutate([typedData])
     } catch (error) {
       if (error instanceof Error) {

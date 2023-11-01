@@ -3,8 +3,8 @@ import type {
   StarknetWindowObject,
 } from "get-starknet-core"
 import type { AccountInterface } from "starknet"
-import { trpcProxyClient } from "../../helpers/trpc"
 import { Connector } from "../connector"
+import { setPopupOptions, trpcProxyClient } from "./helpers/trpc"
 
 import {
   ConnectorNotConnectedError,
@@ -12,8 +12,8 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
-import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
 import { DEFAULT_WEBWALLET_URL } from "./constants"
+import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -160,10 +160,11 @@ export class WebWalletConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
-    const wallet = await getWebWalletStarknetObject(
+    setPopupOptions({
       origin,
-      trpcProxyClient({ origin: `${origin}/interstitialLogin` }),
-    )
+      location: "/interstitialLogin",
+    })
+    const wallet = await getWebWalletStarknetObject(origin, trpcProxyClient({}))
 
     _wallet = wallet ?? null
     this._wallet = _wallet

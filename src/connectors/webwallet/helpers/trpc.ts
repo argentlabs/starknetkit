@@ -1,14 +1,51 @@
-import { StarknetMethodArgumentsSchemas } from "../types/window"
 import type { CreateTRPCProxyClient } from "@trpc/client"
-import { createTRPCProxyClient, splitLink, loggerLink } from "@trpc/client"
+import { createTRPCProxyClient, loggerLink, splitLink } from "@trpc/client"
 import { initTRPC } from "@trpc/server"
 import { popupLink, windowLink } from "trpc-browser/link"
 import { z } from "zod"
+import { StarknetMethodArgumentsSchemas } from "../../../types/window"
+import { DEFAULT_WEBWALLET_URL } from "../constants"
 
 const t = initTRPC.create({
   isServer: false,
   allowOutsideOfServer: true,
 })
+
+let popupOrigin = DEFAULT_WEBWALLET_URL
+let popupLocation = ""
+let popupParams = ""
+
+interface SetPopupOptions {
+  width?: number
+  height?: number
+  origin?: string
+  location?: string
+  atLeftBottom?: boolean
+}
+
+export const setPopupOptions = ({
+  width = 775,
+  height = 385,
+  origin,
+  location,
+  atLeftBottom = false,
+}: SetPopupOptions) => {
+  const parentWidth =
+    window?.outerWidth ?? window?.innerWidth ?? window?.screen.width ?? 0
+  const parentHeight =
+    window?.outerHeight ?? window?.innerHeight ?? window?.screen.height ?? 0
+  const parentLeft = window?.screenLeft ?? window?.screenX ?? 0
+  const parentTop = window?.screenTop ?? window?.screenY ?? 0
+
+  const x = atLeftBottom ? 0 : parentLeft + parentWidth / 2 - width / 2
+  const y = atLeftBottom
+    ? window.screen.availHeight + 10
+    : parentTop + parentHeight / 2 - height / 2
+
+  popupOrigin = origin ?? popupOrigin
+  popupLocation = location ?? location
+  popupParams = `width=${width},height=${height},top=${y},left=${x},toolbar=no,menubar=no,scrollbars=no,location=no,status=no,popup=1`
+}
 
 // TODO: abstract AppRouter in order to have one single source of truth
 // At the moment, this is needed
@@ -57,13 +94,11 @@ const appRouter = t.router({
 export type AppRouter = typeof appRouter
 
 type TRPCProxyClientOptions = {
-  origin: string
   iframe?: Window
 }
 
 export const trpcProxyClient = ({
   iframe,
-  origin,
 }: TRPCProxyClientOptions): CreateTRPCProxyClient<AppRouter> =>
   createTRPCProxyClient<AppRouter>({
     links: [
@@ -98,30 +133,14 @@ export const trpcProxyClient = ({
         false: popupLink({
           listenWindow: window,
           createPopup: () => {
-            const h = 562
-            const w = 886
-
             // parent is the window that opened this window; if not detected then it falls back to the current screen
-            const parentWidth =
-              window?.outerWidth ??
-              window?.innerWidth ??
-              window?.screen.width ??
-              0
-            const parentHeight =
-              window?.outerHeight ??
-              window?.innerHeight ??
-              window?.screen.height ??
-              0
-            const parentLeft = window?.screenLeft ?? window?.screenX ?? 0
-            const parentTop = window?.screenTop ?? window?.screenY ?? 0
 
-            const y = parentTop + parentHeight / 2 - h / 2
-            const x = parentLeft + parentWidth / 2 - w / 2
             const popup = window.open(
-              origin,
+              `${popupOrigin}${popupLocation}`,
               "popup",
-              `width=${w},height=${h},top=${y},left=${x},toolbar=no,menubar=no,scrollbars=no,location=no,status=no,popup=1`,
+              popupParams,
             )
+
             if (!popup) {
               throw new Error("Could not open popup")
             }

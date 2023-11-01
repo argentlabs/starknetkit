@@ -4,12 +4,12 @@ import type {
   ConnectedStarknetWindowObject,
   NetworkChangeEventHandler,
   StarknetWindowObject,
+  WalletEvents,
 } from "get-starknet-core"
-import type { WalletEvents } from "get-starknet-core"
 import type { ProviderInterface } from "starknet"
 
+import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 import { MessageAccount } from "./account"
-import type { AppRouter } from "../../../helpers/trpc"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -73,7 +73,15 @@ export const getArgentStarknetWindowObject = (
       }
 
       try {
-        const selectedAddress: string = await proxyLink.enable.mutate()
+        /* updatePopupDimensions(886, 562)
+        updatePopupLocation("/interstitialLogin") */
+        setPopupOptions({
+          width: 886,
+          height: 562,
+          location: "/interstitialLogin",
+        })
+        const enablePromise = proxyLink.enable.mutate()
+        const selectedAddress: string = await enablePromise
 
         await updateStarknetWindowObject(
           wallet,
