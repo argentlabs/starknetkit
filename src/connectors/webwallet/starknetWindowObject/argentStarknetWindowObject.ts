@@ -10,6 +10,7 @@ import type { ProviderInterface } from "starknet"
 
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 import { MessageAccount } from "./account"
+import { ENABLE_POPUP_HEIGHT, ENABLE_POPUP_WIDTH } from "../helpers/popupSizes"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -73,11 +74,9 @@ export const getArgentStarknetWindowObject = (
       }
 
       try {
-        /* updatePopupDimensions(886, 562)
-        updatePopupLocation("/interstitialLogin") */
         setPopupOptions({
-          width: 886,
-          height: 562,
+          width: ENABLE_POPUP_WIDTH,
+          height: ENABLE_POPUP_HEIGHT,
           location: "/interstitialLogin",
         })
         const enablePromise = proxyLink.enable.mutate()

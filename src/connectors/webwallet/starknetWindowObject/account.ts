@@ -10,6 +10,12 @@ import {
 import type { StarknetMethods } from "../../../types/window"
 
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
+import {
+  EXECUTE_POPUP_HEIGHT,
+  EXECUTE_POPUP_WIDTH,
+  SIGN_MESSAGE_POPUP_HEIGHT,
+  SIGN_MESSAGE_POPUP_WIDTH,
+} from "../helpers/popupSizes"
 
 class UnimplementedSigner implements SignerInterface {
   async getPubKey(): Promise<string> {
@@ -50,16 +56,12 @@ export class MessageAccount extends Account implements AccountInterface {
     transactionsDetail,
   ) => {
     try {
-      /* updatePopupDimensions(385, 775)
-      updatePopupLocation("/review") */
       setPopupOptions({
-        width: 385,
-        height: 775,
+        width: EXECUTE_POPUP_WIDTH,
+        height: EXECUTE_POPUP_HEIGHT,
         location: "/review",
       })
       if (calls[0] && calls[0].entrypoint === "use_offchain_session") {
-        /* updatePopupDimensions(1, 1)
-        updatePopupLocation("/executeSessionTx") */
         setPopupOptions({
           width: 1,
           height: 1,
@@ -88,11 +90,9 @@ export class MessageAccount extends Account implements AccountInterface {
     typedData: typedData.TypedData,
   ): Promise<Signature> => {
     try {
-      /* updatePopupDimensions(385, 440)
-      updatePopupLocation("/signMessage") */
       setPopupOptions({
-        width: 385,
-        height: 440,
+        width: SIGN_MESSAGE_POPUP_WIDTH,
+        height: SIGN_MESSAGE_POPUP_HEIGHT,
         location: "/signMessage",
       })
       return await this.proxyLink.signMessage.mutate([typedData])
