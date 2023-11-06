@@ -1,9 +1,6 @@
-import type {
-  AccountChangeEventHandler,
-  StarknetWindowObject,
-} from "get-starknet-core"
+import type { StarknetWindowObject } from "get-starknet-core"
 import { getStarknet } from "get-starknet-core"
-import { AccountInterface } from "starknet"
+import { AccountInterface, constants } from "starknet"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -41,6 +38,64 @@ export class InjectedConnector extends Connector {
     return await this._wallet.isPreauthorized()
   }
 
+  async chainId(): Promise<bigint> {
+    this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotConnectedError()
+    }
+
+    const chainIdHex = await this._wallet.provider.getChainId()
+    const chainId = BigInt(chainIdHex)
+    return chainId
+  }
+
+  private async onAccountsChanged(accounts: string[] | string): Promise<void> {
+    let account: string | string[]
+    if (typeof accounts === "string") {
+      account = accounts
+    } else {
+      account = accounts[0]
+    }
+
+    if (account) {
+      const chainId = await this.chainId()
+      this.emit("change", { account, chainId })
+    } else {
+      this.emit("disconnect")
+    }
+  }
+
+  private onNetworkChanged(network?: string): void {
+    switch (network) {
+      // Argent
+      case "SN_MAIN":
+        this.emit("change", {
+          chainId: BigInt(constants.StarknetChainId.SN_MAIN),
+        })
+        break
+      case "SN_GOERLI":
+        this.emit("change", {
+          chainId: BigInt(constants.StarknetChainId.SN_GOERLI),
+        })
+        break
+      // Braavos
+      case "mainnet-alpha":
+        this.emit("change", {
+          chainId: BigInt(constants.StarknetChainId.SN_MAIN),
+        })
+        break
+      case "goerli-alpha":
+        this.emit("change", {
+          chainId: BigInt(constants.StarknetChainId.SN_GOERLI),
+        })
+        break
+      default:
+        this.emit("change", {})
+        break
+    }
+  }
+
   async connect(): Promise<AccountInterface> {
     await this.ensureWallet()
 
@@ -48,8 +103,9 @@ export class InjectedConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
+    let accounts: string[]
     try {
-      await this._wallet.enable({ starknetVersion: "v5" })
+      accounts = await this._wallet.enable({ starknetVersion: "v5" })
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
@@ -67,6 +123,21 @@ export class InjectedConnector extends Connector {
       throw new UnsupportedAccountInterfaceError()
     }
     */
+
+    if (!this._wallet.isConnected || !accounts) {
+      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
+      throw new UserRejectedRequestError()
+    }
+
+    this._wallet.on("accountsChanged", async (accounts: string[] | string) => {
+      await this.onAccountsChanged(accounts)
+    })
+
+    this._wallet.on("networkChanged", (network?: string) => {
+      this.onNetworkChanged(network)
+    })
+
+    await this.onAccountsChanged(accounts)
 
     return this._wallet.account
   }
@@ -120,26 +191,6 @@ export class InjectedConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
     return this._wallet
-  }
-
-  async initEventListener(accountChangeCb: AccountChangeEventHandler) {
-    await this.ensureWallet()
-
-    if (!this._wallet) {
-      throw new ConnectorNotConnectedError()
-    }
-
-    this._wallet.on("accountsChanged", accountChangeCb)
-  }
-
-  async removeEventListener(accountChangeCb: AccountChangeEventHandler) {
-    await this.ensureWallet()
-
-    if (!this._wallet) {
-      throw new ConnectorNotConnectedError()
-    }
-
-    this._wallet.off("accountsChanged", accountChangeCb)
   }
 
   private async ensureWallet() {

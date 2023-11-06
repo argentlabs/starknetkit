@@ -1,15 +1,14 @@
 import EventEmitter from "eventemitter3"
 
-import type {
-  AccountChangeEventHandler,
-  StarknetWindowObject,
-} from "get-starknet-core"
+import type { StarknetWindowObject } from "get-starknet-core"
 import type { AccountInterface } from "starknet"
 
 /** Connector data. */
 export type ConnectorData = {
   /** Connector account. */
   account?: string
+  /** Connector network. */
+  chainId?: bigint
 }
 
 /** Connector events. */
@@ -30,12 +29,6 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   abstract ready?(): Promise<boolean>
   abstract connect(): Promise<AccountInterface>
   abstract disconnect(): Promise<void>
-  abstract initEventListener?(
-    accountChangeCb: AccountChangeEventHandler,
-  ): Promise<void>
-  abstract removeEventListener?(
-    accountChangeCb: AccountChangeEventHandler,
-  ): Promise<void>
   abstract account(): Promise<AccountInterface | null>
   /** Unique connector id */
   abstract get id(): string
