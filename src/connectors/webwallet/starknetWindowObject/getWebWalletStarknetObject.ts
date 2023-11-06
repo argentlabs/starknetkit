@@ -2,7 +2,7 @@ import type { CreateTRPCProxyClient } from "@trpc/client"
 import { SequencerProvider } from "starknet"
 
 import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
-import type { AppRouter } from "../../../helpers/trpc"
+import type { AppRouter } from "../helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./argentStarknetWindowObject"
 import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
 
