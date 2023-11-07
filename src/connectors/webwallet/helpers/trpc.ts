@@ -133,13 +133,25 @@ export const trpcProxyClient = ({
         false: popupLink({
           listenWindow: window,
           createPopup: () => {
-            // parent is the window that opened this window; if not detected then it falls back to the current screen
+            let popup: Window | null = null
+            const webwalletBtn = document.createElement("button")
+            webwalletBtn.style.display = "none"
+            webwalletBtn.addEventListener("click", () => {
+              popup = window.open(
+                `${popupOrigin}${popupLocation}`,
+                "popup",
+                popupParams,
+              )
+            })
+            webwalletBtn.click()
 
-            const popup = window.open(
-              `${popupOrigin}${popupLocation}`,
-              "popup",
-              popupParams,
-            )
+            // make sure popup is defined
+            ;(async () => {
+              console.log(popup)
+              while (!popup) {
+                await new Promise((resolve) => setTimeout(resolve, 100))
+              }
+            })()
 
             if (!popup) {
               throw new Error("Could not open popup")
