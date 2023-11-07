@@ -49,7 +49,7 @@ export class ArgentMobileConnector extends Connector {
   }
 
   get name(): string {
-    return "Argent Mobile"
+    return "Argent (mobile)"
   }
 
   get icon(): string {
