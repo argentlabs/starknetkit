@@ -79,7 +79,7 @@ export class WebWalletConnector extends Connector {
   }
 
   get title(): string {
-    return "Continue with email"
+    return "Email"
   }
 
   get subtitle(): string {

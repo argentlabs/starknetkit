@@ -15,10 +15,7 @@ export const defaultConnectors = ({
 }): Connector[] => {
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
-  const defaultConnectors: Connector[] = [
-    new WebWalletConnector({ url: webWalletUrl }),
-    new ArgentMobileConnector(argentMobileOptions),
-  ]
+  const defaultConnectors: Connector[] = []
 
   if (!isSafari) {
     defaultConnectors.push(
@@ -28,6 +25,9 @@ export const defaultConnectors = ({
       new InjectedConnector({ options: { id: "braavos" } }),
     )
   }
+
+  defaultConnectors.push(new ArgentMobileConnector(argentMobileOptions))
+  defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
 
   return defaultConnectors
 }
