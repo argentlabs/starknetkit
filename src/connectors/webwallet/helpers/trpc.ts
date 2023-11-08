@@ -147,7 +147,6 @@ export const trpcProxyClient = ({
 
             // make sure popup is defined
             ;(async () => {
-              console.log(popup)
               while (!popup) {
                 await new Promise((resolve) => setTimeout(resolve, 100))
               }
