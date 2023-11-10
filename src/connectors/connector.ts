@@ -11,6 +11,14 @@ export type ConnectorData = {
   chainId?: bigint
 }
 
+/** Connector icons, as base64 encoded svg. */
+export type ConnectorIcons = {
+  /** Dark-mode icon. */
+  dark?: string
+  /** Light-mode icon. */
+  light?: string
+}
+
 /** Connector events. */
 export interface ConnectorEvents {
   /** Emitted when account or network changes. */
@@ -35,7 +43,7 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   /** Connector name */
   abstract get name(): string
   /** Connector icon */
-  abstract get icon(): string
+  abstract get icon(): ConnectorIcons
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
 }
