@@ -141,7 +141,7 @@ export class ArgentMobileConnector extends Connector {
     const { getStarknetWindowObject } = await import("./modal")
     const { chainId, projectId, dappName, description, url } = this._options
     const options = {
-      chainId: chainId ?? "SN_GOERLI",
+      chainId: chainId ?? constants.NetworkName.SN_MAIN,
       name: dappName,
       projectId: projectId ?? DEFAULT_PROJECT_ID,
       description,
