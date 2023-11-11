@@ -83,7 +83,7 @@ export class ArgentMobileConnector extends Connector {
 
     return {
       account: account.address,
-      chainId: BigInt(chainId),
+      chainId,
     }
   }
 

@@ -104,7 +104,7 @@ export class WebWalletConnector extends Connector {
 
     return {
       account: account.address,
-      chainId: BigInt(chainId),
+      chainId,
     }
   }
 
