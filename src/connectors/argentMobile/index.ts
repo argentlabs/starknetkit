@@ -11,7 +11,11 @@ import {
   UserNotConnectedError,
 } from "../../errors"
 import { resetWalletConnect } from "../../helpers/resetWalletConnect"
-import { Connector, type ConnectorIcons } from "../connector"
+import {
+  Connector,
+  type ConnectorData,
+  type ConnectorIcons,
+} from "../connector"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 
@@ -66,14 +70,21 @@ export class ArgentMobileConnector extends Connector {
     return this._wallet
   }
 
-  async connect(): Promise<AccountInterface> {
+  async connect(): Promise<ConnectorData> {
     await this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
     }
 
-    return this._wallet.account as unknown as AccountInterface
+    const account = this._wallet.account as unknown as AccountInterface
+
+    const chainId = await this.chainId()
+
+    return {
+      account: account.address,
+      chainId,
+    }
   }
 
   async disconnect(): Promise<void> {
@@ -106,6 +117,18 @@ export class ArgentMobileConnector extends Connector {
     }
 
     return this._wallet.account as AccountInterface
+  }
+
+  async chainId(): Promise<bigint> {
+    this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotConnectedError()
+    }
+
+    const chainIdHex = await this._wallet.provider.getChainId()
+    const chainId = BigInt(chainIdHex)
+    return chainId
   }
 
   // needed, methods required by starknet-react. Otherwise an exception is throwd

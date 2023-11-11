@@ -7,7 +7,11 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
-import { Connector, type ConnectorIcons } from "../connector"
+import {
+  Connector,
+  type ConnectorData,
+  type ConnectorIcons,
+} from "../connector"
 import {
   WALLET_NOT_FOUND_ICON_DARK,
   WALLET_NOT_FOUND_ICON_LIGHT,
@@ -103,33 +107,20 @@ export class InjectedConnector extends Connector {
     }
   }
 
-  async connect(): Promise<AccountInterface> {
-    await this.ensureWallet()
+  async connect(): Promise<ConnectorData> {
+    this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
     }
 
-    let accounts: string[]
+    let accounts
     try {
       accounts = await this._wallet.enable({ starknetVersion: "v5" })
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
     }
-
-    if (!this._wallet.isConnected) {
-      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
-      throw new UserRejectedRequestError()
-    }
-
-    // This is to ensure that v5 account interface is used.
-    // TODO: add back once Braavos updates their interface.
-    /*
-    if (!(this._wallet.account instanceof AccountInterface)) {
-      throw new UnsupportedAccountInterfaceError()
-    }
-    */
 
     if (!this._wallet.isConnected || !accounts) {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
@@ -146,7 +137,15 @@ export class InjectedConnector extends Connector {
 
     await this.onAccountsChanged(accounts)
 
-    return this._wallet.account
+    const account = this._wallet.account.address
+    const chainId = await this.chainId()
+
+    this.emit("connect", { account, chainId })
+
+    return {
+      account,
+      chainId,
+    }
   }
 
   async disconnect(): Promise<void> {

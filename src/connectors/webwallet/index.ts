@@ -3,7 +3,11 @@ import type {
   StarknetWindowObject,
 } from "get-starknet-core"
 import type { AccountInterface } from "starknet"
-import { Connector, type ConnectorIcons } from "../connector"
+import {
+  Connector,
+  type ConnectorData,
+  type ConnectorIcons,
+} from "../connector"
 import { setPopupOptions, trpcProxyClient } from "./helpers/trpc"
 
 import {
@@ -76,7 +80,7 @@ export class WebWalletConnector extends Connector {
     return "Powered by Argent"
   }
 
-  async connect(): Promise<AccountInterface> {
+  async connect(): Promise<ConnectorData> {
     await this.ensureWallet()
 
     if (!this._wallet) {
@@ -94,7 +98,14 @@ export class WebWalletConnector extends Connector {
       throw new UserRejectedRequestError()
     }
 
-    return this._wallet.account as unknown as AccountInterface
+    const account = this._wallet.account as unknown as AccountInterface
+
+    const chainId = await this.chainId()
+
+    return {
+      account: account.address,
+      chainId,
+    }
   }
 
   async disconnect(): Promise<void> {
@@ -125,6 +136,18 @@ export class WebWalletConnector extends Connector {
     }
 
     return this._wallet.account as unknown as AccountInterface
+  }
+
+  async chainId(): Promise<bigint> {
+    this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotConnectedError()
+    }
+
+    const chainIdHex = await this._wallet.provider.getChainId()
+    const chainId = BigInt(chainIdHex)
+    return chainId
   }
 
   async initEventListener(accountChangeCb: AccountChangeEventHandler) {
