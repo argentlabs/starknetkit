@@ -7,12 +7,19 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
-import { Connector } from "../connector"
-
+import { Connector, type ConnectorIcons } from "../connector"
+import {
+  WALLET_NOT_FOUND_ICON_DARK,
+  WALLET_NOT_FOUND_ICON_LIGHT,
+} from "./constants"
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
   /** The wallet id. */
   id: string
+  /** Wallet human readable name. */
+  name?: string
+  /** Wallet icons. */
+  icon?: ConnectorIcons
 }
 
 export class InjectedConnector extends Connector {
@@ -179,11 +186,22 @@ export class InjectedConnector extends Connector {
     return this._wallet.name
   }
 
-  get icon(): string {
-    if (!this._wallet) {
-      throw new ConnectorNotConnectedError()
+  get icon(): ConnectorIcons {
+    if (this._options.icon) {
+      return this._options.icon
     }
-    return this._wallet.icon
+
+    if (this._wallet?.icon) {
+      return {
+        dark: this._wallet.icon,
+        light: this._wallet.icon,
+      }
+    }
+
+    return {
+      dark: WALLET_NOT_FOUND_ICON_DARK,
+      light: WALLET_NOT_FOUND_ICON_LIGHT,
+    }
   }
 
   get wallet(): StarknetWindowObject {
