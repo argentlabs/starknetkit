@@ -37,7 +37,14 @@ export const login = async <TAdapter extends NamespaceAdapter>(
     walletConnect,
   }: IArgentLoginOptions,
   Adapter: new (options: NamespaceAdapterOptions) => TAdapter,
-): Promise<TAdapter> => {
+): Promise<TAdapter | null> => {
+  if (!bridgeUrl) {
+    throw new Error("bridgeUrl is required")
+  }
+
+  if (!mobileUrl) {
+    throw new Error("mobileUrl is required")
+  }
   argentModal.bridgeUrl = bridgeUrl
   argentModal.mobileUrl = mobileUrl
   argentModal.type = modalType
@@ -101,6 +108,7 @@ export const login = async <TAdapter extends NamespaceAdapter>(
   } catch (error) {
     console.error("@argent/login::error")
     argentModal.closeModal()
+    return null
   }
 }
 

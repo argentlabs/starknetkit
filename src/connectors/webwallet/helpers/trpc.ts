@@ -43,7 +43,7 @@ export const setPopupOptions = ({
     : parentTop + parentHeight / 2 - height / 2
 
   popupOrigin = origin ?? popupOrigin
-  popupLocation = location ?? location
+  popupLocation = location ?? popupLocation
   popupParams = `width=${width},height=${height},top=${y},left=${x},toolbar=no,menubar=no,scrollbars=no,location=no,status=no,popup=1`
 }
 

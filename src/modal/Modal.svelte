@@ -51,7 +51,7 @@
       darkModeControlClass = ""
     }
 
-    if (isInAppBrowser) {
+    if (isInAppBrowser && window?.starknet_argentX) {
       try {
         const enabledValue = await sn.enable(window?.starknet_argentX)
         callback(enabledValue ?? window?.starknet_argentX)

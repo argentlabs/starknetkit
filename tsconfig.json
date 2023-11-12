@@ -16,7 +16,9 @@
      */
     "allowJs": true,
     "checkJs": true,
-    "declaration": true
+    "declaration": true,
+    "verbatimModuleSyntax": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
