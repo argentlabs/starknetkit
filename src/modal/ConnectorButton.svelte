@@ -3,9 +3,11 @@
   import type { Connector } from "../connectors/connector"
 
   export let wallet: ModalWallet
+  export let theme: "light" | "dark" | null = null
   export let cb: (value: Connector | null) => Promise<void> = async () => {}
   export let loadingItem: string | false = false
-  const isSvg = wallet.icon.startsWith("<svg")
+  const icon = theme === "dark" ? wallet.icon.dark : wallet.icon.light
+  const isSvg = icon?.startsWith("<svg")
 </script>
 
 {#if wallet.download}
@@ -36,7 +38,7 @@
       <p class="font-semibold text-base p">
         Install {wallet.name}
       </p>
-      <img alt={wallet.name} src={wallet.icon} class="w-8 h-8 rounded-full" />
+      <img alt={wallet.name} src={icon} class="w-8 h-8 rounded-full" />
     </li>
   </a>
 {:else}
@@ -91,9 +93,9 @@
         <span class="sr-only">Loading...</span>
       </div>
     {:else if isSvg}
-      <div style="position: relative;">{@html wallet.icon}</div>
+      <div style="position: relative;">{@html icon}</div>
     {:else}
-      <img alt={wallet?.name} src={wallet?.icon} class="w-8 h-8 rounded" />
+      <img alt={wallet?.name} src={icon} class="w-8 h-8 rounded" />
     {/if}
   </li>
 {/if}

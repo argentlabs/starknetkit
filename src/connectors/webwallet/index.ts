@@ -16,7 +16,7 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
-import { DEFAULT_WEBWALLET_URL } from "./constants"
+import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
 
 let _wallet: StarknetWindowObject | null = null
@@ -60,8 +60,8 @@ export class WebWalletConnector extends Connector {
 
   get icon(): ConnectorIcons {
     return {
-      light: DEFAULT_WEBWALLET_URL,
-      dark: DEFAULT_WEBWALLET_URL,
+      light: DEFAULT_WEBWALLET_ICON,
+      dark: DEFAULT_WEBWALLET_ICON,
     }
   }
 

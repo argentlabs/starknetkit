@@ -140,7 +140,7 @@
 
       <ul class="flex flex-col gap-3">
         {#each modalWallets as wallet}
-          <ConnectorButton {wallet} {loadingItem} {cb} />
+          <ConnectorButton {wallet} {loadingItem} {cb} {theme} />
         {/each}
       </ul>
     </main>
