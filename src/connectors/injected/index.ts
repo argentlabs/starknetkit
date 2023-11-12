@@ -36,6 +36,8 @@ export class InjectedConnector extends Connector {
   }
 
   available(): boolean {
+    // This should be awaited ideally but it would break compatibility with
+    // starknet-react. Do we need to make this async? Is ensureWallet needed?
     this.ensureWallet()
     return this._wallet !== undefined
   }
@@ -50,7 +52,7 @@ export class InjectedConnector extends Connector {
   }
 
   async chainId(): Promise<bigint> {
-    this.ensureWallet()
+    await this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
@@ -108,7 +110,7 @@ export class InjectedConnector extends Connector {
   }
 
   async connect(): Promise<ConnectorData> {
-    this.ensureWallet()
+    await this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()

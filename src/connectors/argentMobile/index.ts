@@ -112,7 +112,7 @@ export class ArgentMobileConnector extends Connector {
   }
 
   async chainId(): Promise<bigint> {
-    this.ensureWallet()
+    await this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
