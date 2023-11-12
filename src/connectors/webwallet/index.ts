@@ -120,19 +120,11 @@ export class WebWalletConnector extends Connector {
     this._wallet = _wallet
   }
 
-  /* 
-    Don't throw an exception if the wallet is not connected. 
-    This is needed because when argentMobile and webwallet connectors are used together with starknet-react, 
-    it would always try to retrieve the account since the connectors are always available (and throw an exception since the value is null)
-
-    https://github.com/apibara/starknet-react/blob/226e4cb1d8e9b478dc57d45a98a59a57733572bb/packages/core/src/hooks/useAccount.ts#L92
-    
-   */
-  async account(): Promise<AccountInterface | null> {
+  async account(): Promise<AccountInterface> {
     this._wallet = _wallet
 
     if (!this._wallet || !this._wallet.account) {
-      return null
+      throw new ConnectorNotConnectedError()
     }
 
     return this._wallet.account as unknown as AccountInterface

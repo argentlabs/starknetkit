@@ -160,15 +160,11 @@ export class InjectedConnector extends Connector {
     }
   }
 
-  async account(): Promise<AccountInterface | null> {
+  async account(): Promise<AccountInterface> {
     await this.ensureWallet()
 
-    if (!this._wallet) {
+    if (!this._wallet || !this._wallet.account) {
       throw new ConnectorNotConnectedError()
-    }
-
-    if (!this._wallet.account) {
-      return null
     }
 
     return this._wallet.account
