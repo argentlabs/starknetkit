@@ -2,6 +2,7 @@ import type { StarknetWindowObject, WalletProvider } from "get-starknet-core"
 import { Connector } from "../connectors/connector"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
+import { isString } from "lodash-es"
 
 interface SetConnectorsExpandedParams {
   availableConnectors: Connector[]
@@ -25,13 +26,15 @@ export const mapModalWallets = ({
   }
 
   return availableConnectors
-    .map((c) => {
+    .map<ModalWallet | null>((c) => {
       const installed = installedWallets.find((w) => w.id === c.id)
       if (installed) {
+        const installedIcon =
+          installed.id === "argentX" ? ARGENT_X_ICON : installed.icon
         return {
           name: installed.name,
           id: installed.id,
-          icon: installed.id === "argentX" ? ARGENT_X_ICON : installed.icon,
+          icon: { light: installedIcon, dark: installedIcon },
           connector: c,
         }
       }
@@ -44,10 +47,13 @@ export const mapModalWallets = ({
 
       if (discovery) {
         const { downloads } = discovery
+
+        const discoveryIcon =
+          discovery.id === "argentX" ? ARGENT_X_ICON : discovery.icon
         return {
           name: discovery.name,
           id: discovery.id,
-          icon: discovery.id === "argentX" ? ARGENT_X_ICON : discovery.icon,
+          icon: { light: discoveryIcon, dark: discoveryIcon },
           connector: c,
           download: downloads[storeVersion as keyof typeof downloads],
         }
@@ -62,9 +68,10 @@ export const mapModalWallets = ({
         id: c.id,
         icon: c.icon,
         connector: c,
-        title: "title" in c ? c.title : undefined,
-        subtitle: "subtitle" in c ? c.subtitle : undefined,
+        title: "title" in c && isString(c.title) ? c.title : undefined,
+        subtitle:
+          "subtitle" in c && isString(c.subtitle) ? c.subtitle : undefined,
       }
     })
-    .filter((c) => c !== null) as ModalWallet[]
+    .filter((c): c is ModalWallet => c !== null)
 }

@@ -68,7 +68,9 @@ export const connect = async ({
     if (wallet) {
       const connector = availableConnectors.find((c) => c.id === lastWalletId)
       await connector?.connect()
-      selectedConnector = connector
+      if (connector) {
+        selectedConnector = connector
+      }
       return wallet
     } // otherwise fallback to modal
   }
@@ -93,11 +95,13 @@ export const connect = async ({
         dappName,
         callback: async (value: StarknetWindowObject | null) => {
           try {
-            if (value.id !== "argentWebWallet") {
+            if (value !== null && value.id !== "argentWebWallet") {
               setStarknetLastConnectedWallet(value.id)
             }
             selectedConnector =
-              availableConnectors.find((c) => c.id === value.id) ?? null
+              availableConnectors.find(
+                (c) => value !== null && c.id === value.id,
+              ) ?? null
             resolve(value)
           } finally {
             setTimeout(() => modal.$destroy())
@@ -116,7 +120,9 @@ export const getSelectedConnectorWallet = () =>
 
 export const disconnect = async (options: DisconnectOptions = {}) => {
   removeStarknetLastConnectedWallet()
-  await selectedConnector.disconnect()
+  if (selectedConnector) {
+    await selectedConnector.disconnect()
+  }
   selectedConnector = null
 
   return sn.disconnect(options)

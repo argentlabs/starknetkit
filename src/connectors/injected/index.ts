@@ -1,5 +1,4 @@
 import type { StarknetWindowObject } from "get-starknet-core"
-import { getStarknet } from "get-starknet-core"
 import { AccountInterface, constants } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -36,12 +35,14 @@ export class InjectedConnector extends Connector {
   }
 
   available(): boolean {
+    // This should be awaited ideally but it would break compatibility with
+    // starknet-react. Do we need to make this async? Is ensureWallet needed?
     this.ensureWallet()
     return this._wallet !== undefined
   }
 
   async ready(): Promise<boolean> {
-    await this.ensureWallet()
+    this.ensureWallet()
 
     if (!this._wallet) {
       return false
@@ -149,7 +150,7 @@ export class InjectedConnector extends Connector {
   }
 
   async disconnect(): Promise<void> {
-    await this.ensureWallet()
+    this.ensureWallet()
 
     if (!this.available()) {
       throw new ConnectorNotFoundError()
@@ -160,15 +161,11 @@ export class InjectedConnector extends Connector {
     }
   }
 
-  async account(): Promise<AccountInterface | null> {
-    await this.ensureWallet()
+  async account(): Promise<AccountInterface> {
+    this.ensureWallet()
 
-    if (!this._wallet) {
+    if (!this._wallet || !this._wallet.account) {
       throw new ConnectorNotConnectedError()
-    }
-
-    if (!this._wallet.account) {
-      return null
     }
 
     return this._wallet.account
@@ -210,12 +207,54 @@ export class InjectedConnector extends Connector {
     return this._wallet
   }
 
-  private async ensureWallet() {
-    const starknet = getStarknet()
-    const installed = await starknet.getAvailableWallets()
+  private ensureWallet() {
+    const installed = getAvailableWallets(globalThis)
     const wallet = installed.filter((w) => w.id === this._options.id)[0]
     if (wallet) {
       this._wallet = wallet
     }
   }
+}
+
+function getAvailableWallets(obj: Record<string, any>): StarknetWindowObject[] {
+  return Object.values(
+    Object.getOwnPropertyNames(obj).reduce<
+      Record<string, StarknetWindowObject>
+    >((wallets, key) => {
+      if (key.startsWith("starknet")) {
+        const wallet = obj[key]
+
+        if (isWalletObject(wallet) && !wallets[wallet.id]) {
+          wallets[wallet.id] = wallet as StarknetWindowObject
+        }
+      }
+      return wallets
+    }, {}),
+  )
+}
+
+// biome-ignore lint: wallet could be anything
+function isWalletObject(wallet: any): boolean {
+  try {
+    return (
+      wallet &&
+      [
+        // wallet's must have methods/members, see IStarknetWindowObject
+        "request",
+        "isConnected",
+        "provider",
+        "enable",
+        "isPreauthorized",
+        "on",
+        "off",
+        "version",
+        "id",
+        "name",
+        "icon",
+      ].every((key) => key in wallet)
+    )
+  } catch (err) {
+    /* empty */
+  }
+  return false
 }
