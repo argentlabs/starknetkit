@@ -184,3 +184,5 @@ export class ArgentMobileConnector extends Connector {
     })
   }
 }
+
+export { isInArgentMobileAppBrowser } from "./helpers"
