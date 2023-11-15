@@ -17,9 +17,6 @@ module.exports = {
       gap: {
         2.5: "0.625rem",
       },
-      backgroundColor: {
-        "neutrals.200": "#F0F0F0",
-      },
       borderColor: {
         "neutrals.200": "#F0F0F0",
       },
