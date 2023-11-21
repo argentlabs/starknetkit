@@ -63,7 +63,7 @@ export abstract class NamespaceAdapter {
   }: SessionTypes.Struct) => {
     const chain = this.formatChainId(this.chainId)
     if (requiredNamespaces) {
-      return !!requiredNamespaces[this.namespace]?.chains.includes(chain)
+      return !!requiredNamespaces[this.namespace]?.chains?.includes(chain)
     }
     return !!namespaces?.[this.namespace]?.accounts.some((account) =>
       account.startsWith(chain),

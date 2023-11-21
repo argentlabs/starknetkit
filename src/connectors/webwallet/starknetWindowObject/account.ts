@@ -61,7 +61,11 @@ export class MessageAccount extends Account implements AccountInterface {
         height: EXECUTE_POPUP_HEIGHT,
         location: "/review",
       })
-      if (calls[0] && calls[0].entrypoint === "use_offchain_session") {
+      if (
+        Array.isArray(calls) &&
+        calls[0] &&
+        calls[0].entrypoint === "use_offchain_session"
+      ) {
         setPopupOptions({
           width: 1,
           height: 1,

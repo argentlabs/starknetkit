@@ -43,7 +43,7 @@ export const setPopupOptions = ({
     : parentTop + parentHeight / 2 - height / 2
 
   popupOrigin = origin ?? popupOrigin
-  popupLocation = location ?? location
+  popupLocation = location ?? popupLocation
   popupParams = `width=${width},height=${height},top=${y},left=${x},toolbar=no,menubar=no,scrollbars=no,location=no,status=no,popup=1`
 }
 
@@ -133,13 +133,24 @@ export const trpcProxyClient = ({
         false: popupLink({
           listenWindow: window,
           createPopup: () => {
-            // parent is the window that opened this window; if not detected then it falls back to the current screen
+            let popup: Window | null = null
+            const webwalletBtn = document.createElement("button")
+            webwalletBtn.style.display = "none"
+            webwalletBtn.addEventListener("click", () => {
+              popup = window.open(
+                `${popupOrigin}${popupLocation}`,
+                "popup",
+                popupParams,
+              )
+            })
+            webwalletBtn.click()
 
-            const popup = window.open(
-              `${popupOrigin}${popupLocation}`,
-              "popup",
-              popupParams,
-            )
+            // make sure popup is defined
+            ;(async () => {
+              while (!popup) {
+                await new Promise((resolve) => setTimeout(resolve, 100))
+              }
+            })()
 
             if (!popup) {
               throw new Error("Could not open popup")

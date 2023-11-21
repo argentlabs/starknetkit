@@ -121,9 +121,11 @@ class ArgentModal {
     }
 
     if (device === "android" || device === "ios") {
-      const toMobileApp = document.createElement("a")
-      toMobileApp.setAttribute("href", urls[device])
-      toMobileApp.setAttribute("target", "_blank")
+      const toMobileApp = document.createElement("button")
+      toMobileApp.style.display = "none"
+      toMobileApp.addEventListener("click", () => {
+        window.location.href = urls[device]
+      })
       toMobileApp.click()
 
       return

@@ -1,5 +1,5 @@
 import type { GetWalletOptions } from "get-starknet-core"
-import type { Connector } from "../connectors/connector"
+import type { Connector, ConnectorIcons } from "../connectors/connector"
 import type { ArgentMobileConnectorOptions } from "../connectors/argentMobile"
 
 export type StoreVersion = "chrome" | "firefox" | "edge"
@@ -17,7 +17,7 @@ export interface ConnectOptions extends GetWalletOptions {
 export type ModalWallet = {
   name: string
   id: string
-  icon: string
+  icon: ConnectorIcons
   download?: string
   subtitle?: string
   title?: string

@@ -11,4 +11,5 @@ export type { StarknetWindowObject, IArgentLoginOptions }
 
 export const getStarknetWindowObject = async (
   options: IArgentLoginOptions,
-): Promise<ConnectedStarknetWindowObject> => login(options, StarknetAdapter)
+): Promise<ConnectedStarknetWindowObject | null> =>
+  login(options, StarknetAdapter)

@@ -33,7 +33,7 @@ dependencies:
     specifier: ^4.17.21
     version: 4.17.21
   starknet:
-    specifier: 5.18.0
+    specifier: ^5.18.0
     version: 5.18.0
   svelte-forms:
     specifier: ^2.3.1

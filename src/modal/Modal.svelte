@@ -51,7 +51,7 @@
       darkModeControlClass = ""
     }
 
-    if (isInAppBrowser) {
+    if (isInAppBrowser && window?.starknet_argentX) {
       try {
         const enabledValue = await sn.enable(window?.starknet_argentX)
         callback(enabledValue ?? window?.starknet_argentX)
@@ -140,7 +140,7 @@
 
       <ul class="flex flex-col gap-3">
         {#each modalWallets as wallet}
-          <ConnectorButton {wallet} {loadingItem} {cb} />
+          <ConnectorButton {wallet} {loadingItem} {cb} {theme} />
         {/each}
       </ul>
     </main>

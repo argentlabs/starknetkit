@@ -1,5 +1,4 @@
 import type { StarknetWindowObject } from "get-starknet-core"
-import { getStarknet } from "get-starknet-core"
 import { AccountInterface, constants } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -7,12 +6,23 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
-import { Connector } from "../connector"
-
+import {
+  Connector,
+  type ConnectorData,
+  type ConnectorIcons,
+} from "../connector"
+import {
+  WALLET_NOT_FOUND_ICON_DARK,
+  WALLET_NOT_FOUND_ICON_LIGHT,
+} from "./constants"
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
   /** The wallet id. */
   id: string
+  /** Wallet human readable name. */
+  name?: string
+  /** Wallet icons. */
+  icon?: ConnectorIcons
 }
 
 export class InjectedConnector extends Connector {
@@ -25,12 +35,14 @@ export class InjectedConnector extends Connector {
   }
 
   available(): boolean {
+    // This should be awaited ideally but it would break compatibility with
+    // starknet-react. Do we need to make this async? Is ensureWallet needed?
     this.ensureWallet()
     return this._wallet !== undefined
   }
 
   async ready(): Promise<boolean> {
-    await this.ensureWallet()
+    this.ensureWallet()
 
     if (!this._wallet) {
       return false
@@ -96,33 +108,20 @@ export class InjectedConnector extends Connector {
     }
   }
 
-  async connect(): Promise<AccountInterface> {
-    await this.ensureWallet()
+  async connect(): Promise<ConnectorData> {
+    this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
     }
 
-    let accounts: string[]
+    let accounts
     try {
       accounts = await this._wallet.enable({ starknetVersion: "v5" })
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
     }
-
-    if (!this._wallet.isConnected) {
-      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
-      throw new UserRejectedRequestError()
-    }
-
-    // This is to ensure that v5 account interface is used.
-    // TODO: add back once Braavos updates their interface.
-    /*
-    if (!(this._wallet.account instanceof AccountInterface)) {
-      throw new UnsupportedAccountInterfaceError()
-    }
-    */
 
     if (!this._wallet.isConnected || !accounts) {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
@@ -139,11 +138,19 @@ export class InjectedConnector extends Connector {
 
     await this.onAccountsChanged(accounts)
 
-    return this._wallet.account
+    const account = this._wallet.account.address
+    const chainId = await this.chainId()
+
+    this.emit("connect", { account, chainId })
+
+    return {
+      account,
+      chainId,
+    }
   }
 
   async disconnect(): Promise<void> {
-    await this.ensureWallet()
+    this.ensureWallet()
 
     if (!this.available()) {
       throw new ConnectorNotFoundError()
@@ -154,15 +161,11 @@ export class InjectedConnector extends Connector {
     }
   }
 
-  async account(): Promise<AccountInterface | null> {
-    await this.ensureWallet()
+  async account(): Promise<AccountInterface> {
+    this.ensureWallet()
 
-    if (!this._wallet) {
+    if (!this._wallet || !this._wallet.account) {
       throw new ConnectorNotConnectedError()
-    }
-
-    if (!this._wallet.account) {
-      return null
     }
 
     return this._wallet.account
@@ -179,11 +182,22 @@ export class InjectedConnector extends Connector {
     return this._wallet.name
   }
 
-  get icon(): string {
-    if (!this._wallet) {
-      throw new ConnectorNotConnectedError()
+  get icon(): ConnectorIcons {
+    if (this._options.icon) {
+      return this._options.icon
     }
-    return this._wallet.icon
+
+    if (this._wallet?.icon) {
+      return {
+        dark: this._wallet.icon,
+        light: this._wallet.icon,
+      }
+    }
+
+    return {
+      dark: WALLET_NOT_FOUND_ICON_DARK,
+      light: WALLET_NOT_FOUND_ICON_LIGHT,
+    }
   }
 
   get wallet(): StarknetWindowObject {
@@ -193,12 +207,54 @@ export class InjectedConnector extends Connector {
     return this._wallet
   }
 
-  private async ensureWallet() {
-    const starknet = getStarknet()
-    const installed = await starknet.getAvailableWallets()
+  private ensureWallet() {
+    const installed = getAvailableWallets(globalThis)
     const wallet = installed.filter((w) => w.id === this._options.id)[0]
     if (wallet) {
       this._wallet = wallet
     }
   }
+}
+
+function getAvailableWallets(obj: Record<string, any>): StarknetWindowObject[] {
+  return Object.values(
+    Object.getOwnPropertyNames(obj).reduce<
+      Record<string, StarknetWindowObject>
+    >((wallets, key) => {
+      if (key.startsWith("starknet")) {
+        const wallet = obj[key]
+
+        if (isWalletObject(wallet) && !wallets[wallet.id]) {
+          wallets[wallet.id] = wallet as StarknetWindowObject
+        }
+      }
+      return wallets
+    }, {}),
+  )
+}
+
+// biome-ignore lint: wallet could be anything
+function isWalletObject(wallet: any): boolean {
+  try {
+    return (
+      wallet &&
+      [
+        // wallet's must have methods/members, see IStarknetWindowObject
+        "request",
+        "isConnected",
+        "provider",
+        "enable",
+        "isPreauthorized",
+        "on",
+        "off",
+        "version",
+        "id",
+        "name",
+        "icon",
+      ].every((key) => key in wallet)
+    )
+  } catch (err) {
+    /* empty */
+  }
+  return false
 }
