@@ -67,7 +67,6 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
         <ConnectedMenu
           address={address}
           open={isOpen}
-          setIsOpen={setIsOpen}
           dropdownElements={dropdownElements}
         />
       </div>
