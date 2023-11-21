@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState } from "react"
+import { FC, ReactNode, useEffect, useRef, useState } from "react"
 import { truncateAddress } from "../helpers/address"
 import { ConnectedMenu } from "./ConnectedMenu"
 import "./global.css"
@@ -28,9 +28,22 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
     setIsOpen((prev) => !prev)
   }
 
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
   return (
     <>
-      <div className="relative">
+      <div className="relative" ref={ref}>
         <button
           className="flex items-center shadow-list-item font-barlow font-semibold text-base leading-4 h-10 px-4 gap-2.5 rounded-lg"
           onClick={toggleMenu}
@@ -54,6 +67,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
         <ConnectedMenu
           address={address}
           open={isOpen}
+          setIsOpen={setIsOpen}
           dropdownElements={dropdownElements}
         />
       </div>

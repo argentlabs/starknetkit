@@ -1,5 +1,8 @@
 import { FC, ReactNode, useContext, useEffect, useState } from "react"
-import { DEFAULT_WEBWALLET_URL } from "src/connectors/webwallet/constants"
+import {
+  DEFAULT_TEST_WEBWALLET_URL,
+  DEFAULT_WEBWALLET_URL,
+} from "../connectors/webwallet/constants"
 import { constants } from "starknet"
 import { ConnectButton } from "."
 import { ArgentMobileConnectorOptions, Connector } from "../connectors"
@@ -17,10 +20,9 @@ export interface DropdownElement {
 
 interface StarknetkitButtonProps {
   connectors?: Connector[]
-  enableReconnect?: boolean
   argentMobileOptions: ArgentMobileConnectorOptions
-  chainId: constants.NetworkName
   webWalletUrl: string
+  enableReconnect?: boolean
   showBalance?: boolean
   dropdownElements?: DropdownElement[]
 }
@@ -31,7 +33,6 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
   enableReconnect,
   connectors,
   argentMobileOptions,
-  chainId = constants.NetworkName.SN_MAIN,
   webWalletUrl = DEFAULT_WEBWALLET_URL,
 }) => {
   const walletContext = useContext(WalletContext)
@@ -45,10 +46,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
         await connect({
           modalMode,
           webWalletUrl,
-          argentMobileOptions: {
-            chainId,
-            ...argentMobileOptions,
-          },
+          argentMobileOptions,
           connectors,
         }),
       )
