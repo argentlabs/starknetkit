@@ -1,7 +1,7 @@
 import { resolve } from "path"
 
 import { svelte } from "@sveltejs/vite-plugin-svelte"
-import react from "@vitejs/plugin-react"
+import react from "@vitejs/plugin-react-swc"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
 
@@ -14,6 +14,7 @@ export default defineConfig({
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          starknet: "starknet",
         },
       },
     },
@@ -34,7 +35,7 @@ export default defineConfig({
           __dirname,
           "src/connectors/injected/index.ts",
         ),
-        ui: resolve(__dirname, "src/connectors/ui/index.ts"),
+        ui: resolve(__dirname, "src/ui/index.ts"),
       },
       formats: ["es", "cjs"],
     },
