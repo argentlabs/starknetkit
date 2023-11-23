@@ -21,45 +21,11 @@
     "*.{ts,tsx}": "eslint --cache --ext .ts,.tsx"
   },
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/starknetkit.d.ts",
-      "import": "./dist/starknetkit.js",
-      "require": "./dist/starknetkit.cjs"
-    },
-    "./webwallet": {
-      "types": "./dist/webwalletConnector.d.ts",
-      "import": "./dist/webwalletConnector.js",
-      "require": "./dist/webwalletConnector.cjs"
-    },
-    "./argentMobile": {
-      "types": "./dist/argentMobile.d.ts",
-      "import": "./dist/argentMobile.js",
-      "require": "./dist/argentMobile.cjs"
-    },
-    "./injected": {
-      "types": "./dist/injectedConnector.d.ts",
-      "import": "./dist/injectedConnector.js",
-      "require": "./dist/injectedConnector.cjs"
-    },
-    "./ui": {
-      "types": "./dist/ui.d.ts",
-      "import": "./dist/ui.js",
-      "require": "./dist/ui.cjs"
-    }
-  },
-  "main": "./dist/starknetkit.cjs",
-  "module": "./dist/starknetkit.js",
-  "types": "./dist/starknetkit.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "dev": "vite build --watch",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build": "pnpm run -r --parallel --stream build"
   },
   "dependencies": {
     "@trpc/client": "^10.38.1",
@@ -77,56 +43,26 @@
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@semantic-release/git": "^10.0.1",
-    "@storybook/addon-essentials": "^7.5.3",
-    "@storybook/addon-interactions": "^7.5.3",
-    "@storybook/addon-links": "^7.5.3",
-    "@storybook/blocks": "^7.5.3",
-    "@storybook/react": "^7.5.3",
-    "@storybook/react-vite": "^7.5.3",
-    "@storybook/svelte": "^7.5.3",
-    "@storybook/svelte-vite": "^7.5.3",
-    "@storybook/testing-library": "^0.2.2",
-    "@sveltejs/vite-plugin-svelte": "^2.2.0",
-    "@tsconfig/svelte": "^5.0.0",
     "@types/async-retry": "^1.4.5",
     "@types/lodash-es": "^4.17.8",
     "@types/node": "^20.5.7",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@vitejs/plugin-react-swc": "^3.5.0",
-    "@walletconnect/ethereum-provider": "^2.7.7",
-    "@walletconnect/jsonrpc-provider": "^1.0.13",
-    "@walletconnect/signer-connection": "^2.7.7",
-    "@walletconnect/types": "^2.7.7",
-    "@walletconnect/utils": "^2.10.0",
     "autoprefixer": "^10.4.7",
     "eslint": "^8.48.0",
     "eslint-config-next": "^13.4.19",
-    "eslint-plugin-storybook": "^0.6.15",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
-    "postcss": "^8.4.21",
-    "postcss-load-config": "^4.0.1",
     "prettier": "^3.0.3",
     "prettier-plugin-import-sort": "^0.0.7",
-    "react-dom": "^18.2.0",
     "semantic-release": "^21.1.1",
-    "storybook": "^7.5.3",
-    "svelte": "^4.0.0",
-    "svelte-check": "^3.5.1",
-    "svelte-preprocess": "^5.0.4",
     "tailwindcss": "^3.1.6",
     "tslib": "^2.4.0",
     "typescript": "^5.1.6",
     "vite": "^4.3.8",
     "vite-plugin-dts": "^3.0.0",
-    "ws": "^8.8.1",
-    "zod": "^3.20.6"
+    "zod": "^3.22.4"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "starknet": "^5.23.0"
   },
   "gitHead": "b16688a8638cc138938e74e1a39d004760165d75"
