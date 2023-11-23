@@ -44,30 +44,9 @@ export const getArgentStarknetWindowObject = (
     isConnected: false,
     provider,
     getLoginStatus: () => {
-      return proxyLink.getLoginStatus.mutate()
+      return proxyLink.wallet.getLoginStatus.mutate()
     },
-    async request(call) {
-      switch (call.type) {
-        case "wallet_addStarknetChain": {
-          //TODO: add with implementation
-          //const params = call.params as AddStarknetChainParameters
-          return await proxyLink.addStarknetChain.mutate()
-        }
-        case "wallet_switchStarknetChain": {
-          //TODO: add with implementation
-          //const params = call.params as SwitchStarknetChainParameter
-          return await proxyLink.switchStarknetChain.mutate()
-        }
-        case "wallet_watchAsset": {
-          //TODO: add with implementation
-          //const params = call.params as WatchAssetParameters
-          /* return remoteHandle.call("watchAsset", params) */
-          return await proxyLink.watchAsset.mutate()
-        }
-        default:
-          throw new Error("not implemented")
-      }
-    },
+    request: (call) => proxyLink.starknet.request.mutate(call as any),
     async enable(ops) {
       if (ops?.starknetVersion !== "v4") {
         throw Error("not implemented")
@@ -79,7 +58,7 @@ export const getArgentStarknetWindowObject = (
           height: ENABLE_POPUP_HEIGHT,
           location: "/interstitialLogin",
         })
-        const enablePromise = proxyLink.enable.mutate()
+        const enablePromise = proxyLink.starknet.enable.mutate()
         const selectedAddress: string = await enablePromise
 
         await updateStarknetWindowObject(
@@ -99,7 +78,7 @@ export const getArgentStarknetWindowObject = (
     },
     async isPreauthorized() {
       const { isLoggedIn, isPreauthorized } =
-        await proxyLink.getLoginStatus.mutate()
+        await proxyLink.wallet.getLoginStatus.mutate()
       return Boolean(isLoggedIn && isPreauthorized)
     },
     on: (event, handleEvent) => {

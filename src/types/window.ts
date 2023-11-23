@@ -68,44 +68,51 @@ export const StarknetMethodArgumentsSchemas = {
       z
         .object({
           starknetVersion: z
-            .union([z.literal("v4"), z.literal("v5")])
+            .union([z.literal("v3"), z.literal("v4")])
             .optional(),
         })
         .optional(),
     ])
     .or(z.tuple([])),
-  addStarknetChain: z.tuple([
-    z.object({
-      id: z.string(),
-      chainId: z.string(),
-      chainName: z.string(),
-      rpcUrls: z.array(z.string()).optional(),
-      nativeCurrency: z
-        .object({
-          name: z.string(),
-          symbol: z.string(),
-          decimals: z.number(),
-        })
-        .optional(),
-      blockExplorerUrls: z.array(z.string()).optional(),
-    }),
-  ]),
-  switchStarknetChain: z.tuple([
-    z.object({
-      chainId: z.string(),
-    }),
-  ]),
-  watchAsset: z.tuple([
-    z.object({
-      type: z.literal("ERC20"),
-      options: z.object({
-        address: z.string(),
-        symbol: z.string().optional(),
-        decimals: z.number().optional(),
-        image: z.string().optional(),
-        name: z.string().optional(),
+  request: z.tuple([
+    z.union([
+      z.object({
+        type: z.literal("wallet_addStarknetChain"),
+        params: z.object({
+          id: z.string(),
+          chainId: z.string(),
+          chainName: z.string(),
+          rpcUrls: z.array(z.string()).optional(),
+          nativeCurrency: z
+            .object({
+              name: z.string(),
+              symbol: z.string(),
+              decimals: z.number(),
+            })
+            .optional(),
+          blockExplorerUrls: z.array(z.string()).optional(),
+        }),
       }),
-    }),
+      z.object({
+        type: z.literal("wallet_switchStarknetChain"),
+        params: z.object({
+          chainId: z.string(),
+        }),
+      }),
+      z.object({
+        type: z.literal("wallet_watchAsset"),
+        params: z.object({
+          type: z.literal("ERC20"),
+          options: z.object({
+            address: z.string(),
+            symbol: z.string().optional(),
+            decimals: z.number().optional(),
+            image: z.string().optional(),
+            name: z.string().optional(),
+          }),
+        }),
+      }),
+    ]),
   ]),
   execute: z.tuple([
     z.array(CallSchema).nonempty().or(CallSchema),
@@ -125,14 +132,8 @@ export type StarknetMethods = {
   enable: (
     ...args: z.infer<typeof StarknetMethodArgumentsSchemas.enable>
   ) => Promise<string[]>
-  addStarknetChain: (
-    ...args: z.infer<typeof StarknetMethodArgumentsSchemas.addStarknetChain>
-  ) => Promise<boolean>
-  switchStarknetChain: (
-    ...args: z.infer<typeof StarknetMethodArgumentsSchemas.switchStarknetChain>
-  ) => Promise<boolean>
-  watchAsset: (
-    ...args: z.infer<typeof StarknetMethodArgumentsSchemas.watchAsset>
+  request: (
+    ...args: z.infer<typeof StarknetMethodArgumentsSchemas.request>
   ) => Promise<boolean>
 
   execute: (
