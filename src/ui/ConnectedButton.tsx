@@ -4,6 +4,8 @@ import { ConnectedMenu } from "./ConnectedMenu"
 import "./global.css"
 import { ChevronDown } from "./icons/ChevronDown"
 import { ProfileIcon } from "./icons/ProfileIcon"
+import { ProviderInterface } from "starknet"
+import { Hex, hexSchema } from "../schemas/hexSchema"
 
 export interface DropdownElement {
   icon: string | ReactNode
@@ -15,27 +17,57 @@ interface ConnectedButtonProps {
   address?: string
   showBalance?: boolean
   dropdownElements?: DropdownElement[]
+  provider: ProviderInterface
+}
+
+const FEE_TOKEN_ADDRESS = // ETH on starknet
+  "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
+
+export function uint256ToBigInt(low: Hex, high: Hex): bigint {
+  return BigInt(low) + (BigInt(high) << BigInt(128))
 }
 
 const ConnectedButton: FC<ConnectedButtonProps> = ({
   address,
   showBalance,
   dropdownElements,
+  provider,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [balance, setBalance] = useState(0n)
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev)
   }
 
   const ref = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
     }
+
+    const balanceOf = async (address: string) => {
+      const values = await provider.callContract({
+        contractAddress: FEE_TOKEN_ADDRESS,
+        entrypoint: "balanceOf",
+        calldata: [address],
+      })
+
+      const [uint256Low, uint256High] = values.result.map((value) =>
+        hexSchema.parse(value),
+      )
+      setBalance(uint256ToBigInt(uint256Low, uint256High))
+    }
+
     document.addEventListener("mousedown", handleClickOutside)
+
+    if (showBalance) {
+      balanceOf(address)
+    }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
@@ -51,7 +83,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           {showBalance && (
             <>
               <div className="flex items-center">
-                <span>0 ETH{/* TODO: balance */}</span>
+                <span>{balance.toString()} ETH</span>
               </div>
               <div className="h-10 border border-solid border-neutrals.200" />
             </>

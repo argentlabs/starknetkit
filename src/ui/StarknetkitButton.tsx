@@ -1,11 +1,8 @@
 import { FC, ReactNode, useContext, useEffect, useState } from "react"
-import {
-  DEFAULT_TEST_WEBWALLET_URL,
-  DEFAULT_WEBWALLET_URL,
-} from "../connectors/webwallet/constants"
-import { constants } from "starknet"
-import { ConnectButton } from "."
+import { ProviderInterface } from "starknet"
+import { ConnectButton } from "./ConnectButton"
 import { ArgentMobileConnectorOptions, Connector } from "../connectors"
+import { DEFAULT_WEBWALLET_URL } from "../connectors/webwallet/constants"
 import { connect } from "../main"
 import { ModalMode } from "../types/modal"
 import { ConnectedButton } from "./ConnectedButton"
@@ -19,6 +16,7 @@ export interface DropdownElement {
 }
 
 interface StarknetkitButtonProps {
+  provider: ProviderInterface
   connectors?: Connector[]
   argentMobileOptions: ArgentMobileConnectorOptions
   webWalletUrl: string
@@ -34,6 +32,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
   connectors,
   argentMobileOptions,
   webWalletUrl = DEFAULT_WEBWALLET_URL,
+  provider,
 }) => {
   const walletContext = useContext(WalletContext)
   const [loading, setLoading] = useState(false)
@@ -74,6 +73,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
           address={wallet.selectedAddress}
           showBalance={showBalance}
           dropdownElements={dropdownElements}
+          provider={provider}
         />
       )}
     </>

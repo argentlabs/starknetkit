@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react"
 
 import { ConnectedButton } from "../ui/ConnectedButton"
+import { WalletContext } from "../ui/components/WalletContext"
+import { BellIcon } from "../ui/icons/BellIcon"
 
-// More on how to set up stories at: https://storybook.js.org/docs/svelte/writing-stories/introduction
+
 const meta: Meta<typeof ConnectedButton> = {
   component: ConnectedButton,
   argTypes: {},
@@ -11,7 +13,6 @@ const meta: Meta<typeof ConnectedButton> = {
 export default meta
 type Story = StoryObj<typeof ConnectedButton>
 
-// More on writing stories with args: https://storybook.js.org/docs/svelte/writing-stories/args
 
 export const Base: Story = {
   args: {
@@ -28,23 +29,40 @@ export const Full: Story = {
   },
 }
 
-/* 
-// mock context
 export const Webwallet: Story = {
   args: {
     address:
       "0x010C11110B1111D1Ab1C11f1f11Df11fcFc1B11E11bAc1C110E11111B1111111",
-    balance: "0.0001 ETH",
   },
+  decorators: [
+    (Story) => (
+      <WalletContext.Provider
+        value={{
+          wallet: {
+            id: "argentWebWallet",
+            selectedAddress:
+              "0x010C11110B1111D1Ab1C11f1f11Df11fcFc1B11E11bAc1C110E11111B1111111",
+            // Add other missing properties here
+          } as any,
+          setWallet: () => {},
+        }}
+      >
+        <Story />
+      </WalletContext.Provider>
+    ),
+  ],
 }
-
 
 export const WithCustomDropdown: Story = {
   args: {
     address:
       "0x010C11110B1111D1Ab1C11f1f11Df11fcFc1B11E11bAc1C110E11111B1111111",
-    balance: "0.0001 ETH",
+    dropdownElements: [
+      {
+        icon: <BellIcon />,
+        label: "Notifications",
+        onClick: () => {},
+      },
+    ],
   },
 }
-
-*/
