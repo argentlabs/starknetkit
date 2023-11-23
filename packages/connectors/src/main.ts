@@ -16,9 +16,9 @@ import {
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
-import type { ConnectOptions, ModalWallet } from "./types/modal"
+import type { ConnectOptions, ModalWallet, ModalMode, ModalTheme } from "./types/modal"
 
-import { Connector } from "./connectors"
+import type { Connector } from "./connectors"
 import css from "./theme.css?inline"
 
 let selectedConnector: Connector | null = null
@@ -133,4 +133,9 @@ export type {
   DisconnectOptions,
   DisconnectedStarknetWindowObject,
   StarknetWindowObject,
+  Connector,
+  ModalMode, 
+  ModalTheme
 }
+
+export { DEFAULT_WEBWALLET_URL }

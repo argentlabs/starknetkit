@@ -72,7 +72,7 @@ export class StarknetAdapter
       methods: this.methods,
       events: this.events,
     }
-    this.signerConnection = this.getSignerConnection(client)
+    this.signerConnection = this.getSignerConnection(client as any)
     this.rpcProvider = new JsonRpcProvider(this.signerConnection)
     this.client = client
     this.registerEventListeners()
