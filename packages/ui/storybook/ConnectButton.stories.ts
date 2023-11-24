@@ -16,3 +16,9 @@ type Story = StoryObj<typeof ConnectButton>
 // More on writing stories with args: https://storybook.js.org/docs/svelte/writing-stories/args
 
 export const Base: Story = {}
+
+export const Disabled: Story = {
+  args: {
+    connecting: true,
+  },
+}
