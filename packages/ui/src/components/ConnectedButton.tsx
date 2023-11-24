@@ -1,39 +1,34 @@
-import { FC, ReactNode, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
+import { ProviderInterface } from "starknet"
 import { truncateAddress } from "../helpers/address"
-import { ConnectedMenu } from "./ConnectedMenu"
+import { uint256ToBigInt } from "../helpers/bigDecimal"
 import { ChevronDown } from "../icons/ChevronDown"
 import { ProfileIcon } from "../icons/ProfileIcon"
-import { ProviderInterface } from "starknet"
-import { Hex, hexSchema } from "../schemas/hexSchema"
-
-export interface DropdownElement {
-  icon: string | ReactNode
-  label: string
-  onClick: () => void
-}
+import { hexSchema } from "../schemas/hexSchema"
+import { DropdownElement } from "../types/DropdownElement"
+import { ConnectedMenu } from "./ConnectedMenu"
+import { formatBalance } from "../helpers/formatBalance"
 
 interface ConnectedButtonProps {
   address: string
   showBalance?: boolean
   dropdownElements?: DropdownElement[]
   provider: ProviderInterface
+  webWalletUrl?: string
 }
 
 const FEE_TOKEN_ADDRESS = // ETH on starknet
   "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-
-export const uint256ToBigInt = (low: Hex, high: Hex): bigint => {
-  return BigInt(low) + (BigInt(high) << BigInt(128))
-}
 
 const ConnectedButton: FC<ConnectedButtonProps> = ({
   address,
   showBalance,
   dropdownElements,
   provider,
+  webWalletUrl,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [balance, setBalance] = useState(0n)
+  const [balance, setBalance] = useState("")
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev)
@@ -49,16 +44,31 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
     }
 
     const balanceOf = async (address: string) => {
-      const values = await provider.callContract({
-        contractAddress: FEE_TOKEN_ADDRESS,
-        entrypoint: "balanceOf",
-        calldata: [address],
-      })
+      try {
+        const values = await provider.callContract({
+          contractAddress: FEE_TOKEN_ADDRESS,
+          entrypoint: "balanceOf",
+          calldata: [address],
+        })
 
-      const [uint256Low, uint256High] = values.result.map((value) =>
-        hexSchema.parse(value),
-      )
-      setBalance(uint256ToBigInt(uint256Low, uint256High))
+        const [uint256Low, uint256High] = values.result.map((value) =>
+          hexSchema.parse(value),
+        )
+
+        setBalance(
+          formatBalance(
+            {
+              amount: uint256ToBigInt(uint256Low, uint256High),
+              decimals: 18,
+              symbol: "ETH",
+            },
+            4,
+          ),
+        )
+      } catch (e) {
+        console.error(e)
+        setBalance("-")
+      }
     }
 
     document.addEventListener("mousedown", handleClickOutside)
@@ -74,15 +84,15 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
 
   return (
     <>
-      <div className="relative" ref={ref}>
+      <div className="relative inline-block" ref={ref}>
         <button
-          className="flex items-center shadow-list-item font-barlow font-semibold text-base leading-4 h-10 px-4 gap-2.5 rounded-lg"
+          className="flex items-center shadow-list-item font-barlow font-semibold text-base leading-4 h-10 px-4 gap-2.5 rounded-lg text-black bg-white"
           onClick={toggleMenu}
         >
           {showBalance && (
             <>
               <div className="flex items-center">
-                <span>{balance.toString()} ETH</span>
+                <span>{balance}</span>
               </div>
               <div className="h-10 border border-solid border-neutrals.200" />
             </>
@@ -99,6 +109,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           address={address}
           open={isOpen}
           dropdownElements={dropdownElements}
+          webWalletUrl={webWalletUrl}
         />
       </div>
     </>

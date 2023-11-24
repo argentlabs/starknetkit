@@ -1,17 +1,12 @@
-import { FC, ReactNode, useContext, useEffect, useState } from "react"
+import { FC, useContext, useEffect, useState } from "react"
 import { ProviderInterface } from "starknet"
-import { ConnectButton } from "./ConnectButton"
 import type { Connector } from "starknetkit"
+import { DEFAULT_WEBWALLET_URL, connect, type ModalMode } from "starknetkit"
 import type { ArgentMobileConnectorOptions } from "starknetkit/argentMobile"
-import { connect, DEFAULT_WEBWALLET_URL, type ModalMode } from "starknetkit"
+import { ConnectButton } from "./ConnectButton"
 import { ConnectedButton } from "./ConnectedButton"
 import { WalletContext } from "./WalletContext"
-
-export interface DropdownElement {
-  icon: string | ReactNode
-  label: string
-  onClick: () => void
-}
+import { DropdownElement } from "../types/DropdownElement"
 
 interface StarknetkitButtonProps {
   provider: ProviderInterface
@@ -33,11 +28,11 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
   provider,
 }) => {
   const walletContext = useContext(WalletContext)
-  const [loading, setLoading] = useState(false)
+  const [connecting, setConnecting] = useState(false)
   const { wallet } = walletContext
 
   const handleConnect = async (modalMode: ModalMode = "alwaysAsk") => {
-    setLoading(true)
+    setConnecting(true)
     try {
       const wallet = await connect({
         modalMode,
@@ -45,11 +40,12 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
         argentMobileOptions,
         connectors,
       })
+
       walletContext.setWallet(wallet)
     } catch (e) {
       console.log(e)
     } finally {
-      setLoading(false)
+      setConnecting(false)
     }
   }
 
@@ -59,20 +55,18 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
     }
   }, [])
 
-  if (loading) {
-    // TODOs
-    return <></>
-  }
-
   return (
     <>
-      {!wallet && <ConnectButton connect={handleConnect} />}
+      {!wallet && (
+        <ConnectButton connect={handleConnect} connecting={connecting} />
+      )}
       {wallet?.isConnected && (
         <ConnectedButton
           address={wallet.selectedAddress}
           showBalance={showBalance}
           dropdownElements={dropdownElements}
           provider={provider}
+          webWalletUrl={webWalletUrl}
         />
       )}
     </>

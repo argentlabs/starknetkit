@@ -12,7 +12,7 @@ const NotificationButton: FC<NotificationButtonProps> = ({
   return (
     <button
       onClick={() => console.log("asd")}
-      className="flex items-center justify-center shadow-list-item rounded-lg h-10 w-10"
+      className="flex items-center justify-center shadow-list-item rounded-lg h-10 w-10 bg-white"
     >
       <div className="relative">
         <BellIcon className="w-6 h-6" />
