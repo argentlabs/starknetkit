@@ -1,10 +1,9 @@
 import { FC, ReactNode, useContext } from "react"
-import "./theme.css"
-import { CopyIcon } from "./icons/CopyIcon"
-import { DisconnectIcon } from "./icons/DisconnectIcon"
-import { WalletIcon } from "./icons/WalletIcon"
+import { CopyIcon } from "../icons/CopyIcon"
+import { DisconnectIcon } from "../icons/DisconnectIcon"
+import { WalletIcon } from "../icons/WalletIcon"
 import { DropdownElement } from "./ConnectedButton"
-import { WalletContext } from "./components/WalletContext"
+import { WalletContext } from "./WalletContext"
 import { disconnect } from "starknetkit"
 
 interface ConnectedMenuProps {

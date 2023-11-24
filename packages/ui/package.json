@@ -23,6 +23,7 @@
   "type": "module",
   "main": "dist/starknetkit-ui.js",
   "types": "dist/main.d.ts",
+  "style": "dist/starknetkit-ui.css",
   "files": [
     "dist"
   ],
@@ -58,7 +59,6 @@
     "storybook": "^7.5.3",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
-    "vite-plugin-css-injected-by-js": "^3.3.0",
     "vite-plugin-dts": "^3.0.0"
   },
   "peerDependencies": {

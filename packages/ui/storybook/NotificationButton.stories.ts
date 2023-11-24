@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react"
 
-import { NotificationButton } from "../src/NotificationButton"
+import { NotificationButton } from "../src/components/NotificationButton"
 
 // More on how to set up stories at: https://storybook.js.org/docs/svelte/writing-stories/introduction
 const meta: Meta<typeof NotificationButton> = {

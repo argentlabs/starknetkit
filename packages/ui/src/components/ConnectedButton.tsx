@@ -1,11 +1,10 @@
 import { FC, ReactNode, useEffect, useRef, useState } from "react"
-import { truncateAddress } from "./helpers/address"
+import { truncateAddress } from "../helpers/address"
 import { ConnectedMenu } from "./ConnectedMenu"
-import "./theme.css"
-import { ChevronDown } from "./icons/ChevronDown"
-import { ProfileIcon } from "./icons/ProfileIcon"
+import { ChevronDown } from "../icons/ChevronDown"
+import { ProfileIcon } from "../icons/ProfileIcon"
 import { ProviderInterface } from "starknet"
-import { Hex, hexSchema } from "./schemas/hexSchema"
+import { Hex, hexSchema } from "../schemas/hexSchema"
 
 export interface DropdownElement {
   icon: string | ReactNode
@@ -23,7 +22,7 @@ interface ConnectedButtonProps {
 const FEE_TOKEN_ADDRESS = // ETH on starknet
   "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
 
-export function uint256ToBigInt(low: Hex, high: Hex): bigint {
+export const uint256ToBigInt = (low: Hex, high: Hex): bigint => {
   return BigInt(low) + (BigInt(high) << BigInt(128))
 }
 
@@ -71,7 +70,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, []) 
+  }, [])
 
   return (
     <>

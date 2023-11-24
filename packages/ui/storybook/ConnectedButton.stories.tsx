@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react"
 
-import { ConnectedButton } from "../src/ConnectedButton"
+import { ConnectedButton } from "../src/components/ConnectedButton"
 import { WalletContext } from "../src/components/WalletContext"
 import { BellIcon } from "../src/icons/BellIcon"
-
 
 const meta: Meta<typeof ConnectedButton> = {
   component: ConnectedButton,
@@ -12,7 +11,6 @@ const meta: Meta<typeof ConnectedButton> = {
 
 export default meta
 type Story = StoryObj<typeof ConnectedButton>
-
 
 export const Base: Story = {
   args: {

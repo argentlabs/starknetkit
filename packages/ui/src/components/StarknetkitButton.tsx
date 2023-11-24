@@ -5,8 +5,7 @@ import type { Connector } from "starknetkit"
 import type { ArgentMobileConnectorOptions } from "starknetkit/argentMobile"
 import { connect, DEFAULT_WEBWALLET_URL, type ModalMode } from "starknetkit"
 import { ConnectedButton } from "./ConnectedButton"
-import { WalletContext } from "./components/WalletContext"
-import "./theme.css"
+import { WalletContext } from "./WalletContext"
 
 export interface DropdownElement {
   icon: string | ReactNode
@@ -39,20 +38,17 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
 
   const handleConnect = async (modalMode: ModalMode = "alwaysAsk") => {
     setLoading(true)
-    debugger
     try {
-      debugger
-      const wallet =  await connect({
+      const wallet = await connect({
         modalMode,
         webWalletUrl,
         argentMobileOptions,
         connectors,
       })
-      debugger
-      walletContext.setWallet(
-       wallet
-      )
-    } catch(e) {console.log(e)} finally {
+      walletContext.setWallet(wallet)
+    } catch (e) {
+      console.log(e)
+    } finally {
       setLoading(false)
     }
   }

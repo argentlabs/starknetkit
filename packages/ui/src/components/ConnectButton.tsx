@@ -1,5 +1,4 @@
 import { FC } from "react"
-import "./theme.css"
 
 interface ConnectButtonProps {
   connect: () => Promise<void>

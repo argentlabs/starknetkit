@@ -1,6 +1,5 @@
 import { FC } from "react"
-import { BellIcon } from "./icons/BellIcon"
-import "./theme.css"
+import { BellIcon } from "../icons/BellIcon"
 
 interface NotificationButtonProps {
   address?: string

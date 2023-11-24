@@ -1,12 +1,5 @@
 import type { StarknetWindowObject } from "get-starknet-core"
-import {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useMemo,
-  useState,
-} from "react"
-
+import { FC, PropsWithChildren, createContext, useMemo, useState } from "react"
 
 export interface WalletContextValue {
   wallet: StarknetWindowObject | null
