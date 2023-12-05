@@ -1,13 +1,14 @@
 import { FC, useEffect, useRef, useState } from "react"
-import { ProviderInterface } from "starknet"
+import { ProviderInterface, uint256 } from "starknet"
 import { truncateAddress } from "../helpers/address"
-import { uint256ToBigInt } from "../helpers/bigDecimal"
 import { ChevronDown } from "../icons/ChevronDown"
 import { ProfileIcon } from "../icons/ProfileIcon"
 import { hexSchema } from "../schemas/hexSchema"
 import { DropdownElement } from "../types/DropdownElement"
 import { ConnectedMenu } from "./ConnectedMenu"
 import { formatBalance } from "../helpers/formatBalance"
+
+const { uint256ToBN } = uint256
 
 interface ConnectedButtonProps {
   address: string
@@ -55,10 +56,15 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           hexSchema.parse(value),
         )
 
+        const amountUint256: uint256.Uint256 = {
+          low: uint256Low,
+          high: uint256High,
+        }
+
         setBalance(
           formatBalance(
             {
-              amount: uint256ToBigInt(uint256Low, uint256High),
+              amount: uint256ToBN(amountUint256),
               decimals: 18,
               symbol: "ETH",
             },
