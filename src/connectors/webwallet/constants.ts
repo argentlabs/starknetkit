@@ -20,8 +20,3 @@ export const TESTNET_WHITELIST_URL =
 
 export const MAINNET_WHITELIST_URL =
   "https://static.argent.xyz/webwallet/iframe_whitelist_mainnet.json"
-
-export const RPC_NODE_URL_TESTNET =
-  "https://api.hydrogen.argent47.net/v1/starknet/goerli/rpc/v0.5"
-export const RPC_NODE_URL_MAINNET =
-  "https://cloud.argent-api.com/v1/starknet/goerli/rpc/v0.5"
