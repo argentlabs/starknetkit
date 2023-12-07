@@ -13,7 +13,10 @@ export const defaultConnectors = ({
   argentMobileOptions?: ArgentMobileConnectorOptions
   webWalletUrl?: string
 }): Connector[] => {
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  const isSafari =
+    typeof window !== "undefined"
+      ? /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+      : false
 
   const defaultConnectors: Connector[] = []
 

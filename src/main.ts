@@ -18,7 +18,7 @@ import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
 import type { ConnectOptions, ModalWallet } from "./types/modal"
 
-import { Connector } from "./connectors"
+import { type Connector } from "./connectors"
 import css from "./theme.css?inline"
 
 let selectedConnector: Connector | null = null
@@ -32,7 +32,7 @@ export const connect = async ({
   argentMobileOptions,
   connectors = [],
   ...restOptions
-}: ConnectOptions = {}): Promise<StarknetWindowObject | null> => {
+}: ConnectOptions = {}): Promise<Connector | null> => {
   // force null in case it was disconnected from mobile app
   selectedConnector = null
   const availableConnectors =
@@ -46,9 +46,8 @@ export const connect = async ({
   const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {
     const connector = availableConnectors.find((c) => c.id === lastWalletId)
-    await connector?.connect()
     selectedConnector = connector ?? null
-    return connector?.wallet ?? null
+    return connector
   }
 
   const installedWallets = await sn.getAvailableWallets(restOptions)
@@ -67,11 +66,10 @@ export const connect = async ({
 
     if (wallet) {
       const connector = availableConnectors.find((c) => c.id === lastWalletId)
-      await connector?.connect()
       if (connector) {
         selectedConnector = connector
       }
-      return wallet
+      return connector
     } // otherwise fallback to modal
   }
 
@@ -93,16 +91,15 @@ export const connect = async ({
       target,
       props: {
         dappName,
-        callback: async (value: StarknetWindowObject | null) => {
+        callback: async (connector: Connector | null) => {
           try {
-            if (value !== null && value.id !== "argentWebWallet") {
-              setStarknetLastConnectedWallet(value.id)
+            selectedConnector = connector
+
+            if (connector !== null && connector.id !== "argentWebWallet") {
+              setStarknetLastConnectedWallet(connector.id)
             }
-            selectedConnector =
-              availableConnectors.find(
-                (c) => value !== null && c.id === value.id,
-              ) ?? null
-            resolve(value)
+
+            resolve(connector)
           } finally {
             setTimeout(() => modal.$destroy())
           }
@@ -129,8 +126,12 @@ export const disconnect = async (options: DisconnectOptions = {}) => {
 }
 
 export type {
+  Connector,
   ConnectedStarknetWindowObject,
   DisconnectOptions,
   DisconnectedStarknetWindowObject,
   StarknetWindowObject,
+  defaultConnectors as starknetkitDefaultConnectors,
 }
+
+export { useStarknetkitConnectors } from "./hooks/useStarknetkitConnectors"

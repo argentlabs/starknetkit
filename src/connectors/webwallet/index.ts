@@ -18,6 +18,7 @@ import {
 } from "../../errors"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -118,6 +119,7 @@ export class WebWalletConnector extends Connector {
     }
     _wallet = null
     this._wallet = _wallet
+    removeStarknetLastConnectedWallet()
   }
 
   async account(): Promise<AccountInterface> {
