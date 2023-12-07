@@ -1,9 +1,5 @@
 import { constants } from "starknet"
-
-const TESTNET_WHITELIST_URL =
-  "https://static.hydrogen.argent47.net/webwallet/iframe_whitelist_testnet.json"
-const MAINNET_WHITELIST_URL =
-  "https://static.argent.xyz/webwallet/iframe_whitelist_mainnet.json"
+import { MAINNET_WHITELIST_URL, TESTNET_WHITELIST_URL } from "../constants"
 
 const CACHE_NAME = "allowed-dapps"
 

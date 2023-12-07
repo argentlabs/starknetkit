@@ -1,7 +1,7 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
 import { RpcProvider } from "starknet"
 
-import { mapTargetUrlToNodeUrl } from "../../../helpers/mapTargetUrlToNetworkId"
+import { mapTargetUrlToNodeUrl } from "../helpers/mapTargetUrlToNodeUrl"
 import type { AppRouter } from "../helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./argentStarknetWindowObject"
 import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
