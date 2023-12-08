@@ -82,15 +82,33 @@ export const connect = async ({
     storeVersion,
   })
 
-  const element = document.createElement("div")
-  document.body.appendChild(element)
-  const target = element.attachShadow({ mode: "open" })
+  const getTarget = (): ShadowRoot => {
+    const modalId = "starknetkit-modal"
+    const existingElement = document.getElementById(modalId)
 
-  target.innerHTML = `<style>${css}</style>`
+    if (existingElement) {
+      if (existingElement.shadowRoot) {
+        // element already exists, use the existing as target
+        return existingElement.shadowRoot
+      }
+      // element exists but shadowRoot cannot be accessed
+      // delete the element and create new
+      existingElement.remove()
+    }
+
+    const element = document.createElement("div")
+    // set id for future retrieval
+    element.id = modalId
+    document.body.appendChild(element)
+    const target = element.attachShadow({ mode: "open" })
+    target.innerHTML = `<style>${css}</style>`
+
+    return target
+  }
 
   return new Promise((resolve) => {
     const modal = new Modal({
-      target,
+      target: getTarget(),
       props: {
         dappName,
         callback: async (value: StarknetWindowObject | null) => {
