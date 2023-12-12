@@ -25,6 +25,7 @@ export interface ArgentMobileConnectorOptions {
   chainId?: constants.NetworkName
   description?: string
   url?: string
+  icons?: string[]
 }
 
 export class ArgentMobileConnector extends Connector {
@@ -143,13 +144,15 @@ export class ArgentMobileConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const { getStarknetWindowObject } = await import("./modal")
-    const { chainId, projectId, dappName, description, url } = this._options
+    const { chainId, projectId, dappName, description, url, icons } =
+      this._options
     const options = {
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
       name: dappName,
       projectId: projectId ?? DEFAULT_PROJECT_ID,
       description,
       url,
+      icons,
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
