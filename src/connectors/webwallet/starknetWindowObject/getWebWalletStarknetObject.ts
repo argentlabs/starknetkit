@@ -1,7 +1,7 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
-import { SequencerProvider } from "starknet"
+import { RpcProvider } from "starknet"
 
-import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
+import { mapTargetUrlToNodeUrl } from "../helpers/mapTargetUrlToNodeUrl"
 import type { AppRouter } from "../helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./argentStarknetWindowObject"
 import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
@@ -15,8 +15,8 @@ export const getWebWalletStarknetObject = async (
     throw new Error("window is not defined")
   }
 
-  const network = mapTargetUrlToNetworkId(target)
-  const defaultProvider = new SequencerProvider({ network })
+  const nodeUrl = mapTargetUrlToNodeUrl(target)
+  const defaultProvider = new RpcProvider({ nodeUrl })
   const starknetWindowObject = getArgentStarknetWindowObject(
     {
       host: globalWindow.location.origin,
