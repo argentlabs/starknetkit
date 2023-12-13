@@ -2,7 +2,7 @@ import type {
   AccountChangeEventHandler,
   StarknetWindowObject,
 } from "get-starknet-core"
-import type { AccountInterface } from "starknet"
+import type { AccountInterface, ProviderInterface } from "starknet"
 import {
   Connector,
   type ConnectorData,
@@ -24,6 +24,7 @@ let _wallet: StarknetWindowObject | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
+  provider?: ProviderInterface
 }
 
 export class WebWalletConnector extends Connector {
@@ -165,11 +166,16 @@ export class WebWalletConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
+    const provider = this._options.provider
     setPopupOptions({
       origin,
       location: "/interstitialLogin",
     })
-    const wallet = await getWebWalletStarknetObject(origin, trpcProxyClient({}))
+    const wallet = await getWebWalletStarknetObject(
+      origin,
+      trpcProxyClient({}),
+      provider,
+    )
 
     _wallet = wallet ?? null
     this._wallet = _wallet

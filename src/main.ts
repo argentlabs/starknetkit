@@ -32,6 +32,7 @@ export const connect = async ({
   argentMobileOptions,
   connectors = [],
   resultType = "wallet",
+  provider,
   ...restOptions
 }: ConnectOptions = {}): Promise<ModalResult> => {
   // force null in case it was disconnected from mobile app
@@ -41,6 +42,7 @@ export const connect = async ({
       ? defaultConnectors({
           argentMobileOptions,
           webWalletUrl,
+          provider,
         })
       : connectors
 
