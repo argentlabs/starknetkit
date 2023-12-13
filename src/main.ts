@@ -31,6 +31,7 @@ export const connect = async ({
   webWalletUrl = DEFAULT_WEBWALLET_URL,
   argentMobileOptions,
   connectors = [],
+  provider,
   ...restOptions
 }: ConnectOptions = {}): Promise<StarknetWindowObject | null> => {
   // force null in case it was disconnected from mobile app
@@ -40,6 +41,7 @@ export const connect = async ({
       ? defaultConnectors({
           argentMobileOptions,
           webWalletUrl,
+          provider,
         })
       : connectors
 
