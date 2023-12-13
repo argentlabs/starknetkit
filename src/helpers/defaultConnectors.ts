@@ -29,8 +29,12 @@ export const defaultConnectors = ({
     )
   }
 
-  defaultConnectors.push(new ArgentMobileConnector(argentMobileOptions))
-  defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
+  defaultConnectors.push(
+    new ArgentMobileConnector({ ...argentMobileOptions, provider }),
+  )
+  defaultConnectors.push(
+    new WebWalletConnector({ url: webWalletUrl, provider }),
+  )
 
   return defaultConnectors
 }
