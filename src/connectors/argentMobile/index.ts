@@ -156,7 +156,7 @@ export class ArgentMobileConnector extends Connector {
       icons,
       rpcUrl:
         chainId === constants.NetworkName.SN_MAIN
-          ? "https://cloud.argent-api.com/v1/starknet/goerli/rpc/v0.5"
+          ? "https://cloud.argent-api.com/v1/starknet/mainnet/rpc/v0.5"
           : "https://api.hydrogen.argent47.net/v1/starknet/goerli/rpc/v0.5",
     }
 
