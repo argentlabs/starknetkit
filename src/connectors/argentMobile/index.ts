@@ -183,7 +183,7 @@ export class ArgentMobileConnector extends Connector {
         provider,
       })
     }
-    console.log(_wallet.provider)
+
     this._wallet = _wallet
 
     // wallet connect rpc enable
