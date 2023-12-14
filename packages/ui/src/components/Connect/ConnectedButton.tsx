@@ -1,12 +1,12 @@
 import { FC, useEffect, useRef, useState } from "react"
 import { ProviderInterface, uint256 } from "starknet"
-import { truncateAddress } from "../helpers/address"
-import { ChevronDown } from "../icons/ChevronDown"
-import { ProfileIcon } from "../icons/ProfileIcon"
-import { hexSchema } from "../schemas/hexSchema"
-import { DropdownElement } from "../types/DropdownElement"
+import { truncateAddress } from "../../helpers/address"
+import { ChevronDown } from "../../icons/ChevronDown"
+import { ProfileIcon } from "../../icons/ProfileIcon"
+import { hexSchema } from "../../schemas/hexSchema"
+import { DropdownElement } from "../../types/DropdownElement"
 import { ConnectedMenu } from "./ConnectedMenu"
-import { formatBalance } from "../helpers/formatBalance"
+import { formatBalance } from "../../helpers/formatBalance"
 
 const { uint256ToBN } = uint256
 

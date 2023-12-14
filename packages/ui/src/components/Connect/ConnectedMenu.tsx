@@ -1,10 +1,10 @@
 import { FC, ReactNode, useContext } from "react"
-import { CopyIcon } from "../icons/CopyIcon"
-import { DisconnectIcon } from "../icons/DisconnectIcon"
-import { WalletIcon } from "../icons/WalletIcon"
-import { WalletContext } from "./WalletContext"
+import { CopyIcon } from "../../icons/CopyIcon"
+import { DisconnectIcon } from "../../icons/DisconnectIcon"
+import { WalletIcon } from "../../icons/WalletIcon"
+import { WalletContext } from "../WalletContext"
 import { disconnect } from "starknetkit"
-import { DropdownElement } from "../types/DropdownElement"
+import { DropdownElement } from "../../types/DropdownElement"
 
 interface ConnectedMenuProps {
   address: string
@@ -19,12 +19,7 @@ interface MenuButtonProps {
   icon: string | ReactNode
 }
 
-const MenuButton: FC<MenuButtonProps> = ({
-  onClick,
-  label,
-  icon,
-  webWalletUrl,
-}) => (
+const MenuButton: FC<MenuButtonProps> = ({ onClick, label, icon }) => (
   <button
     onClick={onClick}
     className="flex items-center w-full text-left px-2 py-2 text-base font-semibold rounded-lg hover:bg-[#F0F0F0]"

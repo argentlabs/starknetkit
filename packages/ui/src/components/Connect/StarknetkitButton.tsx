@@ -5,8 +5,8 @@ import { DEFAULT_WEBWALLET_URL, connect, type ModalMode } from "starknetkit"
 import type { ArgentMobileConnectorOptions } from "starknetkit/argentMobile"
 import { ConnectButton } from "./ConnectButton"
 import { ConnectedButton } from "./ConnectedButton"
-import { WalletContext } from "./WalletContext"
-import { DropdownElement } from "../types/DropdownElement"
+import { WalletContext } from "../WalletContext"
+import { DropdownElement } from "../../types/DropdownElement"
 
 interface StarknetkitButtonProps {
   provider: ProviderInterface
