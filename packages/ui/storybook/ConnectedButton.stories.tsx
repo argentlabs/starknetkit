@@ -4,6 +4,7 @@ import React from "react"
 import { ConnectedButton } from "../src/components/connect/ConnectedButton"
 import { WalletContext } from "../src/components/WalletContext"
 import { BellIcon } from "../src/icons/BellIcon"
+import { RpcProvider } from "starknet"
 
 const meta: Meta<typeof ConnectedButton> = {
   component: ConnectedButton,
@@ -23,8 +24,12 @@ export const Base: Story = {
 export const Full: Story = {
   args: {
     address:
-      "0x010C11110B1111D1Ab1C11f1f11Df11fcFc1B11E11bAc1C110E11111B1111111",
+      "0x0225575a8E93461e264a580f3AaA6D49922A8ec5826a2cF0DDeECdA85b9929C2",
     showBalance: true,
+    symbol: "ETH",
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+    }),
   },
 }
 

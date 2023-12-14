@@ -1,12 +1,13 @@
 import { FC, useEffect, useRef, useState } from "react"
 import { ProviderInterface, uint256 } from "starknet"
 import { truncateAddress } from "../../helpers/address"
+import { formatUnits } from "../../helpers/formatUnits"
+import { prettifyTokenNumber } from "../../helpers/prettifyNumber"
 import { ChevronDown } from "../../icons/ChevronDown"
 import { ProfileIcon } from "../../icons/ProfileIcon"
 import { hexSchema } from "../../schemas/hexSchema"
 import { DropdownElement } from "../../types/DropdownElement"
 import { ConnectedMenu } from "./ConnectedMenu"
-import { formatBalance } from "../../helpers/formatBalance"
 
 const { uint256ToBN } = uint256
 
@@ -15,6 +16,7 @@ interface ConnectedButtonProps {
   showBalance?: boolean
   dropdownElements?: DropdownElement[]
   provider: ProviderInterface
+  symbol?: string
   webWalletUrl?: string
 }
 
@@ -26,6 +28,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
   showBalance,
   dropdownElements,
   provider,
+  symbol,
   webWalletUrl,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -61,16 +64,12 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           high: uint256High,
         }
 
-        setBalance(
-          formatBalance(
-            {
-              amount: uint256ToBN(amountUint256),
-              decimals: 18,
-              symbol: "ETH",
-            },
-            4,
-          ),
-        )
+        const formatted = formatUnits({
+          value: uint256ToBN(amountUint256),
+          decimals: 18,
+        })
+
+        setBalance(prettifyTokenNumber(formatted) ?? "-")
       } catch (e) {
         console.error(e)
         setBalance("-")
@@ -98,7 +97,9 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           {showBalance && (
             <>
               <div className="flex items-center">
-                <span>{balance}</span>
+                <span>
+                  {balance} {symbol}
+                </span>
               </div>
               <div className="h-10 border border-solid border-neutrals.200" />
             </>
