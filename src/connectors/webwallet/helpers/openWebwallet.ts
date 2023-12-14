@@ -4,6 +4,7 @@ import { trpcProxyClient } from "./trpc"
 import type { StarknetWindowObject } from "get-starknet-core"
 import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
 import { fetchAllowedDapps } from "./fetchAllowedDapps"
+import { ProviderInterface } from "starknet"
 
 const checkIncognitoChrome = async (isChrome: boolean) => {
   return new Promise((resolve) => {
@@ -33,6 +34,7 @@ const checkIncognitoChrome = async (isChrome: boolean) => {
 
 export const openWebwallet = async (
   origin: string,
+  provider: ProviderInterface,
 ): Promise<StarknetWindowObject | null> => {
   const { userAgent } = navigator
   const isChrome = Boolean(
@@ -49,7 +51,12 @@ export const openWebwallet = async (
   // use the popup mode and avoid checking allowed dapps for iframes
   if (!isChrome || isChromeIncognito) {
     const windowProxyClient = trpcProxyClient({})
-    return await getWebWalletStarknetObject(origin, windowProxyClient)
+    return await getWebWalletStarknetObject(
+      origin,
+      windowProxyClient,
+      null,
+      provider,
+    )
   }
 
   const network = mapTargetUrlToNetworkId(origin)
@@ -64,11 +71,17 @@ export const openWebwallet = async (
         origin,
         trpcProxyClient({ iframe: iframe.contentWindow }),
         { modal, iframe },
+        provider,
       )
       return starknetWindowObject
     }
   } else {
     const windowProxyClient = trpcProxyClient({})
-    return await getWebWalletStarknetObject(origin, windowProxyClient)
+    return await getWebWalletStarknetObject(
+      origin,
+      windowProxyClient,
+      null,
+      provider,
+    )
   }
 }

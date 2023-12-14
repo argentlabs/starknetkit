@@ -1,11 +1,11 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
-import { SequencerProvider } from "starknet"
+import { ProviderInterface, RpcProvider } from "starknet"
 
+import { mapTargetUrlToNodeUrl } from "../helpers/mapTargetUrlToNodeUrl"
 import type { AppRouter } from "../helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./argentStarknetWindowObject"
 import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
 import { hideModal, setIframeHeight, showModal } from "./wormhole"
-import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
 
 type IframeProps = {
   modal: HTMLDivElement
@@ -23,14 +23,15 @@ export const getWebWalletStarknetObject = async (
   target: string,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
   iframeProps?: IframeProps,
+  provider?: ProviderInterface,
 ): Promise<WebWalletStarknetWindowObject> => {
   const globalWindow = typeof window !== "undefined" ? window : undefined
   if (!globalWindow) {
     throw new Error("window is not defined")
   }
 
-  const network = mapTargetUrlToNetworkId(target)
-  const defaultProvider = new SequencerProvider({ network })
+  const nodeUrl = mapTargetUrlToNodeUrl(target)
+  const defaultProvider = provider ?? new RpcProvider({ nodeUrl })
   const starknetWindowObject = getArgentStarknetWindowObject(
     {
       host: globalWindow.location.origin,

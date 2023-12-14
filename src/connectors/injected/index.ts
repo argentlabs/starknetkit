@@ -1,5 +1,5 @@
 import type { StarknetWindowObject } from "get-starknet-core"
-import { AccountInterface, constants } from "starknet"
+import { AccountInterface, ProviderInterface, constants } from "starknet"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -23,6 +23,8 @@ export interface InjectedConnectorOptions {
   name?: string
   /** Wallet icons. */
   icon?: ConnectorIcons
+  /** Provider */
+  provider?: ProviderInterface
 }
 
 export class InjectedConnector extends Connector {
@@ -211,6 +213,13 @@ export class InjectedConnector extends Connector {
     const installed = getAvailableWallets(globalThis)
     const wallet = installed.filter((w) => w.id === this._options.id)[0]
     if (wallet) {
+      const { provider } = this._options
+      if (provider) {
+        Object.assign(wallet, {
+          provider,
+        })
+      }
+
       this._wallet = wallet
     }
   }
