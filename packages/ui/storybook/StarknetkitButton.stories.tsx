@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react"
 
 import React from "react"
-import { StarknetkitButton } from "../src/components/StarknetkitButton"
+import { StarknetkitButton } from "../src/components/connect/StarknetkitButton"
 import { ConnectButtonProvider } from "../src/components/WalletContext"
 
 // More on how to set up stories at: https://storybook.js.org/docs/svelte/writing-stories/introduction
