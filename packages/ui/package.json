@@ -59,7 +59,8 @@
     "storybook": "^7.5.3",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.0.0"
+    "vite-plugin-dts": "^3.0.0",
+    "vitest": "^1.0.4"
   },
   "peerDependencies": {
     "@types/react": "^18.2.37",
@@ -67,5 +68,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "starknetkit": "^1.0.20"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.1.2"
   }
 }
