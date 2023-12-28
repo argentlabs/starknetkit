@@ -15,8 +15,8 @@ const NotificationItem: FC<NotificationItemProps> = ({
 }) => {
   return (
     <button
-      onClick={() => console.log("asd")}
-      className="flex items-center px-6 py-5 border border-solid border-neutrals.200 rounded-lg w-full"
+      onClick={() => console.log("TODO")}
+      className="flex items-center px-6 py-5 border border-solid border-neutrals.200 rounded-lg w-full hover:bg-[#F0F0F0]"
     >
       <div className="flex flex-1">
         <div className="flex flex-col justify-center mr-4">
