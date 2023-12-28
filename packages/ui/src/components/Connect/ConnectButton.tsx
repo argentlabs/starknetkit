@@ -1,11 +1,16 @@
-import { FC } from "react"
+import { FC, CSSProperties } from "react"
 
 interface ConnectButtonProps {
   connect: () => Promise<void>
   connecting: boolean
+  style: CSSProperties
 }
 
-const ConnectButton: FC<ConnectButtonProps> = ({ connect, connecting }) => {
+const ConnectButton: FC<ConnectButtonProps> = ({
+  connect,
+  connecting,
+  style,
+}) => {
   return (
     <div className="inline-block">
       <button
@@ -14,6 +19,7 @@ const ConnectButton: FC<ConnectButtonProps> = ({ connect, connecting }) => {
         text-black bg-white
         ${connecting ? "cursor-not-allowed text-neutral-400" : ""}`}
         disabled={connecting}
+        style={{ ...style }}
       >
         <span>Connect wallet</span>
       </button>

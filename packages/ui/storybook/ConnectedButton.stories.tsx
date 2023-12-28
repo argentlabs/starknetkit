@@ -21,11 +21,28 @@ export const Base: Story = {
   },
 }
 
-export const Full: Story = {
+export const WithBalance: Story = {
   args: {
     address:
       "0x0225575a8E93461e264a580f3AaA6D49922A8ec5826a2cF0DDeECdA85b9929C2",
-    showBalance: true,
+    accountInfo: { showBalance: true },
+    symbol: "ETH",
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+    }),
+  },
+}
+
+export const WithStarknetId: Story = {
+  args: {
+    address:
+      "0x0225575a8E93461e264a580f3AaA6D49922A8ec5826a2cF0DDeECdA85b9929C2",
+    accountInfo: {
+      showBalance: true,
+      starknetId: "starknet.id",
+      starknetIdAvatar:
+        "https://goerli.starknet.id/api/identicons/115631003666",
+    },
     symbol: "ETH",
     provider: new RpcProvider({
       nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
@@ -70,5 +87,16 @@ export const WithCustomDropdown: Story = {
         onClick: () => {},
       },
     ],
+  },
+}
+
+export const WithCustomStyle: Story = {
+  args: {
+    address:
+      "0x010C11110B1111D1Ab1C11f1f11Df11fcFc1B11E11bAc1C110E11111B1111111",
+    style: {
+      background: "black",
+      color: "white",
+    },
   },
 }

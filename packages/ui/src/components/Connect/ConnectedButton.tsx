@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState, CSSProperties } from "react"
 import { ProviderInterface, uint256 } from "starknet"
 import { truncateAddress } from "../../helpers/address"
 import { formatUnits } from "../../helpers/formatUnits"
@@ -13,11 +13,16 @@ const { uint256ToBN } = uint256
 
 interface ConnectedButtonProps {
   address: string
-  showBalance?: boolean
+  accountInfo?: {
+    showBalance?: boolean
+    starknetId?: string
+    starknetIdAvatar?: string
+  }
   dropdownElements?: DropdownElement[]
   provider: ProviderInterface
   symbol?: string
   webWalletUrl?: string
+  style?: CSSProperties
 }
 
 const FEE_TOKEN_ADDRESS = // ETH on starknet
@@ -25,14 +30,17 @@ const FEE_TOKEN_ADDRESS = // ETH on starknet
 
 const ConnectedButton: FC<ConnectedButtonProps> = ({
   address,
-  showBalance,
+  accountInfo,
   dropdownElements,
   provider,
   symbol,
   webWalletUrl,
+  style,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [balance, setBalance] = useState("")
+
+  const { showBalance, starknetId, starknetIdAvatar } = accountInfo ?? {}
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev)
@@ -93,6 +101,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
         <button
           className="flex items-center shadow-list-item font-barlow font-semibold text-base leading-4 h-10 px-4 gap-2.5 rounded-lg text-black bg-white"
           onClick={toggleMenu}
+          style={{ ...style }}
         >
           {showBalance && (
             <>
@@ -105,10 +114,18 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
             </>
           )}
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center bg-[#F0F0F0] rounded-full w-6 h-6">
-              <ProfileIcon className="w-4 h-4" />
-            </div>
-            <div>{truncateAddress(address)}</div>
+            {starknetIdAvatar ? (
+              <img className="w-4 h-4" src={starknetIdAvatar} />
+            ) : (
+              <div className="flex items-center justify-center bg-[#F0F0F0] rounded-full w-6 h-6">
+                <ProfileIcon className="w-4 h-4" />
+              </div>
+            )}
+            {starknetId ? (
+              <div>{starknetId}</div>
+            ) : (
+              <div>{truncateAddress(address)}</div>
+            )}
           </div>
           <ChevronDown />
         </button>

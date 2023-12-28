@@ -17,6 +17,15 @@ type Story = StoryObj<typeof ConnectButton>
 
 export const Base: Story = {}
 
+export const WithCustomStyle: Story = {
+  args: {
+    style: {
+      background: "black",
+      color: "white",
+    },
+  },
+}
+
 export const Disabled: Story = {
   args: {
     connecting: true,
