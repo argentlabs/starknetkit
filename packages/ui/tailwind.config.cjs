@@ -17,6 +17,14 @@ module.exports = {
       },
       width: {
         50: "12.5rem",
+        112.5: "28.125rem",
+      },
+      textColor: {
+        "neutrals.400": "#8C8C8C",
+        "neutrals.600": "#595959",
+      },
+      leading: {
+        3.5: "0.875rem",
       },
       borderColor: {
         "neutrals.200": "#F0F0F0",
