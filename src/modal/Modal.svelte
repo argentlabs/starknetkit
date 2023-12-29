@@ -71,6 +71,7 @@
 {#if !isInAppBrowser && modalWallets.length > 1}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
+    part="starknetkit-modal"
     class={`modal-font backdrop-blur-sm fixed inset-0 flex items-center 
             justify-center bg-black/25 z-[9999] ${darkModeControlClass}`}
     on:click={() => cb(null)}
