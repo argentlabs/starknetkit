@@ -14,9 +14,6 @@
   export let theme: "light" | "dark" | null = null
 
   let loadingItem: string | false = false
-  let emailOnly =
-    modalWallets.length === 1 &&
-    modalWallets[0].id.toLowerCase().includes("webwallet")
 
   let starknetMobile = window?.starknet_argentX as StarknetWindowObject & {
     isInAppBrowser: boolean
@@ -59,7 +56,7 @@
       return
     }
 
-    if (emailOnly) {
+    if (modalWallets.length === 1) {
       try {
         const [wallet] = modalWallets
         await wallet.connector?.connect()
@@ -71,7 +68,7 @@
   })
 </script>
 
-{#if !isInAppBrowser && !emailOnly}
+{#if !isInAppBrowser && modalWallets.length > 1}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class={`modal-font backdrop-blur-sm fixed inset-0 flex items-center 
