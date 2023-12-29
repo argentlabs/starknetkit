@@ -85,7 +85,7 @@ export const connect = async ({
   })
 
   const getTarget = (): ShadowRoot => {
-    const modalId = "starknetkit-modal"
+    const modalId = "starknetkit-modal-container"
     const existingElement = document.getElementById(modalId)
 
     if (existingElement) {
