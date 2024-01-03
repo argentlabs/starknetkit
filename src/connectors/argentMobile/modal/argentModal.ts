@@ -141,6 +141,7 @@ class ArgentModal {
     // type=overlay, device=desktop
     const overlay = document.createElement("div")
     overlay.innerHTML = overlayHtml
+    overlay.id = "argent-mobile-modal-overlay"
     for (const [key, value] of Object.entries(overlayStyle)) {
       overlay.style[key as any] = value
     }
