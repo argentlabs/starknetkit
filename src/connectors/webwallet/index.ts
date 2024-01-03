@@ -8,7 +8,7 @@ import {
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
-import { setPopupOptions, trpcProxyClient } from "./helpers/trpc"
+import { setPopupOptions } from "./helpers/trpc"
 
 import {
   ConnectorNotConnectedError,
@@ -17,7 +17,7 @@ import {
   UserRejectedRequestError,
 } from "../../errors"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
-import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
+import { openWebwallet } from "./helpers/openWebwallet"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -164,18 +164,13 @@ export class WebWalletConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
-    const provider = this._options.provider
     setPopupOptions({
       origin,
       location: "/interstitialLogin",
     })
-    const wallet = await getWebWalletStarknetObject(
-      origin,
-      trpcProxyClient({}),
-      provider,
-    )
 
-    _wallet = wallet ?? null
+    _wallet = await openWebwallet(origin, this._options.provider)
+
     this._wallet = _wallet
   }
 }

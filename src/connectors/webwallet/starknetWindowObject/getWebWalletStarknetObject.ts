@@ -5,10 +5,24 @@ import { mapTargetUrlToNodeUrl } from "../helpers/mapTargetUrlToNodeUrl"
 import type { AppRouter } from "../helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./argentStarknetWindowObject"
 import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
+import { hideModal, setIframeHeight, showModal } from "./wormhole"
+
+type IframeProps = {
+  modal: HTMLDivElement
+  iframe: HTMLIFrameElement
+}
+
+type ModalEvents =
+  | {
+      action: "show" | "hide"
+      visible: boolean
+    }
+  | { action: "updateHeight"; height: number }
 
 export const getWebWalletStarknetObject = async (
   target: string,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
+  iframeProps?: IframeProps,
   provider?: ProviderInterface,
 ): Promise<WebWalletStarknetWindowObject> => {
   const globalWindow = typeof window !== "undefined" ? window : undefined
@@ -29,6 +43,24 @@ export const getWebWalletStarknetObject = async (
     defaultProvider,
     proxyLink,
   )
+
+  if (iframeProps) {
+    const { iframe, modal } = iframeProps
+    proxyLink.updateModal.subscribe(undefined, {
+      onData(modalEvent: ModalEvents) {
+        switch (modalEvent.action) {
+          case "show":
+            showModal(modal)
+            break
+          case "hide":
+            hideModal(modal)
+            break
+          case "updateHeight":
+            setIframeHeight(iframe, modalEvent.height)
+        }
+      },
+    })
+  }
 
   return starknetWindowObject
 }
