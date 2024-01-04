@@ -2,7 +2,7 @@ import { FC, useMemo } from "react"
 import { CloseIcon } from "../../icons/CloseIcon"
 import { NotificationItem } from "./NotificationItem"
 
-// TODO: discuss structure
+// TODO: discuss structure and service to get transactions informations
 interface Notification {
   action: string
   description: string
@@ -13,6 +13,8 @@ interface Notification {
 interface NotificationMenuProps {
   notifications: Notification[]
   toggleMenu: () => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onNotificationClick?: (notification: any) => void // TODO: remove any
 }
 
 const NotificationMenu: FC<NotificationMenuProps> = ({
