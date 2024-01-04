@@ -14,3 +14,9 @@ export const DEFAULT_WEBWALLET_ICON = `<svg
       fill="currentColor"
     />
   </svg>`
+
+export const RPC_NODE_URL_TESTNET =
+  "https://api.hydrogen.argent47.net/v1/starknet/goerli/rpc/v0.5"
+
+export const RPC_NODE_URL_MAINNET =
+  "https://cloud.argent-api.com/v1/starknet/mainnet/rpc/v0.5"

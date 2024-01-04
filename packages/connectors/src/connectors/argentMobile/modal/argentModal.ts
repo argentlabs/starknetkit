@@ -41,7 +41,7 @@ const iframeStyle = {
 }
 
 const overlayHtml = `
-  <div style="position: relative">
+  <div id="argent-mobile-modal-container" style="position: relative">
     <iframe class="argent-iframe" allow="clipboard-write"></iframe>
     <div class="argent-close-button" style="position: absolute; top: 24px; right: 24px; cursor: pointer;">
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,9 +121,11 @@ class ArgentModal {
     }
 
     if (device === "android" || device === "ios") {
-      const toMobileApp = document.createElement("a")
-      toMobileApp.setAttribute("href", urls[device])
-      toMobileApp.setAttribute("target", "_blank")
+      const toMobileApp = document.createElement("button")
+      toMobileApp.style.display = "none"
+      toMobileApp.addEventListener("click", () => {
+        window.location.href = urls[device]
+      })
       toMobileApp.click()
 
       return
@@ -139,6 +141,7 @@ class ArgentModal {
     // type=overlay, device=desktop
     const overlay = document.createElement("div")
     overlay.innerHTML = overlayHtml
+    overlay.id = "argent-mobile-modal-overlay"
     for (const [key, value] of Object.entries(overlayStyle)) {
       overlay.style[key as any] = value
     }
