@@ -11,7 +11,7 @@ import type {
   ProviderInterface,
   SignerInterface,
 } from "starknet"
-import { Provider, constants } from "starknet"
+import { RpcProvider, constants } from "starknet"
 
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
@@ -84,12 +84,7 @@ export class StarknetAdapter
 
     this.remoteSigner = new StarknetRemoteSigner(this.walletRpc)
 
-    if (rpcUrl) {
-      this.provider = new Provider({ rpc: { nodeUrl: rpcUrl } })
-    } else {
-      const network = this.getNetworkName(this.chainId)
-      this.provider = new Provider({ sequencer: { network } })
-    }
+    this.provider = new RpcProvider({ nodeUrl: rpcUrl })
     this.account = new StarknetRemoteAccount(
       this.provider,
       "",
@@ -183,7 +178,6 @@ export class StarknetAdapter
     super.registerEventListeners()
     this.eventEmitter.on("chainChanged", (_chainId: string) => {
       throw new Error("Not implemented: chainChanged")
-      // TODO: update provider
     })
   }
 

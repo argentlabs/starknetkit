@@ -16,7 +16,14 @@ type Story = StoryObj<typeof StarknetkitButton>
 // More on writing stories with args: https://storybook.js.org/docs/svelte/writing-stories/args
 
 export const Base: Story = {
-  args: {},
+  args: {
+    accountInfo: {
+      showBalance: true,
+      displayStarknetId: true,
+      displayStarknetIdAvatar: true,
+    },
+    webWalletUrl: "https://web.hydrogen.argent47.net",
+  },
   decorators: [
     (Story) => (
       <ConnectButtonProvider>
@@ -28,6 +35,7 @@ export const Base: Story = {
 
 export const WithCustomStyle: Story = {
   args: {
+    webWalletUrl: "https://web.hydrogen.argent47.net",
     style: {
       background: "black",
       color: "white",

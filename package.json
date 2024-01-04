@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "1.0.20",
+  "version": "1.0.29",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
@@ -63,7 +63,7 @@
     "zod": "^3.22.4"
   },
   "peerDependencies": {
-    "starknet": "^5.23.0"
+    "starknet": "^5.24.3"
   },
   "gitHead": "b16688a8638cc138938e74e1a39d004760165d75"
 }

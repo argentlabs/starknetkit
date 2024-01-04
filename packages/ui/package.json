@@ -67,9 +67,11 @@
     "@types/react-dom": "^18.2.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "starknetkit": "^1.0.20"
+    "starknetkit": "^1.0.29"
   },
   "dependencies": {
-    "bignumber.js": "^9.1.2"
+    "@argent/x-multicall": "^7.0.9",
+    "bignumber.js": "^9.1.2",
+    "swr": "^2.2.4"
   }
 }

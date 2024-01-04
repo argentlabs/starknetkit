@@ -2,7 +2,7 @@ import type {
   AccountChangeEventHandler,
   StarknetWindowObject,
 } from "get-starknet-core"
-import type { AccountInterface } from "starknet"
+import type { AccountInterface, ProviderInterface } from "starknet"
 import { constants } from "starknet"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import {
@@ -25,6 +25,8 @@ export interface ArgentMobileConnectorOptions {
   chainId?: constants.NetworkName
   description?: string
   url?: string
+  icons?: string[]
+  provider?: ProviderInterface
 }
 
 export class ArgentMobileConnector extends Connector {
@@ -143,13 +145,19 @@ export class ArgentMobileConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const { getStarknetWindowObject } = await import("./modal")
-    const { chainId, projectId, dappName, description, url } = this._options
+    const { chainId, projectId, dappName, description, url, icons } =
+      this._options
     const options = {
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
       name: dappName,
       projectId: projectId ?? DEFAULT_PROJECT_ID,
       description,
       url,
+      icons,
+      rpcUrl:
+        chainId === constants.NetworkName.SN_MAIN
+          ? "https://cloud.argent-api.com/v1/starknet/mainnet/rpc/v0.5"
+          : "https://api.hydrogen.argent47.net/v1/starknet/goerli/rpc/v0.5",
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
@@ -168,6 +176,14 @@ export class ArgentMobileConnector extends Connector {
     }
 
     const _wallet = await getStarknetWindowObject(options)
+
+    const { provider } = this._options
+    if (provider) {
+      Object.assign(_wallet, {
+        provider,
+      })
+    }
+
     this._wallet = _wallet
 
     // wallet connect rpc enable
@@ -184,3 +200,5 @@ export class ArgentMobileConnector extends Connector {
     })
   }
 }
+
+export { isInArgentMobileAppBrowser } from "./helpers"

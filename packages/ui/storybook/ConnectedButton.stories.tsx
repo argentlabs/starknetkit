@@ -4,7 +4,7 @@ import React from "react"
 import { ConnectedButton } from "../src/components/connect/ConnectedButton"
 import { WalletContext } from "../src/components/WalletContext"
 import { BellIcon } from "../src/icons/BellIcon"
-import { RpcProvider } from "starknet"
+import { RpcProvider, constants } from "starknet"
 
 const meta: Meta<typeof ConnectedButton> = {
   component: ConnectedButton,
@@ -36,13 +36,45 @@ export const WithBalance: Story = {
 export const WithStarknetId: Story = {
   args: {
     address:
-      "0x0225575a8E93461e264a580f3AaA6D49922A8ec5826a2cF0DDeECdA85b9929C2",
+      "0x057b9b0418704ce030824f827aec7b7f930915c1fc56b22ea4a47c51c2ea29cb",
     accountInfo: {
       showBalance: true,
-      starknetId: "starknet.id",
-      starknetIdAvatar:
-        "https://goerli.starknet.id/api/identicons/115631003666",
+      displayStarknetId: true,
     },
+    chainId: constants.StarknetChainId.SN_GOERLI,
+    symbol: "ETH",
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+    }),
+  },
+}
+
+export const WithStarknetIdAvatar: Story = {
+  args: {
+    address:
+      "0x057b9b0418704ce030824f827aec7b7f930915c1fc56b22ea4a47c51c2ea29cb",
+    accountInfo: {
+      showBalance: true,
+      displayStarknetIdAvatar: true,
+    },
+    chainId: constants.StarknetChainId.SN_GOERLI,
+    symbol: "ETH",
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+    }),
+  },
+}
+
+export const WithStarknetIdAndAvatar: Story = {
+  args: {
+    address:
+      "0x057b9b0418704ce030824f827aec7b7f930915c1fc56b22ea4a47c51c2ea29cb",
+    accountInfo: {
+      showBalance: true,
+      displayStarknetId: true,
+      displayStarknetIdAvatar: true,
+    },
+    chainId: constants.StarknetChainId.SN_GOERLI,
     symbol: "ETH",
     provider: new RpcProvider({
       nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
