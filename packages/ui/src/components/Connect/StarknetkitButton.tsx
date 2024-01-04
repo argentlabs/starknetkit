@@ -1,19 +1,18 @@
 import { FC, useContext, useEffect, useState, CSSProperties } from "react"
-import { ProviderInterface } from "starknet"
-import type { Connector } from "starknetkit"
-import { DEFAULT_WEBWALLET_URL, connect, type ModalMode } from "starknetkit"
+import { ProviderInterface, RpcProvider, constants } from "starknet"
+import type { ModalMode, Connector } from "starknetkit"
+import { connect } from "starknetkit"
 import type { ArgentMobileConnectorOptions } from "starknetkit/argentMobile"
 import { ConnectButton } from "./ConnectButton"
 import { ConnectedButton } from "./ConnectedButton"
 import { WalletContext } from "../WalletContext"
 import { DropdownElement } from "../../types/DropdownElement"
+import { AccountInfo } from "./types"
+
+const DEFAULT_WEBWALLET_URL = "https://web.argent.xyz"
 
 interface StarknetkitButtonProps {
-  accountInfo?: {
-    showBalance?: boolean
-    starknetId?: string
-    starknetIdAvatar?: string
-  }
+  accountInfo?: AccountInfo
   argentMobileOptions?: ArgentMobileConnectorOptions
   connectors?: Connector[]
   dropdownElements?: DropdownElement[]
@@ -29,9 +28,11 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
   connectors,
   dropdownElements,
   enableReconnect,
-  provider,
-  style,
+  provider = new RpcProvider({
+    nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+  }),
   webWalletUrl = DEFAULT_WEBWALLET_URL,
+  style,
 }) => {
   const walletContext = useContext(WalletContext)
   const [connecting, setConnecting] = useState(false)
@@ -45,7 +46,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
         webWalletUrl,
         argentMobileOptions,
         connectors,
-        // provider
+        // provider, // TODO: remove comment after merging develop
       })
 
       walletContext.setWallet(wallet)
@@ -74,6 +75,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
       {wallet?.isConnected && (
         <ConnectedButton
           address={wallet.selectedAddress}
+          chainId={wallet.chainId as constants.StarknetChainId} // TODO: update with getChainId after merging develop
           accountInfo={accountInfo}
           dropdownElements={dropdownElements}
           provider={provider}

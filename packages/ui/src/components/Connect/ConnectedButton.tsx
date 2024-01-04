@@ -1,23 +1,24 @@
-import { FC, useEffect, useRef, useState, CSSProperties } from "react"
-import { ProviderInterface, uint256 } from "starknet"
+import BigDecimalNumber from "bignumber.js"
+import { CSSProperties, FC, useEffect, useRef, useState } from "react"
+import { ProviderInterface, constants, uint256 } from "starknet"
 import { truncateAddress } from "../../helpers/address"
 import { formatUnits } from "../../helpers/formatUnits"
 import { prettifyTokenNumber } from "../../helpers/prettifyNumber"
+import { useStarknetId } from "../../hooks/useStarknetId"
 import { ChevronDown } from "../../icons/ChevronDown"
 import { ProfileIcon } from "../../icons/ProfileIcon"
 import { hexSchema } from "../../schemas/hexSchema"
 import { DropdownElement } from "../../types/DropdownElement"
+import { SkeletonLoading } from "../Loading/SkeletonLoading"
 import { ConnectedMenu } from "./ConnectedMenu"
+import { AccountInfo } from "./types"
 
 const { uint256ToBN } = uint256
 
 interface ConnectedButtonProps {
   address: string
-  accountInfo?: {
-    showBalance?: boolean
-    starknetId?: string
-    starknetIdAvatar?: string
-  }
+  chainId: constants.StarknetChainId
+  accountInfo?: AccountInfo
   dropdownElements?: DropdownElement[]
   provider: ProviderInterface
   symbol?: string
@@ -30,17 +31,28 @@ const FEE_TOKEN_ADDRESS = // ETH on starknet
 
 const ConnectedButton: FC<ConnectedButtonProps> = ({
   address,
+  chainId,
   accountInfo,
   dropdownElements,
   provider,
-  symbol,
+  symbol = "ETH",
   webWalletUrl,
   style,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [balance, setBalance] = useState("")
+  const [isFetchingBalance, setIsFetchingBalance] = useState(false)
 
-  const { showBalance, starknetId, starknetIdAvatar } = accountInfo ?? {}
+  const { showBalance, displayStarknetId, displayStarknetIdAvatar } =
+    accountInfo ?? {}
+
+  const { data, isLoading } = useStarknetId({
+    address,
+    chainId,
+    displayStarknetId,
+    displayStarknetIdAvatar,
+    provider,
+  })
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev)
@@ -56,6 +68,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
     }
 
     const balanceOf = async (address: string) => {
+      setIsFetchingBalance(true)
       try {
         const values = await provider.callContract({
           contractAddress: FEE_TOKEN_ADDRESS,
@@ -77,10 +90,17 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           decimals: 18,
         })
 
-        setBalance(prettifyTokenNumber(formatted) ?? "-")
+        const formattedBigDecimalValue = new BigDecimalNumber(formatted)
+        setBalance(
+          formattedBigDecimalValue.lt(0.001)
+            ? "< 0.001"
+            : prettifyTokenNumber(formatted, { maxDecimalPlaces: 3 }) ?? "-",
+        )
       } catch (e) {
         console.error(e)
         setBalance("-")
+      } finally {
+        setIsFetchingBalance(false)
       }
     }
 
@@ -105,27 +125,52 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
         >
           {showBalance && (
             <>
-              <div className="flex items-center">
-                <span>
-                  {balance} {symbol}
-                </span>
-              </div>
+              {isFetchingBalance ? (
+                <div className="flex items-center justify-center w-8 h-2">
+                  <SkeletonLoading />
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <span>
+                    {balance} {symbol}
+                  </span>
+                </div>
+              )}
               <div className="h-10 border border-solid border-neutrals.200" />
             </>
           )}
-          <div className="flex items-center gap-2">
-            {starknetIdAvatar ? (
-              <img className="w-4 h-4" src={starknetIdAvatar} />
-            ) : (
-              <div className="flex items-center justify-center bg-[#F0F0F0] rounded-full w-6 h-6">
-                <ProfileIcon className="w-4 h-4" />
-              </div>
-            )}
-            {starknetId ? (
-              <div>{starknetId}</div>
-            ) : (
-              <div>{truncateAddress(address)}</div>
-            )}
+          <div className="flex flex-1 items-center justify-between">
+            <div className="flex items-center gap-2 relative">
+              {isLoading ? (
+                <div className="flex items-center justify-center w-4 h-2">
+                  <SkeletonLoading />
+                </div>
+              ) : (
+                <>
+                  {displayStarknetIdAvatar && data?.starknetIdAvatar ? (
+                    <img className="w-6 h-6" src={data.starknetIdAvatar} />
+                  ) : (
+                    <div className="flex items-center justify-center bg-[#F0F0F0] rounded-full w-6 h-6">
+                      <ProfileIcon className="w-4 h-4" />
+                    </div>
+                  )}
+                </>
+              )}
+
+              {isLoading ? (
+                <div className="flex items-center justify-center w-4 h-2">
+                  <SkeletonLoading />
+                </div>
+              ) : (
+                <>
+                  {displayStarknetId && data?.starknetId ? (
+                    <div>{data.starknetId}</div>
+                  ) : (
+                    <div>{truncateAddress(address)}</div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
           <ChevronDown />
         </button>
