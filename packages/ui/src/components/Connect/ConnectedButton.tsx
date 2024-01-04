@@ -1,3 +1,4 @@
+import BigDecimalNumber from "bignumber.js"
 import { CSSProperties, FC, useEffect, useRef, useState } from "react"
 import { ProviderInterface, constants, uint256 } from "starknet"
 import { truncateAddress } from "../../helpers/address"
@@ -8,9 +9,9 @@ import { ChevronDown } from "../../icons/ChevronDown"
 import { ProfileIcon } from "../../icons/ProfileIcon"
 import { hexSchema } from "../../schemas/hexSchema"
 import { DropdownElement } from "../../types/DropdownElement"
+import { SkeletonLoading } from "../Loading/SkeletonLoading"
 import { ConnectedMenu } from "./ConnectedMenu"
 import { AccountInfo } from "./types"
-import { SkeletonLoading } from "../Loading/SkeletonLoading"
 
 const { uint256ToBN } = uint256
 
@@ -40,7 +41,6 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [balance, setBalance] = useState("")
-
   const [isFetchingBalance, setIsFetchingBalance] = useState(false)
 
   const { showBalance, displayStarknetId, displayStarknetIdAvatar } =
@@ -50,6 +50,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
     address,
     chainId,
     displayStarknetId,
+    displayStarknetIdAvatar,
     provider,
   })
 
@@ -83,13 +84,19 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           low: uint256Low,
           high: uint256High,
         }
+        console.log(address, amountUint256)
 
         const formatted = formatUnits({
           value: uint256ToBN(amountUint256),
           decimals: 18,
         })
 
-        setBalance(prettifyTokenNumber(formatted) ?? "-")
+        const formattedBigDecimalValue = new BigDecimalNumber(formatted)
+        setBalance(
+          formattedBigDecimalValue.lt(0.001)
+            ? "< 0.001"
+            : prettifyTokenNumber(formatted, { maxDecimalPlaces: 3 }) ?? "-",
+        )
       } catch (e) {
         console.error(e)
         setBalance("-")

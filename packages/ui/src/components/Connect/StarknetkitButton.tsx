@@ -1,13 +1,15 @@
 import { FC, useContext, useEffect, useState, CSSProperties } from "react"
 import { ProviderInterface, RpcProvider, constants } from "starknet"
-import type { Connector } from "starknetkit"
-import { DEFAULT_WEBWALLET_URL, connect, type ModalMode } from "starknetkit"
+import type { ModalMode, Connector } from "starknetkit"
+import { connect } from "starknetkit"
 import type { ArgentMobileConnectorOptions } from "starknetkit/argentMobile"
 import { ConnectButton } from "./ConnectButton"
 import { ConnectedButton } from "./ConnectedButton"
 import { WalletContext } from "../WalletContext"
 import { DropdownElement } from "../../types/DropdownElement"
 import { AccountInfo } from "./types"
+
+const DEFAULT_WEBWALLET_URL = "https://web.argent.xyz"
 
 interface StarknetkitButtonProps {
   accountInfo?: AccountInfo
@@ -44,7 +46,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
         webWalletUrl,
         argentMobileOptions,
         connectors,
-        // provider
+        // provider, // TODO: remove comment after merging develop
       })
 
       walletContext.setWallet(wallet)
