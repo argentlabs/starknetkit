@@ -119,7 +119,7 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
     <>
       <div className="relative inline-block" ref={ref}>
         <button
-          className="flex items-center shadow-list-item font-barlow font-semibold text-base leading-4 h-10 px-4 gap-2.5 rounded-lg text-black bg-white w-"
+          className="flex items-center shadow-list-item font-barlow font-semibold text-base leading-4 h-10 px-4 gap-2.5 rounded-lg text-black bg-white"
           onClick={toggleMenu}
           style={{ ...style }}
         >
