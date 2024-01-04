@@ -86,8 +86,5 @@
     "svelte-check": "^3.5.1",
     "svelte-preprocess": "^5.0.4"
   },
-  "peerDependencies": {
-    "starknet": "^5.23.0"
-  },
   "gitHead": "b16688a8638cc138938e74e1a39d004760165d75"
 }

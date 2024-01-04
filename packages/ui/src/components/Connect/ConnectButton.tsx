@@ -2,7 +2,7 @@ import { FC, CSSProperties } from "react"
 
 interface ConnectButtonProps {
   connect: () => Promise<void>
-  connecting: boolean
+  connecting?: boolean
   style: CSSProperties
 }
 
