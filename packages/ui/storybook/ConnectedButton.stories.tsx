@@ -40,6 +40,38 @@ export const WithStarknetId: Story = {
     accountInfo: {
       showBalance: true,
       displayStarknetId: true,
+    },
+    chainId: constants.StarknetChainId.SN_GOERLI,
+    symbol: "ETH",
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+    }),
+  },
+}
+
+export const WithStarknetIdAvatar: Story = {
+  args: {
+    address:
+      "0x057b9b0418704ce030824f827aec7b7f930915c1fc56b22ea4a47c51c2ea29cb",
+    accountInfo: {
+      showBalance: true,
+      displayStarknetIdAvatar: true,
+    },
+    chainId: constants.StarknetChainId.SN_GOERLI,
+    symbol: "ETH",
+    provider: new RpcProvider({
+      nodeUrl: "https://starknet-testnet.public.blastapi.io/rpc/v0.5",
+    }),
+  },
+}
+
+export const WithStarknetIdAndAvatar: Story = {
+  args: {
+    address:
+      "0x057b9b0418704ce030824f827aec7b7f930915c1fc56b22ea4a47c51c2ea29cb",
+    accountInfo: {
+      showBalance: true,
+      displayStarknetId: true,
       displayStarknetIdAvatar: true,
     },
     chainId: constants.StarknetChainId.SN_GOERLI,

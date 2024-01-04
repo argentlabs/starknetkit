@@ -84,7 +84,6 @@ const ConnectedButton: FC<ConnectedButtonProps> = ({
           low: uint256Low,
           high: uint256High,
         }
-        console.log(address, amountUint256)
 
         const formatted = formatUnits({
           value: uint256ToBN(amountUint256),
