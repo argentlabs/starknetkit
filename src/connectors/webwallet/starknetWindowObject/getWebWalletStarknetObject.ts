@@ -1,5 +1,5 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
-import { RpcProvider } from "starknet"
+import { ProviderInterface, RpcProvider } from "starknet"
 
 import { mapTargetUrlToNodeUrl } from "../helpers/mapTargetUrlToNodeUrl"
 import type { AppRouter } from "../helpers/trpc"
@@ -9,6 +9,7 @@ import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
 export const getWebWalletStarknetObject = async (
   target: string,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
+  provider?: ProviderInterface,
 ): Promise<WebWalletStarknetWindowObject> => {
   const globalWindow = typeof window !== "undefined" ? window : undefined
   if (!globalWindow) {
@@ -16,7 +17,7 @@ export const getWebWalletStarknetObject = async (
   }
 
   const nodeUrl = mapTargetUrlToNodeUrl(target)
-  const defaultProvider = new RpcProvider({ nodeUrl })
+  const defaultProvider = provider ?? new RpcProvider({ nodeUrl })
   const starknetWindowObject = getArgentStarknetWindowObject(
     {
       host: globalWindow.location.origin,

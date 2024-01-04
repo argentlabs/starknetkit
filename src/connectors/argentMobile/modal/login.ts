@@ -15,6 +15,7 @@ export interface IArgentLoginOptions {
   name?: string
   description?: string
   url?: string
+  icons?: string[]
   chainId?: string | number
   rpcUrl?: string
   bridgeUrl?: string
@@ -34,6 +35,7 @@ export const login = async <TAdapter extends NamespaceAdapter>(
     mobileUrl = getMobileUrl(chainId),
     modalType = "overlay",
     url,
+    icons,
     walletConnect,
   }: IArgentLoginOptions,
   Adapter: new (options: NamespaceAdapterOptions) => TAdapter,
@@ -55,7 +57,7 @@ export const login = async <TAdapter extends NamespaceAdapter>(
       name: name ?? "Unknown dapp",
       description: description ?? "Unknown dapp description",
       url: url ?? "#",
-      icons: ["https://walletconnect.com/walletconnect-logo.png"],
+      icons: icons ?? [],
       ...walletConnect?.metadata,
     },
   }
