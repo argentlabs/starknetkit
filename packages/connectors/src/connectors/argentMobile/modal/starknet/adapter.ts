@@ -178,7 +178,6 @@ export class StarknetAdapter
     super.registerEventListeners()
     this.eventEmitter.on("chainChanged", (_chainId: string) => {
       throw new Error("Not implemented: chainChanged")
-      // TODO: update provider
     })
   }
 

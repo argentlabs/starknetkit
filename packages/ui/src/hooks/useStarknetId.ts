@@ -36,10 +36,6 @@ export const useStarknetId = ({
   )
 }
 
-// TODO: remove after starknetkit version is updated
-const defaultMulticallAddress =
-  "0x05754af3760f3356da99aea5c3ec39ccac7783d925a19666ebbeca58ff0087f4"
-
 const getStarknetId = async (
   address: string,
   chainId: constants.StarknetChainId,
@@ -49,12 +45,7 @@ const getStarknetId = async (
   try {
     const starknetIdContractAddress = starknetId.getStarknetIdContract(chainId)
 
-    // TODO: remove after starknetkit is updated
-    const multiCall = getBatchProvider(
-      provider,
-      undefined,
-      defaultMulticallAddress,
-    )
+    const multiCall = getBatchProvider(provider)
 
     const callAddressToDomain: Call = {
       contractAddress: starknetIdContractAddress,

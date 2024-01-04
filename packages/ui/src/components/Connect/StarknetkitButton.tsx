@@ -71,7 +71,7 @@ const StarknetkitButton: FC<StarknetkitButtonProps> = ({
       {wallet?.isConnected && (
         <ConnectedButton
           address={wallet.selectedAddress}
-          chainId={wallet.chainId as constants.StarknetChainId} // TODO: update with getChainId after merging develop
+          chainId={wallet.chainId as constants.StarknetChainId}
           accountInfo={accountInfo}
           dropdownElements={dropdownElements}
           provider={provider}
