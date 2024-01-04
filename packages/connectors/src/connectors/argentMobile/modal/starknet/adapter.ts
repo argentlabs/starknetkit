@@ -72,7 +72,7 @@ export class StarknetAdapter
       methods: this.methods,
       events: this.events,
     }
-    this.signerConnection = this.getSignerConnection(client)
+    this.signerConnection = this.getSignerConnection(client as any)
     this.rpcProvider = new JsonRpcProvider(this.signerConnection)
     this.client = client
     this.registerEventListeners()
@@ -178,7 +178,6 @@ export class StarknetAdapter
     super.registerEventListeners()
     this.eventEmitter.on("chainChanged", (_chainId: string) => {
       throw new Error("Not implemented: chainChanged")
-      // TODO: update provider
     })
   }
 

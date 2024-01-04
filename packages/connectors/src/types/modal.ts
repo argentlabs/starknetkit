@@ -5,12 +5,16 @@ import { ProviderInterface } from "starknet"
 
 export type StoreVersion = "chrome" | "firefox" | "edge"
 
+export type ModalMode = "alwaysAsk" | "canAsk" | "neverAsk"
+
+export type ModalTheme = "light" | "dark" | "system"
+
 export interface ConnectOptions extends GetWalletOptions {
   argentMobileOptions?: ArgentMobileConnectorOptions
   dappName?: string
   connectors?: Connector[]
-  modalMode?: "alwaysAsk" | "canAsk" | "neverAsk"
-  modalTheme?: "light" | "dark" | "system"
+  modalMode?: ModalMode
+  modalTheme?: ModalTheme
   storeVersion?: StoreVersion | null
   webWalletUrl?: string
   provider?: ProviderInterface

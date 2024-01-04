@@ -8,7 +8,7 @@ import dts from "vite-plugin-dts"
 export default defineConfig({
   build: {
     rollupOptions: {
-      external: ["starknet"],
+      external: ["starknet",],
     },
     emptyOutDir: false,
     target: "es2020",
@@ -34,7 +34,6 @@ export default defineConfig({
   plugins: [
     svelte({ emitCss: false }),
     dts({
-      entryRoot: resolve(__dirname, "src"),
       insertTypesEntry: true,
     }),
   ],
