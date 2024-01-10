@@ -45,6 +45,9 @@ export class ArgentMobileConnector extends Connector {
   }
 
   async ready(): Promise<boolean> {
+    // check if session is valid and retrieve the wallet
+    // if no sessions, it will show the login modal
+    await this.ensureWallet()
     if (!this._wallet) {
       return false
     }
