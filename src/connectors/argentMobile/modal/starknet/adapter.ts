@@ -128,11 +128,7 @@ export class StarknetAdapter
 
   async isPreauthorized(): Promise<boolean> {
     // check if wc session is valid, if so, return true
-    const session = this.client.session.getAll().find(this.isValidSession)
-    if (session) {
-      return true
-    }
-    return false
+    return !!this.client.session.getAll().find(this.isValidSession)
   }
 
   on: ConnectedStarknetWindowObject["on"] = (event, handleEvent) => {
