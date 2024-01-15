@@ -127,7 +127,8 @@ export class StarknetAdapter
   }
 
   async isPreauthorized(): Promise<boolean> {
-    throw new Error("Not implemented: .isPreauthorized()")
+    // check if wc session is valid, if so, return true
+    return Boolean(this.client.session.getAll().find(this.isValidSession))
   }
 
   on: ConnectedStarknetWindowObject["on"] = (event, handleEvent) => {
