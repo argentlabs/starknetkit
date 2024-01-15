@@ -5,11 +5,12 @@
   import ConnectorButton from "./ConnectorButton.svelte"
   import type { ModalWallet } from "../types/modal"
   import type { Connector } from "../connectors/connector"
+  import { InjectedConnector } from "../connectors/injected"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
   export let callback: (
-    value: StarknetWindowObject | null,
+    value: Connector | null,
   ) => Promise<void> = async () => {}
   export let theme: "light" | "dark" | null = null
 
@@ -27,8 +28,7 @@
   let cb = async (connector: Connector | null) => {
     setLoadingItem(connector?.id ?? false)
     try {
-      await connector?.connect()
-      await callback(connector?.wallet ?? null)
+      await callback(connector ?? null)
     } catch (e) {
       console.error(e)
     } finally {
@@ -50,8 +50,7 @@
 
     if (isInAppBrowser && window?.starknet_argentX) {
       try {
-        const enabledValue = await sn.enable(window?.starknet_argentX)
-        callback(enabledValue ?? window?.starknet_argentX)
+        callback(new InjectedConnector({ options: { id: "argentX" } }))
       } catch {}
       return
     }
@@ -59,8 +58,7 @@
     if (modalWallets.length === 1) {
       try {
         const [wallet] = modalWallets
-        await wallet.connector?.connect()
-        callback(wallet.connector.wallet)
+        await callback(wallet.connector)
       } catch (e) {
         console.error(e)
       }

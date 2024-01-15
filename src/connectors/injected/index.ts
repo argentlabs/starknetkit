@@ -15,6 +15,7 @@ import {
   WALLET_NOT_FOUND_ICON_DARK,
   WALLET_NOT_FOUND_ICON_LIGHT,
 } from "./constants"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
   /** The wallet id. */
@@ -153,7 +154,7 @@ export class InjectedConnector extends Connector {
 
   async disconnect(): Promise<void> {
     this.ensureWallet()
-
+    removeStarknetLastConnectedWallet()
     if (!this.available()) {
       throw new ConnectorNotFoundError()
     }
