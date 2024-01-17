@@ -9,6 +9,7 @@ import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserNotConnectedError,
+  UserRejectedRequestError,
 } from "../../errors"
 import { resetWalletConnect } from "../../helpers/resetWalletConnect"
 import {
@@ -194,6 +195,11 @@ export class ArgentMobileConnector extends Connector {
     }
 
     const _wallet = await getStarknetWindowObject(options)
+
+    // getStarknetWindowObject returns null when the user rejects the connection
+    if (!_wallet) {
+      throw new UserRejectedRequestError()
+    }
 
     this._wallet = _wallet
 
