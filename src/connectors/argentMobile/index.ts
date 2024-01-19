@@ -19,7 +19,7 @@ import {
 } from "../connector"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
-import { RPC_NODE_URL_MAINNET, RPC_NODE_URL_TESTNET } from "./constants"
+import { getRandomPublicRPCNode } from "../../helpers/publicRcpNodes"
 
 export interface ArgentMobileConnectorOptions {
   dappName?: string
@@ -162,11 +162,12 @@ export class ArgentMobileConnector extends Connector {
       rpcUrl,
     } = this._options
 
+    const publicRPCNode = getRandomPublicRPCNode()
     const providerRpcUrl =
       rpcUrl ??
       (!chainId || chainId === constants.NetworkName.SN_MAIN
-        ? RPC_NODE_URL_MAINNET
-        : RPC_NODE_URL_TESTNET)
+        ? publicRPCNode.mainnet
+        : publicRPCNode.testnet)
 
     const options = {
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
