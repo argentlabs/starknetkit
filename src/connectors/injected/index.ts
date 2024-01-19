@@ -6,6 +6,7 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
   Connector,
   type ConnectorData,
@@ -15,7 +16,6 @@ import {
   WALLET_NOT_FOUND_ICON_DARK,
   WALLET_NOT_FOUND_ICON_LIGHT,
 } from "./constants"
-import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
   /** The wallet id. */
