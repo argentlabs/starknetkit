@@ -125,7 +125,7 @@ export const connect = async ({
     return target
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const modal = new Modal({
       target: getTarget(),
       props: {
@@ -150,6 +150,8 @@ export const connect = async ({
                 connector,
               })
             }
+          } catch (error) {
+            reject(error)
           } finally {
             setTimeout(() => modal.$destroy())
           }

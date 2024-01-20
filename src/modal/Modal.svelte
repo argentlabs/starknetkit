@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { StarknetWindowObject } from "get-starknet-core"
-  import sn from "get-starknet-core"
   import { onMount } from "svelte"
   import ConnectorButton from "./ConnectorButton.svelte"
   import type { ModalWallet } from "../types/modal"
@@ -29,8 +28,6 @@
     setLoadingItem(connector?.id ?? false)
     try {
       await callback(connector ?? null)
-    } catch (e) {
-      console.error(e)
     } finally {
       setLoadingItem(false)
     }
