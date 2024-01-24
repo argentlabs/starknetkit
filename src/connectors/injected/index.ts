@@ -6,6 +6,7 @@ import {
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
   Connector,
   type ConnectorData,
@@ -153,7 +154,7 @@ export class InjectedConnector extends Connector {
 
   async disconnect(): Promise<void> {
     this.ensureWallet()
-
+    removeStarknetLastConnectedWallet()
     if (!this.available()) {
       throw new ConnectorNotFoundError()
     }

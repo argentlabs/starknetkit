@@ -63,10 +63,10 @@ export class StarknetAdapter
 
   private walletRpc: IStarknetRpc
 
-  constructor({ client, chainId, rpcUrl }: NamespaceAdapterOptions) {
+  constructor({ client, chainId, rpcUrl, provider }: NamespaceAdapterOptions) {
     super()
 
-    this.chainId = String(chainId || "SN_GOERLI")
+    this.chainId = String(chainId ?? constants.NetworkName.SN_MAIN)
     this.rpc = {
       chains: chainId ? [this.formatChainId(this.chainId)] : [],
       methods: this.methods,
@@ -84,7 +84,7 @@ export class StarknetAdapter
 
     this.remoteSigner = new StarknetRemoteSigner(this.walletRpc)
 
-    this.provider = new RpcProvider({ nodeUrl: rpcUrl })
+    this.provider = provider ? provider : new RpcProvider({ nodeUrl: rpcUrl })
     this.account = new StarknetRemoteAccount(
       this.provider,
       "",
@@ -127,7 +127,8 @@ export class StarknetAdapter
   }
 
   async isPreauthorized(): Promise<boolean> {
-    throw new Error("Not implemented: .isPreauthorized()")
+    // check if wc session is valid, if so, return true
+    return Boolean(this.client.session.getAll().find(this.isValidSession))
   }
 
   on: ConnectedStarknetWindowObject["on"] = (event, handleEvent) => {

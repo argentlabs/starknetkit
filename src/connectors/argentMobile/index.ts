@@ -9,6 +9,7 @@ import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserNotConnectedError,
+  UserRejectedRequestError,
 } from "../../errors"
 import { resetWalletConnect } from "../../helpers/resetWalletConnect"
 import {
@@ -18,6 +19,7 @@ import {
 } from "../connector"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
+import { getRandomPublicRPCNode } from "../../helpers/publicRcpNodes"
 
 export interface ArgentMobileConnectorOptions {
   dappName?: string
@@ -27,6 +29,7 @@ export interface ArgentMobileConnectorOptions {
   url?: string
   icons?: string[]
   provider?: ProviderInterface
+  rpcUrl?: string
 }
 
 export class ArgentMobileConnector extends Connector {
@@ -43,6 +46,9 @@ export class ArgentMobileConnector extends Connector {
   }
 
   async ready(): Promise<boolean> {
+    // check if session is valid and retrieve the wallet
+    // if no sessions, it will show the login modal
+    await this.ensureWallet()
     if (!this._wallet) {
       return false
     }
@@ -145,8 +151,24 @@ export class ArgentMobileConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const { getStarknetWindowObject } = await import("./modal")
-    const { chainId, projectId, dappName, description, url, icons } =
-      this._options
+    const {
+      chainId,
+      projectId,
+      dappName,
+      description,
+      url,
+      icons,
+      provider,
+      rpcUrl,
+    } = this._options
+
+    const publicRPCNode = getRandomPublicRPCNode()
+    const providerRpcUrl =
+      rpcUrl ??
+      (!chainId || chainId === constants.NetworkName.SN_MAIN
+        ? publicRPCNode.mainnet
+        : publicRPCNode.testnet)
+
     const options = {
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
       name: dappName,
@@ -154,10 +176,8 @@ export class ArgentMobileConnector extends Connector {
       description,
       url,
       icons,
-      rpcUrl:
-        chainId === constants.NetworkName.SN_MAIN
-          ? "https://cloud.argent-api.com/v1/starknet/mainnet/rpc/v0.5"
-          : "https://api.hydrogen.argent47.net/v1/starknet/goerli/rpc/v0.5",
+      provider,
+      rpcUrl: providerRpcUrl,
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
@@ -177,11 +197,9 @@ export class ArgentMobileConnector extends Connector {
 
     const _wallet = await getStarknetWindowObject(options)
 
-    const { provider } = this._options
-    if (provider) {
-      Object.assign(_wallet, {
-        provider,
-      })
+    // getStarknetWindowObject returns null when the user rejects the connection
+    if (!_wallet) {
+      throw new UserRejectedRequestError()
     }
 
     this._wallet = _wallet
