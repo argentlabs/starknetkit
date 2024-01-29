@@ -49,12 +49,11 @@ export const setPopupOptions = ({
 
 // TODO: abstract AppRouter in order to have one single source of truth
 // At the moment, this is needed
-const appRouter = t.router({
-  authorize: t.procedure.output(z.boolean()).mutation(async () => {
-    return true
-  }),
-  connect: t.procedure.mutation(async () => ""),
-  enable: t.procedure.output(z.string()).mutation(async () => ""),
+const starknetRouter = t.router({
+  enable: t.procedure
+    .input(StarknetMethodArgumentsSchemas.enable)
+    .output(z.string())
+    .mutation(async () => ""),
   execute: t.procedure
     .input(StarknetMethodArgumentsSchemas.execute)
     .output(z.string())
@@ -63,6 +62,18 @@ const appRouter = t.router({
     .input(StarknetMethodArgumentsSchemas.signMessage)
     .output(z.string().array())
     .mutation(async () => []),
+  request: t.procedure
+    .input(StarknetMethodArgumentsSchemas.request)
+    .output(z.boolean())
+    .mutation(async () => false),
+})
+
+const walletRouter = t.router({
+  authorize: t.procedure.output(z.boolean()).mutation(async () => false),
+  connect: t.procedure.output(z.boolean()).mutation(async () => false),
+  updateModal: t.procedure.subscription(async () => {
+    return undefined as any
+  }),
   getLoginStatus: t.procedure
     .output(
       z.object({
@@ -72,23 +83,15 @@ const appRouter = t.router({
       }),
     )
     .mutation(async () => {
-      // placeholder
       return {
-        isLoggedIn: true,
+        isLoggedIn: false,
       }
     }),
-  addStarknetChain: t.procedure.mutation((_) => {
-    throw Error("not implemented")
-  }),
-  switchStarknetChain: t.procedure.mutation((_) => {
-    throw Error("not implemented")
-  }),
-  watchAsset: t.procedure.mutation((_) => {
-    throw Error("not implemented")
-  }),
-  updateModal: t.procedure.subscription(async () => {
-    return
-  }),
+})
+
+const appRouter = t.router({
+  wallet: walletRouter,
+  starknet: starknetRouter,
 })
 
 export type AppRouter = typeof appRouter

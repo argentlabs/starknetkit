@@ -1,5 +1,12 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
-import type { Signature } from "starknet"
+import type {
+  Abi,
+  AllowArray,
+  Call,
+  InvocationsDetails,
+  InvokeFunctionResponse,
+  Signature,
+} from "starknet"
 import {
   Account,
   AccountInterface,
@@ -50,11 +57,11 @@ export class MessageAccount extends Account implements AccountInterface {
     super(provider, address, new UnimplementedSigner())
   }
 
-  execute: StarknetMethods["execute"] = async (
-    calls,
-    abis,
-    transactionsDetail,
-  ) => {
+  async execute(
+    calls: AllowArray<Call>,
+    abis?: Abi[],
+    transactionsDetail?: InvocationsDetails,
+  ): Promise<InvokeFunctionResponse> {
     try {
       setPopupOptions({
         width: EXECUTE_POPUP_WIDTH,
@@ -74,8 +81,8 @@ export class MessageAccount extends Account implements AccountInterface {
         })
       }
 
-      const txHash = await this.proxyLink.execute.mutate([
-        calls,
+      const txHash = await this.proxyLink.starknet.execute.mutate([
+        calls as any,
         abis,
         transactionsDetail,
       ])
@@ -99,7 +106,7 @@ export class MessageAccount extends Account implements AccountInterface {
         height: SIGN_MESSAGE_POPUP_HEIGHT,
         location: "/signMessage",
       })
-      return await this.proxyLink.signMessage.mutate([typedData])
+      return await this.proxyLink.starknet.signMessage.mutate([typedData])
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message)
