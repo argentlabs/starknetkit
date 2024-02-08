@@ -18,7 +18,7 @@ export function mapTargetUrlToNetworkId(target: string): constants.NetworkName {
       return Network.SN_MAIN
     }
     if (origin.includes("dev")) {
-      return Network.SN_GOERLI2
+      return Network.SN_GOERLI
     }
     if (origin.includes("argent.xyz")) {
       return Network.SN_MAIN

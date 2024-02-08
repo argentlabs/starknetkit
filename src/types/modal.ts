@@ -1,5 +1,9 @@
 import type { GetWalletOptions, StarknetWindowObject } from "get-starknet-core"
-import type { Connector, ConnectorIcons } from "../connectors/connector"
+import type {
+  Connector,
+  ConnectorData,
+  ConnectorIcons,
+} from "../connectors/connector"
 import type { ArgentMobileConnectorOptions } from "../connectors/argentMobile"
 import { ProviderInterface } from "starknet"
 
@@ -28,6 +32,7 @@ export type ModalWallet = {
 }
 
 export type ModalResult = {
-  connector: Connector
+  connector: Connector | null
+  connectorData: ConnectorData | null
   wallet?: StarknetWindowObject | null
 }

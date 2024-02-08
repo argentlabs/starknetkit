@@ -1,6 +1,5 @@
 import EventEmitter from "eventemitter3"
-import type { StarknetWindowObject } from "get-starknet-core"
-import { AccountInterface } from "starknet"
+import { StarknetWindowObject } from "get-starknet-core"
 
 /** Connector icons, as base64 encoded svg. */
 export type ConnectorIcons = {
@@ -45,7 +44,7 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   /** Disconnect wallet. */
   abstract disconnect(): Promise<void>
   /** Get current account. */
-  abstract account(): Promise<AccountInterface>
+  abstract account(): Promise<string>
   /** Get current chain id. */
   abstract chainId(): Promise<bigint>
   /**  Connector StarknetWindowObject */

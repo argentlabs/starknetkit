@@ -1,8 +1,8 @@
-import type { StarknetWindowObject, WalletProvider } from "get-starknet-core"
 import { Connector } from "../connectors/connector"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
 import { isString } from "lodash-es"
+import { StarknetWindowObject, WalletProvider } from "get-starknet-core"
 
 interface SetConnectorsExpandedParams {
   availableConnectors: Connector[]
@@ -17,9 +17,11 @@ export const mapModalWallets = ({
   discoveryWallets,
   storeVersion,
 }: SetConnectorsExpandedParams): ModalWallet[] => {
-  const starknetMobile = window?.starknet_argentX as StarknetWindowObject & {
-    isInAppBrowser: boolean
-  }
+  const starknetMobile =
+    window?.starknet_argentX as unknown as StarknetWindowObject & {
+      isInAppBrowser: boolean
+    }
+
   const isInAppBrowser = starknetMobile?.isInAppBrowser
   if (isInAppBrowser) {
     return []
@@ -29,12 +31,17 @@ export const mapModalWallets = ({
     .map<ModalWallet | null>((c) => {
       const installed = installedWallets.find((w) => w.id === c.id)
       if (installed) {
-        const installedIcon =
-          installed.id === "argentX" ? ARGENT_X_ICON : installed.icon
+        const icon =
+          installed.id === "argentX"
+            ? { light: ARGENT_X_ICON, dark: ARGENT_X_ICON }
+            : isString(installed.icon)
+            ? { light: installed.icon, dark: installed.icon }
+            : installed.icon
+
         return {
           name: installed.name,
           id: installed.id,
-          icon: { light: installedIcon, dark: installedIcon },
+          icon,
           connector: c,
         }
       }

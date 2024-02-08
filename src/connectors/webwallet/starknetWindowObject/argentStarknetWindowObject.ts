@@ -1,16 +1,18 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
 import type {
   AccountChangeEventHandler,
-  ConnectedStarknetWindowObject,
   NetworkChangeEventHandler,
-  StarknetWindowObject,
   WalletEvents,
 } from "get-starknet-core"
-import type { ProviderInterface } from "starknet"
+import type { ProviderInterface, constants } from "starknet"
 
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 import { MessageAccount } from "./account"
 import { ENABLE_POPUP_HEIGHT, ENABLE_POPUP_WIDTH } from "../helpers/popupSizes"
+import {
+  BackwardsCompatibleConnectedStarknetWindowObject,
+  BackwardsCompatibleStarknetWindowObject,
+} from "src/types/legacy"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -30,9 +32,10 @@ export type LoginStatus = {
   isPreauthorized?: boolean
 }
 
-export type WebWalletStarknetWindowObject = StarknetWindowObject & {
-  getLoginStatus(): Promise<LoginStatus>
-}
+export type WebWalletStarknetWindowObject =
+  BackwardsCompatibleStarknetWindowObject & {
+    getLoginStatus(): Promise<LoginStatus>
+  }
 
 export const getArgentStarknetWindowObject = (
   options: GetArgentStarknetWindowObject,
@@ -48,21 +51,45 @@ export const getArgentStarknetWindowObject = (
     },
     async request(call) {
       switch (call.type) {
+        case "wallet_requestAccounts": {
+          return proxyLink.requestAccounts.mutate(call.params as any)
+        }
+
+        case "starknet_signTypedData": {
+          return proxyLink.signTypedData.mutate(call.params as any)
+        }
+
+        case "wallet_getPermissions": {
+          return proxyLink.getPermissions.mutate()
+        }
+
+        case "starknet_addInvokeTransaction": {
+          const hash = await proxyLink.addInvokeTransaction.mutate(
+            (call.params as any).calls,
+          )
+
+          return { transaction_hash: hash }
+        }
+
+        case "wallet_requestChainId": {
+          return (await proxyLink.requestChainId.mutate()) as constants.StarknetChainId
+        }
+
         case "wallet_addStarknetChain": {
           //TODO: add with implementation
           //const params = call.params as AddStarknetChainParameters
-          return await proxyLink.addStarknetChain.mutate()
+          return proxyLink.addStarknetChain.mutate(call.params as any)
         }
         case "wallet_switchStarknetChain": {
           //TODO: add with implementation
           //const params = call.params as SwitchStarknetChainParameter
-          return await proxyLink.switchStarknetChain.mutate()
+          return proxyLink.switchStarknetChain.mutate(call.params as any)
         }
         case "wallet_watchAsset": {
           //TODO: add with implementation
           //const params = call.params as WatchAssetParameters
           /* return remoteHandle.call("watchAsset", params) */
-          return await proxyLink.watchAsset.mutate()
+          return proxyLink.watchAsset.mutate()
         }
         default:
           throw new Error("not implemented")
@@ -138,19 +165,19 @@ export const getArgentStarknetWindowObject = (
 }
 
 async function updateStarknetWindowObject(
-  windowObject: StarknetWindowObject,
+  windowObject: BackwardsCompatibleStarknetWindowObject,
   provider: ProviderInterface,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
   walletAddress: string,
-): Promise<ConnectedStarknetWindowObject> {
-  if (windowObject.isConnected) {
-    return windowObject
+): Promise<BackwardsCompatibleConnectedStarknetWindowObject> {
+  if (windowObject.isConnected && windowObject.account) {
+    return windowObject as BackwardsCompatibleConnectedStarknetWindowObject
   }
 
   const chainId = await provider.getChainId()
 
   const valuesToAssign: Pick<
-    ConnectedStarknetWindowObject,
+    BackwardsCompatibleConnectedStarknetWindowObject,
     "isConnected" | "chainId" | "selectedAddress" | "account" | "provider"
   > = {
     isConnected: true,

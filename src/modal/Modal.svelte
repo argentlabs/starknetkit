@@ -15,7 +15,7 @@
 
   let loadingItem: string | false = false
 
-  let starknetMobile = window?.starknet_argentX as StarknetWindowObject & {
+  let starknetMobile = window?.starknet_argentX as unknown as StarknetWindowObject & {
     isInAppBrowser: boolean
   }
   let isInAppBrowser = starknetMobile?.isInAppBrowser
