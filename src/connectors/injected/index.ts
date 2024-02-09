@@ -1,5 +1,5 @@
 import { Permission, StarknetWindowObject } from "get-starknet-core"
-import { ProviderInterface, constants } from "starknet"
+import { constants } from "starknet"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -24,8 +24,6 @@ export interface InjectedConnectorOptions {
   name?: string
   /** Wallet icons. */
   icon?: ConnectorIcons
-  /** Provider */
-  provider?: ProviderInterface
 }
 
 export class InjectedConnector extends Connector {
@@ -161,10 +159,6 @@ export class InjectedConnector extends Connector {
     if (!this.available()) {
       throw new ConnectorNotFoundError()
     }
-
-    // if (!this._wallet?.isConnected) {
-    //   throw new UserNotConnectedError()
-    // }
   }
 
   async account(): Promise<string> {
@@ -221,18 +215,10 @@ export class InjectedConnector extends Connector {
     return this._wallet
   }
 
-  // TODO: UPDATE THIS
   private ensureWallet() {
     const installed = getAvailableWallets(globalThis)
     const wallet = installed.filter((w) => w.id === this._options.id)[0]
     if (wallet) {
-      const { provider } = this._options
-      if (provider) {
-        Object.assign(wallet, {
-          provider,
-        })
-      }
-
       this._wallet = wallet
     }
   }
@@ -261,12 +247,8 @@ function isWalletObject(wallet: any): boolean {
     return (
       wallet &&
       [
-        // wallet's must have methods/members, see IStarknetWindowObject
+        // wallet's must have methods/members, see StarknetWindowObject
         "request",
-        "isConnected",
-        "provider",
-        "enable",
-        "isPreauthorized",
         "on",
         "off",
         "version",
