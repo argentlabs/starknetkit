@@ -3,7 +3,6 @@ import {
   type AccountChangeEventHandler,
   Permission,
 } from "get-starknet-core"
-import { type ProviderInterface } from "starknet"
 import {
   Connector,
   type ConnectorData,
@@ -24,7 +23,6 @@ let _wallet: StarknetWindowObject | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
-  provider?: ProviderInterface
 }
 
 export class WebWalletConnector extends Connector {
@@ -114,27 +112,24 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
-    // if (!this._wallet?.isConnected) {
-    //   throw new UserNotConnectedError()
-    // }
     _wallet = null
     this._wallet = _wallet
     removeStarknetLastConnectedWallet()
   }
 
-  async account(): Promise<string> {
+  async account(): Promise<string | null> {
     this._wallet = _wallet
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet
-      .request({
-        type: "wallet_requestAccounts",
-        params: { silentMode: true },
-      })
-      .then((accounts) => accounts[0])
+    const [account] = await this._wallet.request({
+      type: "wallet_requestAccounts",
+      params: { silentMode: true },
+    })
+
+    return account ?? null
   }
 
   async chainId(): Promise<bigint> {
@@ -171,16 +166,11 @@ export class WebWalletConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
-    const provider = this._options.provider
     setPopupOptions({
       origin,
       location: "/interstitialLogin",
     })
-    const wallet = await getWebWalletStarknetObject(
-      origin,
-      trpcProxyClient({}),
-      provider,
-    )
+    const wallet = await getWebWalletStarknetObject(origin, trpcProxyClient({}))
 
     _wallet = wallet ?? null
     this._wallet = _wallet
