@@ -43,8 +43,8 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   abstract connect(): Promise<ConnectorData>
   /** Disconnect wallet. */
   abstract disconnect(): Promise<void>
-  /** Get current account. */
-  abstract account(): Promise<string>
+  /** Get current account silently. Return null if the account is not authorized */
+  abstract account(): Promise<string | null>
   /** Get current chain id. */
   abstract chainId(): Promise<bigint>
   /**  Connector StarknetWindowObject */
