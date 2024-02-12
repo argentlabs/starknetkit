@@ -2,17 +2,12 @@ import type { CreateTRPCProxyClient } from "@trpc/client"
 import type {
   AccountChangeEventHandler,
   NetworkChangeEventHandler,
+  StarknetWindowObject,
   WalletEvents,
 } from "get-starknet-core"
-import type { ProviderInterface, constants } from "starknet"
+import type { constants } from "starknet"
 
-import { setPopupOptions, type AppRouter } from "../helpers/trpc"
-import { MessageAccount } from "./account"
-import { ENABLE_POPUP_HEIGHT, ENABLE_POPUP_WIDTH } from "../helpers/popupSizes"
-import {
-  BackwardsCompatibleConnectedStarknetWindowObject,
-  BackwardsCompatibleStarknetWindowObject,
-} from "src/types/legacy"
+import { type AppRouter } from "../helpers/trpc"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -32,20 +27,16 @@ export type LoginStatus = {
   isPreauthorized?: boolean
 }
 
-export type WebWalletStarknetWindowObject =
-  BackwardsCompatibleStarknetWindowObject & {
-    getLoginStatus(): Promise<LoginStatus>
-  }
+export type WebWalletStarknetWindowObject = StarknetWindowObject & {
+  getLoginStatus(): Promise<LoginStatus>
+}
 
 export const getArgentStarknetWindowObject = (
   options: GetArgentStarknetWindowObject,
-  provider: ProviderInterface,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
 ): WebWalletStarknetWindowObject => {
   const wallet: WebWalletStarknetWindowObject = {
     ...options,
-    isConnected: false,
-    provider,
     getLoginStatus: () => {
       return proxyLink.getLoginStatus.mutate()
     },
@@ -95,40 +86,6 @@ export const getArgentStarknetWindowObject = (
           throw new Error("not implemented")
       }
     },
-    async enable(ops) {
-      if (ops?.starknetVersion !== "v4") {
-        throw Error("not implemented")
-      }
-
-      try {
-        setPopupOptions({
-          width: ENABLE_POPUP_WIDTH,
-          height: ENABLE_POPUP_HEIGHT,
-          location: "/interstitialLogin",
-        })
-        const enablePromise = proxyLink.enable.mutate()
-        const selectedAddress: string = await enablePromise
-
-        await updateStarknetWindowObject(
-          wallet,
-          provider,
-          proxyLink,
-          selectedAddress,
-        )
-
-        return [selectedAddress]
-      } catch (error) {
-        if (error instanceof Error) {
-          throw new Error(error.message)
-        }
-        throw new Error("Unknow error on enable wallet")
-      }
-    },
-    async isPreauthorized() {
-      const { isLoggedIn, isPreauthorized } =
-        await proxyLink.getLoginStatus.mutate()
-      return Boolean(isLoggedIn && isPreauthorized)
-    },
     on: (event, handleEvent) => {
       if (event === "accountsChanged") {
         userEventHandlers.push({
@@ -162,30 +119,4 @@ export const getArgentStarknetWindowObject = (
 
   // TODO: handle network and account changes
   return wallet
-}
-
-async function updateStarknetWindowObject(
-  windowObject: BackwardsCompatibleStarknetWindowObject,
-  provider: ProviderInterface,
-  proxyLink: CreateTRPCProxyClient<AppRouter>,
-  walletAddress: string,
-): Promise<BackwardsCompatibleConnectedStarknetWindowObject> {
-  if (windowObject.isConnected && windowObject.account) {
-    return windowObject as BackwardsCompatibleConnectedStarknetWindowObject
-  }
-
-  const chainId = await provider.getChainId()
-
-  const valuesToAssign: Pick<
-    BackwardsCompatibleConnectedStarknetWindowObject,
-    "isConnected" | "chainId" | "selectedAddress" | "account" | "provider"
-  > = {
-    isConnected: true,
-    chainId,
-    selectedAddress: walletAddress,
-    account: new MessageAccount(provider, walletAddress, proxyLink),
-    provider,
-  }
-
-  return Object.assign(windowObject, valuesToAssign)
 }

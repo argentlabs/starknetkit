@@ -1,4 +1,3 @@
-import { ProviderInterface } from "starknet"
 import { type Connector } from "../connectors"
 import {
   ArgentMobileConnector,
@@ -13,7 +12,6 @@ export const defaultConnectors = ({
 }: {
   argentMobileOptions?: ArgentMobileConnectorOptions
   webWalletUrl?: string
-  provider?: ProviderInterface
 }): Connector[] => {
   const isSafari =
     typeof window !== "undefined"

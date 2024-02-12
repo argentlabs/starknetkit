@@ -22,7 +22,6 @@ export interface IArgentLoginOptions {
   mobileUrl?: string
   modalType?: "overlay" | "window"
   walletConnect?: SignClientTypes.Options
-  provider?: ProviderInterface
 }
 
 export const login = async <TAdapter extends NamespaceAdapter>(
@@ -38,7 +37,6 @@ export const login = async <TAdapter extends NamespaceAdapter>(
     url,
     icons,
     walletConnect,
-    provider,
   }: IArgentLoginOptions,
   Adapter: new (options: NamespaceAdapterOptions) => TAdapter,
 ): Promise<TAdapter | null> => {
@@ -66,9 +64,8 @@ export const login = async <TAdapter extends NamespaceAdapter>(
 
   const client = await SignClient.init(signClientOptions)
 
-  if (!provider) {
-    provider = new RpcProvider({ nodeUrl: rpcUrl })
-  }
+  // TODO: remove provider and use rpcUrl directly
+  const provider = new RpcProvider({ nodeUrl: rpcUrl })
 
   const adapter = new Adapter({ client, chainId, rpcUrl, provider })
 

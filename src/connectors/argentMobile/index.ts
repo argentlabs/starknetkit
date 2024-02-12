@@ -4,7 +4,6 @@ import {
   type StarknetWindowObject,
   StarknetChainId,
 } from "get-starknet-core"
-import type { ProviderInterface } from "starknet"
 import { constants } from "starknet"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import {
@@ -29,7 +28,6 @@ export interface ArgentMobileConnectorOptions {
   description?: string
   url?: string
   icons?: string[]
-  provider?: ProviderInterface
   rpcUrl?: string
 }
 
@@ -160,16 +158,8 @@ export class ArgentMobileConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const { getStarknetWindowObject } = await import("./modal")
-    const {
-      chainId,
-      projectId,
-      dappName,
-      description,
-      url,
-      icons,
-      provider,
-      rpcUrl,
-    } = this._options
+    const { chainId, projectId, dappName, description, url, icons, rpcUrl } =
+      this._options
 
     const publicRPCNode = getRandomPublicRPCNode()
     const providerRpcUrl =
@@ -185,7 +175,6 @@ export class ArgentMobileConnector extends Connector {
       description,
       url,
       icons,
-      provider,
       rpcUrl: providerRpcUrl,
     }
 
