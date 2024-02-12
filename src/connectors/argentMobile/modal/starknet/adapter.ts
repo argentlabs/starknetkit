@@ -3,10 +3,6 @@ import type SignClient from "@walletconnect/sign-client"
 import type { SignerConnection } from "@walletconnect/signer-connection"
 import type { SessionTypes } from "@walletconnect/types"
 import type {
-  ConnectedStarknetWindowObject,
-  RpcMessage,
-} from "get-starknet-core"
-import type {
   AccountInterface,
   ProviderInterface,
   SignerInterface,
@@ -19,6 +15,7 @@ import { StarknetRemoteAccount } from "./account"
 import { StarknetRemoteSigner } from "./signer"
 import type { IStarknetRpc } from "./starknet.model"
 import { argentModal } from "../argentModal"
+import { RequestFn, StarknetWindowObject } from "get-starknet-core"
 
 export interface EthereumRpcConfig {
   chains: string[]
@@ -34,7 +31,7 @@ export const deserializeStarknetChainId = (chainId: string): string =>
 
 export class StarknetAdapter
   extends NamespaceAdapter
-  implements ConnectedStarknetWindowObject
+  implements StarknetWindowObject
 {
   id = "argentMobile"
   name = "Argent Mobile"
@@ -106,12 +103,10 @@ export class StarknetAdapter
 
   // StarknetWindowObject
 
-  async request<T extends RpcMessage>(
-    _call: Omit<T, "result">,
-  ): Promise<T["result"]> {
+  request: RequestFn = async (call) => {
     // request() is mostly used  for messages like `wallet_watchAsset` etc.
     // regular transactions calls are done through .account.execute
-    throw new Error("Not implemented: .request()")
+    throw new Error(`Not implemented: .request() for ${call.type}`)
   }
 
   async enable(): Promise<string[]> {
@@ -131,11 +126,11 @@ export class StarknetAdapter
     return Boolean(this.client.session.getAll().find(this.isValidSession))
   }
 
-  on: ConnectedStarknetWindowObject["on"] = (event, handleEvent) => {
+  on: StarknetWindowObject["on"] = (event, handleEvent) => {
     this.eventEmitter.on(event, handleEvent)
   }
 
-  off: ConnectedStarknetWindowObject["off"] = (event, handleEvent) => {
+  off: StarknetWindowObject["off"] = (event, handleEvent) => {
     this.eventEmitter.off(event, handleEvent)
   }
 
