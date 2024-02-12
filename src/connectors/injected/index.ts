@@ -1,4 +1,8 @@
-import { Permission, StarknetWindowObject } from "get-starknet-core"
+import {
+  Permission,
+  StarknetChainId,
+  StarknetWindowObject,
+} from "get-starknet-core"
 import { constants } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -56,53 +60,38 @@ export class InjectedConnector extends Connector {
     return permissions.includes(Permission.Accounts)
   }
 
-  async chainId(): Promise<bigint> {
+  async chainId(): Promise<StarknetChainId> {
     this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const chainIdHex = await this._wallet.request({
+    return this._wallet.request({
       type: "wallet_requestChainId",
     })
-
-    return BigInt(chainIdHex)
   }
 
   private async onAccountsChanged(accounts?: string[]): Promise<void> {
     if (!accounts) {
       return void this.emit("disconnect")
     }
-
     const account = accounts[0]
     const chainId = await this.chainId()
     this.emit("change", { account, chainId })
   }
 
-  private onNetworkChanged(network?: string): void {
-    switch (network) {
-      // Argent
-      case "SN_MAIN":
-        this.emit("change", {
-          chainId: BigInt(constants.StarknetChainId.SN_MAIN),
-        })
-        break
-      case "SN_GOERLI":
-        this.emit("change", {
-          chainId: BigInt(constants.StarknetChainId.SN_GOERLI),
-        })
-        break
-      // Braavos
-      case "mainnet-alpha":
-        this.emit("change", {
-          chainId: BigInt(constants.StarknetChainId.SN_MAIN),
-        })
-        break
-      case "goerli-alpha":
-        this.emit("change", {
-          chainId: BigInt(constants.StarknetChainId.SN_GOERLI),
-        })
+  private onNetworkChanged(
+    chainId?: StarknetChainId,
+    accounts?: string[],
+  ): void {
+    const { SN_GOERLI, SN_MAIN } = constants.StarknetChainId
+    const account = accounts?.[0]
+    switch (chainId) {
+      // TODO: add sepolia
+      case SN_MAIN:
+      case SN_GOERLI:
+        this.emit("change", { chainId, account })
         break
       default:
         this.emit("change", {})
@@ -121,6 +110,7 @@ export class InjectedConnector extends Connector {
     try {
       accounts = await this._wallet.request({
         type: "wallet_requestAccounts",
+        params: { silentMode: false }, // explicit to show the modal
       })
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
@@ -132,13 +122,9 @@ export class InjectedConnector extends Connector {
       throw new UserRejectedRequestError()
     }
 
-    this._wallet.on("accountsChanged", async (accounts?: string[]) => {
-      await this.onAccountsChanged(accounts)
-    })
+    this._wallet.on("accountsChanged", this.onAccountsChanged.bind(this))
 
-    this._wallet.on("networkChanged", (network?: string) => {
-      this.onNetworkChanged(network)
-    })
+    this._wallet.on("networkChanged", this.onNetworkChanged.bind(this))
 
     await this.onAccountsChanged(accounts)
 

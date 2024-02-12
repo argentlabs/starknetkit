@@ -185,4 +185,6 @@ export type {
   ModalResult,
 }
 
+export type * from "./types/legacy"
+
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"

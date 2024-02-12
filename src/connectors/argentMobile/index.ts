@@ -2,6 +2,7 @@ import {
   Permission,
   type AccountChangeEventHandler,
   type StarknetWindowObject,
+  StarknetChainId,
 } from "get-starknet-core"
 import type { ProviderInterface } from "starknet"
 import { constants } from "starknet"
@@ -91,6 +92,7 @@ export class ArgentMobileConnector extends Connector {
 
     const accounts = await this._wallet.request({
       type: "wallet_requestAccounts",
+      params: { silentMode: false }, // explicit to show the modal
     })
 
     const chainId = await this.chainId()
@@ -126,15 +128,14 @@ export class ArgentMobileConnector extends Connector {
     return account ?? null
   }
 
-  async chainId(): Promise<bigint> {
+  async chainId(): Promise<StarknetChainId> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const chainIdHex = await this._wallet.request({
+    return this._wallet.request({
       type: "wallet_requestChainId",
     })
-    return BigInt(chainIdHex)
   }
 
   // needed, methods required by starknet-react. Otherwise an exception is throwd
