@@ -25,7 +25,16 @@ export const mapModalWallets = ({
     return []
   }
 
-  return availableConnectors
+  const allInstalledWallets = installedWallets.map((w) =>
+    availableConnectors.find((c) => c.id === w.id),
+  )
+
+  const orderedByInstall = [
+    ...availableConnectors.filter((c) => allInstalledWallets.includes(c)),
+    ...availableConnectors.filter((c) => !allInstalledWallets.includes(c)),
+  ]
+
+  const connectors = orderedByInstall
     .map<ModalWallet | null>((c) => {
       const installed = installedWallets.find((w) => w.id === c.id)
       if (installed) {
@@ -74,4 +83,6 @@ export const mapModalWallets = ({
       }
     })
     .filter((c): c is ModalWallet => c !== null)
+
+  return connectors
 }
