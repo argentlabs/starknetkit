@@ -64,6 +64,7 @@ export class StarknetAdapter
   public rpc: EthereumRpcConfig
 
   private walletRpc: IStarknetRpc
+  private handleRequest: Record<string, (...args: any) => any>
 
   constructor({ client, chainId, rpcUrl, provider }: NamespaceAdapterOptions) {
     super()
@@ -93,6 +94,15 @@ export class StarknetAdapter
       this.remoteSigner,
       this.walletRpc,
     )
+
+    this.handleRequest = Object.freeze({
+      wallet_requestChainId: this.handleRequestChainId,
+      wallet_requestAccounts: this.handleRequestAccounts,
+      wallet_getPermissions: this.handleGetPermissions,
+      starknet_addInvokeTransaction: this.handleAddInvokeTransaction,
+      starknet_signTypedData: this.handleSignTypedData,
+      starknet_supportedSpecs: this.handleSupportedSpecs,
+    })
   }
 
   getNetworkName(chainId: string): constants.NetworkName {
@@ -112,53 +122,9 @@ export class StarknetAdapter
       throw new Error("No session")
     }
 
-    if (call.type === "wallet_requestChainId") {
-      return this.chainId === constants.NetworkName.SN_GOERLI
-        ? constants.StarknetChainId.SN_GOERLI
-        : constants.StarknetChainId.SN_MAIN
-    }
-
-    if (call.type === "wallet_requestAccounts") {
-      return this.accounts
-    }
-
-    if (call.type === "wallet_getPermissions") {
-      if (await this.isPreauthorized()) {
-        return ["accounts"]
-      }
-
-      return []
-    }
-
-    if (call.type === "starknet_addInvokeTransaction") {
-      const { calls } = call.params as AddInvokeTransactionParameters
-
-      return await this.requestWallet({
-        method: "starknet_requestAddInvokeTransaction",
-        params: {
-          accountAddress: this.account.address,
-          executionRequest: {
-            calls: calls?.map(({ contract_address, ...rest }) => ({
-              ...rest,
-              contractAddress: contract_address,
-            })),
-          },
-        },
-      })
-    }
-
-    if (call.type === "starknet_signTypedData") {
-      const params = {
-        accountAddress: this.account.address,
-        typedData: { ...(call.params as TypedData) },
-      }
-
-      const response = (await this.requestWallet({
-        method: call.type,
-        params,
-      })) as { signature: string[] } | string[]
-
-      return "signature" in response ? response.signature : response
+    const requestToCall = this.handleRequest[call.type]
+    if (requestToCall) {
+      return requestToCall(call.params)
     }
 
     throw new Error(`Not implemented: .request() for ${call.type}`)
@@ -259,5 +225,63 @@ export class StarknetAdapter
     )
     this.eventEmitter.emit("accountsChanged", this.accounts)
     this.selectedAddress = fixedAddress
+  }
+
+  private handleRequestChainId = () => {
+    return this.chainId === constants.NetworkName.SN_GOERLI
+      ? constants.StarknetChainId.SN_GOERLI
+      : constants.StarknetChainId.SN_MAIN
+  }
+
+  private handleRequestAccounts = () => {
+    return this.accounts
+  }
+
+  private handleGetPermissions = async () => {
+    if (await this.isPreauthorized()) {
+      return ["accounts"]
+    }
+
+    return []
+  }
+
+  private handleAddInvokeTransaction = async (
+    params: AddInvokeTransactionParameters,
+  ) => {
+    const { calls } = params as AddInvokeTransactionParameters
+
+    return await this.requestWallet({
+      method: "starknet_requestAddInvokeTransaction",
+      params: {
+        accountAddress: this.account.address,
+        executionRequest: {
+          calls: calls?.map(({ contract_address, ...rest }) => ({
+            ...rest,
+            contractAddress: contract_address,
+          })),
+        },
+      },
+    })
+  }
+
+  private handleSignTypedData = async (params: TypedData) => {
+    const typedDataParams = {
+      accountAddress: this.account.address,
+      typedData: params,
+    }
+
+    const response = (await this.requestWallet({
+      method: "starknet_signTypedData",
+      params: typedDataParams,
+    })) as { signature: string[] } | string[]
+
+    return "signature" in response ? response.signature : response
+  }
+
+  private handleSupportedSpecs = async () => {
+    return await this.requestWallet({
+      method: "starknet_supportedSpecs",
+      params: undefined,
+    })
   }
 }
