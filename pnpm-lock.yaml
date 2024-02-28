@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -26,6 +26,9 @@ dependencies:
   events:
     specifier: ^3.3.0
     version: 3.3.0
+  get-starknet-core:
+    specifier: 4.0.0-next.2
+    version: 4.0.0-next.2
   get-starknet-coreV3:
     specifier: npm:get-starknet-core@3.2.0
     version: /get-starknet-core@3.2.0(starknet@5.24.3)
@@ -1166,6 +1169,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     bundledDependencies:
       - napi-wasm
 
@@ -3927,6 +3931,10 @@ packages:
       starknet: 5.24.3
     dev: false
 
+  /get-starknet-core@4.0.0-next.2:
+    resolution: {integrity: sha512-1p7bJbmTxUMiybdLB/nPHsdIBviIUBBzuOljN7yWnrYsCaH4AVjQ32OGEgqDn+oV8hJIKIjmArexBT2OYzP9dA==}
+    dev: false
+
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
@@ -5286,6 +5294,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}

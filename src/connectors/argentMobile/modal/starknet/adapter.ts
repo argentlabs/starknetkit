@@ -9,13 +9,18 @@ import type {
 } from "starknet"
 import { RpcProvider, constants } from "starknet"
 
+import {
+  AddInvokeTransactionParameters,
+  RequestFn,
+  StarknetWindowObject,
+  TypedData,
+} from "get-starknet-core"
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
+import { argentModal } from "../argentModal"
 import { StarknetRemoteAccount } from "./account"
 import { StarknetRemoteSigner } from "./signer"
 import type { IStarknetRpc } from "./starknet.model"
-import { argentModal } from "../argentModal"
-import { RequestFn, StarknetWindowObject } from "get-starknet-core"
 
 export interface EthereumRpcConfig {
   chains: string[]
@@ -102,10 +107,60 @@ export class StarknetAdapter
   }
 
   // StarknetWindowObject
+  request: RequestFn = async (call): Promise<any> => {
+    if (!this.session) {
+      throw new Error("No session")
+    }
 
-  request: RequestFn = async (call) => {
-    // request() is mostly used  for messages like `wallet_watchAsset` etc.
-    // regular transactions calls are done through .account.execute
+    if (call.type === "wallet_requestChainId") {
+      return this.chainId === constants.NetworkName.SN_GOERLI
+        ? constants.StarknetChainId.SN_GOERLI
+        : constants.StarknetChainId.SN_MAIN
+    }
+
+    if (call.type === "wallet_requestAccounts") {
+      return this.accounts
+    }
+
+    if (call.type === "wallet_getPermissions") {
+      if (await this.isPreauthorized()) {
+        return ["accounts"]
+      }
+
+      return []
+    }
+
+    if (call.type === "starknet_addInvokeTransaction") {
+      const { calls } = call.params as AddInvokeTransactionParameters
+
+      return await this.requestWallet({
+        method: "starknet_requestAddInvokeTransaction",
+        params: {
+          accountAddress: this.account.address,
+          executionRequest: {
+            calls: calls?.map(({ contract_address, ...rest }) => ({
+              ...rest,
+              contractAddress: contract_address,
+            })),
+          },
+        },
+      })
+    }
+
+    if (call.type === "starknet_signTypedData") {
+      const params = {
+        accountAddress: this.account.address,
+        typedData: { ...(call.params as TypedData) },
+      }
+
+      const response = (await this.requestWallet({
+        method: call.type,
+        params,
+      })) as { signature: string[] } | string[]
+
+      return "signature" in response ? response.signature : response
+    }
+
     throw new Error(`Not implemented: .request() for ${call.type}`)
   }
 
