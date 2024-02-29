@@ -42,18 +42,23 @@ export const connect = async ({
 
   const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {
-    const connector =
-      availableConnectors.find((c) => c.id === lastWalletId) ?? null
-    let connectorData: ConnectorData | null = null
+    try {
+      const connector =
+        availableConnectors.find((c) => c.id === lastWalletId) ?? null
+      let connectorData: ConnectorData | null = null
 
-    if (connector && resultType === "wallet") {
-      connectorData = await connector.connect()
-    }
+      if (connector && resultType === "wallet") {
+        connectorData = await connector.connect()
+      }
 
-    return {
-      connector,
-      wallet: connector?.wallet ?? null,
-      connectorData,
+      return {
+        connector,
+        wallet: connector?.wallet ?? null,
+        connectorData,
+      }
+    } catch (error) {
+      removeStarknetLastConnectedWallet()
+      throw new Error(error as any)
     }
   }
 
