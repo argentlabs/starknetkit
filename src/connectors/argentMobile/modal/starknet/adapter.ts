@@ -50,6 +50,7 @@ export class StarknetAdapter
   // NamespaceAdapter
   public namespace = "starknet"
   public methods = [
+    "starknet_supportedSpecs",
     "starknet_signTypedData",
     "starknet_requestAddInvokeTransaction",
   ]
@@ -281,7 +282,7 @@ export class StarknetAdapter
   private handleSupportedSpecs = async () => {
     return await this.requestWallet({
       method: "starknet_supportedSpecs",
-      params: undefined,
+      params: {},
     })
   }
 }
