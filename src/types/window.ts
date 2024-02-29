@@ -163,3 +163,17 @@ export type WebWalletMethods = ConnectMethods & ModalMethods
 export type IframeMethods = {
   connect: () => void
 }
+
+export const RpcCallSchema = z
+  .object({
+    contract_address: z.string(),
+    entrypoint: z.string(),
+    calldata: z.array(bignumberishSchema).optional(),
+  })
+  .transform(({ contract_address, entrypoint, calldata }) => ({
+    contractAddress: contract_address,
+    entrypoint,
+    calldata: calldata || [],
+  }))
+
+export const RpcCallsArraySchema = z.array(RpcCallSchema).nonempty()

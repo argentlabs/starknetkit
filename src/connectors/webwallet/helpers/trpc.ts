@@ -3,8 +3,13 @@ import { createTRPCProxyClient, loggerLink, splitLink } from "@trpc/client"
 import { initTRPC } from "@trpc/server"
 import { popupLink, windowLink } from "trpc-browser/link"
 import { z } from "zod"
-import { StarknetMethodArgumentsSchemas } from "../../../types/window"
+import {
+  RpcCallSchema,
+  RpcCallsArraySchema,
+  StarknetMethodArgumentsSchemas,
+} from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
+import { Permission } from "get-starknet-core"
 
 const t = initTRPC.create({
   isServer: false,
@@ -77,6 +82,27 @@ const appRouter = t.router({
         isLoggedIn: true,
       }
     }),
+
+  // RPC Messages
+  requestAccounts: t.procedure
+    .input(z.object({ silentMode: z.boolean().optional() }))
+    .output(z.string().array())
+    .mutation(async () => []),
+  requestChainId: t.procedure.output(z.string()).mutation(async () => ""),
+  signTypedData: t.procedure
+    .input(StarknetMethodArgumentsSchemas.signMessage)
+    .output(z.string().array())
+    .mutation(async () => []),
+  getPermissions: t.procedure
+    .output(z.array(z.enum([Permission.Accounts])))
+    .mutation(async () => {
+      return [Permission.Accounts]
+    }),
+  addInvokeTransaction: t.procedure
+    .input(RpcCallSchema.or(RpcCallsArraySchema))
+    .output(z.string())
+    .mutation(async (_) => ""),
+
   addStarknetChain: t.procedure.mutation((_) => {
     throw Error("not implemented")
   }),

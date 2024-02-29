@@ -1,7 +1,7 @@
 import SignClient from "@walletconnect/sign-client"
 import type { SignClientTypes } from "@walletconnect/types"
 
-import { ProviderInterface, constants } from "starknet"
+import { ProviderInterface, RpcProvider, constants } from "starknet"
 
 // Using NetworkName as a value.
 const Network: typeof constants.NetworkName = constants.NetworkName
@@ -22,7 +22,6 @@ export interface IArgentLoginOptions {
   mobileUrl?: string
   modalType?: "overlay" | "window"
   walletConnect?: SignClientTypes.Options
-  provider?: ProviderInterface
 }
 
 export const login = async <TAdapter extends NamespaceAdapter>(
@@ -38,7 +37,6 @@ export const login = async <TAdapter extends NamespaceAdapter>(
     url,
     icons,
     walletConnect,
-    provider,
   }: IArgentLoginOptions,
   Adapter: new (options: NamespaceAdapterOptions) => TAdapter,
 ): Promise<TAdapter | null> => {
@@ -65,6 +63,10 @@ export const login = async <TAdapter extends NamespaceAdapter>(
   }
 
   const client = await SignClient.init(signClientOptions)
+
+  // TODO: remove provider and use rpcUrl directly
+  const provider = new RpcProvider({ nodeUrl: rpcUrl })
+
   const adapter = new Adapter({ client, chainId, rpcUrl, provider })
 
   client.on("session_event", (_) => {

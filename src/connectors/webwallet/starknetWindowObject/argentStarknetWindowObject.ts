@@ -1,16 +1,13 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
 import type {
   AccountChangeEventHandler,
-  ConnectedStarknetWindowObject,
   NetworkChangeEventHandler,
   StarknetWindowObject,
   WalletEvents,
 } from "get-starknet-core"
-import type { ProviderInterface } from "starknet"
+import type { constants } from "starknet"
 
-import { setPopupOptions, type AppRouter } from "../helpers/trpc"
-import { MessageAccount } from "./account"
-import { ENABLE_POPUP_HEIGHT, ENABLE_POPUP_WIDTH } from "../helpers/popupSizes"
+import { type AppRouter } from "../helpers/trpc"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -36,71 +33,58 @@ export type WebWalletStarknetWindowObject = StarknetWindowObject & {
 
 export const getArgentStarknetWindowObject = (
   options: GetArgentStarknetWindowObject,
-  provider: ProviderInterface,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
 ): WebWalletStarknetWindowObject => {
   const wallet: WebWalletStarknetWindowObject = {
     ...options,
-    isConnected: false,
-    provider,
     getLoginStatus: () => {
       return proxyLink.getLoginStatus.mutate()
     },
     async request(call) {
       switch (call.type) {
+        case "wallet_requestAccounts": {
+          return proxyLink.requestAccounts.mutate(call.params as any)
+        }
+
+        case "starknet_signTypedData": {
+          return proxyLink.signTypedData.mutate(call.params as any)
+        }
+
+        case "wallet_getPermissions": {
+          return proxyLink.getPermissions.mutate()
+        }
+
+        case "starknet_addInvokeTransaction": {
+          const hash = await proxyLink.addInvokeTransaction.mutate(
+            (call.params as any).calls,
+          )
+
+          return { transaction_hash: hash }
+        }
+
+        case "wallet_requestChainId": {
+          return (await proxyLink.requestChainId.mutate()) as constants.StarknetChainId
+        }
+
         case "wallet_addStarknetChain": {
           //TODO: add with implementation
           //const params = call.params as AddStarknetChainParameters
-          return await proxyLink.addStarknetChain.mutate()
+          return proxyLink.addStarknetChain.mutate(call.params as any)
         }
         case "wallet_switchStarknetChain": {
           //TODO: add with implementation
           //const params = call.params as SwitchStarknetChainParameter
-          return await proxyLink.switchStarknetChain.mutate()
+          return proxyLink.switchStarknetChain.mutate(call.params as any)
         }
         case "wallet_watchAsset": {
           //TODO: add with implementation
           //const params = call.params as WatchAssetParameters
           /* return remoteHandle.call("watchAsset", params) */
-          return await proxyLink.watchAsset.mutate()
+          return proxyLink.watchAsset.mutate()
         }
         default:
           throw new Error("not implemented")
       }
-    },
-    async enable(ops) {
-      if (ops?.starknetVersion !== "v4") {
-        throw Error("not implemented")
-      }
-
-      try {
-        setPopupOptions({
-          width: ENABLE_POPUP_WIDTH,
-          height: ENABLE_POPUP_HEIGHT,
-          location: "/interstitialLogin",
-        })
-        const enablePromise = proxyLink.enable.mutate()
-        const selectedAddress: string = await enablePromise
-
-        await updateStarknetWindowObject(
-          wallet,
-          provider,
-          proxyLink,
-          selectedAddress,
-        )
-
-        return [selectedAddress]
-      } catch (error) {
-        if (error instanceof Error) {
-          throw new Error(error.message)
-        }
-        throw new Error("Unknow error on enable wallet")
-      }
-    },
-    async isPreauthorized() {
-      const { isLoggedIn, isPreauthorized } =
-        await proxyLink.getLoginStatus.mutate()
-      return Boolean(isLoggedIn && isPreauthorized)
     },
     on: (event, handleEvent) => {
       if (event === "accountsChanged") {
@@ -135,30 +119,4 @@ export const getArgentStarknetWindowObject = (
 
   // TODO: handle network and account changes
   return wallet
-}
-
-async function updateStarknetWindowObject(
-  windowObject: StarknetWindowObject,
-  provider: ProviderInterface,
-  proxyLink: CreateTRPCProxyClient<AppRouter>,
-  walletAddress: string,
-): Promise<ConnectedStarknetWindowObject> {
-  if (windowObject.isConnected) {
-    return windowObject
-  }
-
-  const chainId = await provider.getChainId()
-
-  const valuesToAssign: Pick<
-    ConnectedStarknetWindowObject,
-    "isConnected" | "chainId" | "selectedAddress" | "account" | "provider"
-  > = {
-    isConnected: true,
-    chainId,
-    selectedAddress: walletAddress,
-    account: new MessageAccount(provider, walletAddress, proxyLink),
-    provider,
-  }
-
-  return Object.assign(windowObject, valuesToAssign)
 }

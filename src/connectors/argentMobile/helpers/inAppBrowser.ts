@@ -5,9 +5,10 @@ export const isInArgentMobileAppBrowser = (): boolean => {
     return false
   }
 
-  const starknetMobile = window?.starknet_argentX as StarknetWindowObject & {
-    isInAppBrowser: boolean
-  }
+  const starknetMobile =
+    window?.starknet_argentX as unknown as StarknetWindowObject & {
+      isInAppBrowser: boolean
+    }
 
   return starknetMobile?.isInAppBrowser
 }
