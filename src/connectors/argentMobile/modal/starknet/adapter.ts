@@ -64,7 +64,7 @@ export class StarknetAdapter
   public rpc: EthereumRpcConfig
 
   private walletRpc: IStarknetRpc
-  private handleRequest: Record<string, (...args: any) => any>
+  private handleRequest: Record<string, (...args: any) => any> // TODO: improve typing
 
   constructor({ client, chainId, rpcUrl, provider }: NamespaceAdapterOptions) {
     super()
