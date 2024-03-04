@@ -1,7 +1,7 @@
 import SignClient from "@walletconnect/sign-client"
 import type { SignClientTypes } from "@walletconnect/types"
 
-import { ProviderInterface, RpcProvider, constants } from "starknet"
+import { RpcProvider, constants } from "starknet"
 
 // Using NetworkName as a value.
 const Network: typeof constants.NetworkName = constants.NetworkName
