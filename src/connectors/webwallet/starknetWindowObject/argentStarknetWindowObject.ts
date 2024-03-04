@@ -7,7 +7,13 @@ import type {
 } from "get-starknet-core"
 import type { constants } from "starknet"
 
-import { type AppRouter } from "../helpers/trpc"
+import { setPopupOptions, type AppRouter } from "../helpers/trpc"
+import {
+  EXECUTE_POPUP_HEIGHT,
+  EXECUTE_POPUP_WIDTH,
+  SIGN_MESSAGE_POPUP_HEIGHT,
+  SIGN_MESSAGE_POPUP_WIDTH,
+} from "../helpers/popupSizes"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -47,7 +53,13 @@ export const getArgentStarknetWindowObject = (
         }
 
         case "starknet_signTypedData": {
-          return proxyLink.signTypedData.mutate(call.params as any)
+          setPopupOptions({
+            width: SIGN_MESSAGE_POPUP_WIDTH,
+            height: SIGN_MESSAGE_POPUP_HEIGHT,
+            location: "/signMessage",
+          })
+          const data = Array.isArray(call.params) ? call.params : [call.params]
+          return proxyLink.signTypedData.mutate(data as any)
         }
 
         case "wallet_getPermissions": {
@@ -55,6 +67,25 @@ export const getArgentStarknetWindowObject = (
         }
 
         case "starknet_addInvokeTransaction": {
+          const calls = (call.params as any).calls
+
+          setPopupOptions({
+            width: EXECUTE_POPUP_WIDTH,
+            height: EXECUTE_POPUP_HEIGHT,
+            location: "/review",
+          })
+          if (
+            Array.isArray(calls) &&
+            calls[0] &&
+            calls[0].entrypoint === "use_offchain_session"
+          ) {
+            setPopupOptions({
+              width: 1,
+              height: 1,
+              location: "/executeSessionTx",
+              atLeftBottom: true,
+            })
+          }
           const hash = await proxyLink.addInvokeTransaction.mutate(
             (call.params as any).calls,
           )
