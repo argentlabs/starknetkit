@@ -103,6 +103,10 @@ export class WebWalletConnector extends Connector {
       throw new UserRejectedRequestError()
     }
 
+    // Prevent trpc from throwing an error (closed prematurely)
+    // this happens when 2 requests to webwallet are made in a row (trpc-browser is closing the first popup and requesting a new one right after)
+    // won't be needed with chrome iframes will be enabled again (but still needed for other browsers)
+    await new Promise((r) => setTimeout(r, 100))
     const chainId = await this.chainId()
 
     return {
