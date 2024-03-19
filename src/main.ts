@@ -1,10 +1,6 @@
-import type {
-  ConnectedStarknetWindowObject,
-  DisconnectOptions,
-  DisconnectedStarknetWindowObject,
-  StarknetWindowObject,
-} from "get-starknet-core"
+import type { DisconnectOptions, StarknetWindowObject } from "get-starknet-core"
 import sn from "get-starknet-core"
+import snV3 from "get-starknet-coreV3"
 
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 
@@ -16,9 +12,9 @@ import {
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
-import type { ConnectOptions, ModalWallet } from "./types/modal"
+import type { ConnectOptions, ModalResult, ModalWallet } from "./types/modal"
 
-import { Connector } from "./connectors"
+import { ConnectorData, type Connector } from "./connectors"
 import css from "./theme.css?inline"
 
 let selectedConnector: Connector | null = null
@@ -31,9 +27,9 @@ export const connect = async ({
   webWalletUrl = DEFAULT_WEBWALLET_URL,
   argentMobileOptions,
   connectors = [],
-  provider,
+  resultType = "wallet",
   ...restOptions
-}: ConnectOptions = {}): Promise<StarknetWindowObject | null> => {
+}: ConnectOptions = {}): Promise<ModalResult> => {
   // force null in case it was disconnected from mobile app
   selectedConnector = null
   const availableConnectors =
@@ -41,51 +37,73 @@ export const connect = async ({
       ? defaultConnectors({
           argentMobileOptions,
           webWalletUrl,
-          provider,
         })
       : connectors
 
   const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {
-    const connector = availableConnectors.find((c) => c.id === lastWalletId)
-    await connector?.connect()
-    selectedConnector = connector ?? null
-    return connector?.wallet ?? null
+    try {
+      const connector =
+        availableConnectors.find((c) => c.id === lastWalletId) ?? null
+      let connectorData: ConnectorData | null = null
+
+      if (connector && resultType === "wallet") {
+        connectorData = await connector.connect()
+      }
+
+      return {
+        connector,
+        wallet: connector?.wallet ?? null,
+        connectorData,
+      }
+    } catch (error) {
+      removeStarknetLastConnectedWallet()
+      throw new Error(error as any)
+    }
   }
 
   const installedWallets = await sn.getAvailableWallets(restOptions)
 
   // we return/display wallet options once per first-dapp (ever) connect
   if (modalMode === "canAsk" && lastWalletId) {
-    const preAuthorizedWallets = await sn.getPreAuthorizedWallets({
-      ...restOptions,
-    })
+    const authorizedWallets = await sn.getAuthorizedWallets(restOptions)
 
     const wallet =
-      preAuthorizedWallets.find((w) => w.id === lastWalletId) ??
+      authorizedWallets.find((w) => w.id === lastWalletId) ??
       installedWallets.length === 1
         ? installedWallets[0]
         : undefined
 
     if (wallet) {
       const connector = availableConnectors.find((c) => c.id === lastWalletId)
-      await connector?.connect()
+
+      let connectorData: ConnectorData | null = null
+
+      if (resultType === "wallet") {
+        connectorData = (await connector?.connect()) ?? null
+      }
+
       if (connector) {
         selectedConnector = connector
       }
-      return wallet
+
+      return {
+        connector: selectedConnector,
+        connectorData,
+        wallet: connector?.wallet ?? null,
+      }
     } // otherwise fallback to modal
   }
 
   const modalWallets: ModalWallet[] = mapModalWallets({
     availableConnectors,
     installedWallets,
-    discoveryWallets: await sn.getDiscoveryWallets(restOptions),
+    discoveryWallets: await snV3.getDiscoveryWallets(restOptions),
     storeVersion,
   })
 
   const getTarget = (): ShadowRoot => {
-    const modalId = "starknetkit-modal"
+    const modalId = "starknetkit-modal-container"
     const existingElement = document.getElementById(modalId)
 
     if (existingElement) {
@@ -108,21 +126,35 @@ export const connect = async ({
     return target
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const modal = new Modal({
       target: getTarget(),
       props: {
         dappName,
-        callback: async (value: StarknetWindowObject | null) => {
+        callback: async (connector: Connector | null) => {
           try {
-            if (value !== null && value.id !== "argentWebWallet") {
-              setStarknetLastConnectedWallet(value.id)
+            selectedConnector = connector
+            const connectorData = (await connector?.connect()) ?? null
+
+            if (resultType === "wallet") {
+              if (connector !== null && connector.id !== "argentWebWallet") {
+                setStarknetLastConnectedWallet(connector.id)
+              }
+
+              resolve({
+                connector,
+                connectorData,
+                wallet: connector?.wallet ?? null,
+              })
+            } else {
+              resolve({
+                connector,
+                wallet: null,
+                connectorData,
+              })
             }
-            selectedConnector =
-              availableConnectors.find(
-                (c) => value !== null && c.id === value.id,
-              ) ?? null
-            resolve(value)
+          } catch (error) {
+            reject(error)
           } finally {
             setTimeout(() => modal.$destroy())
           }
@@ -145,12 +177,17 @@ export const disconnect = async (options: DisconnectOptions = {}) => {
   }
   selectedConnector = null
 
-  return sn.disconnect(options)
+  return snV3.disconnect(options)
 }
 
 export type {
-  ConnectedStarknetWindowObject,
+  Connector,
   DisconnectOptions,
-  DisconnectedStarknetWindowObject,
   StarknetWindowObject,
+  defaultConnectors as starknetkitDefaultConnectors,
+  ModalResult,
 }
+
+export type * from "./types/legacy"
+
+export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"

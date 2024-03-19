@@ -1,24 +1,21 @@
 <script lang="ts">
   import type { StarknetWindowObject } from "get-starknet-core"
-  import sn from "get-starknet-core"
   import { onMount } from "svelte"
   import ConnectorButton from "./ConnectorButton.svelte"
   import type { ModalWallet } from "../types/modal"
   import type { Connector } from "../connectors/connector"
+  import { InjectedConnector } from "../connectors/injected"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
   export let callback: (
-    value: StarknetWindowObject | null,
+    value: Connector | null,
   ) => Promise<void> = async () => {}
   export let theme: "light" | "dark" | null = null
 
   let loadingItem: string | false = false
-  let emailOnly =
-    modalWallets.length === 1 &&
-    modalWallets[0].id.toLowerCase().includes("webwallet")
 
-  let starknetMobile = window?.starknet_argentX as StarknetWindowObject & {
+  let starknetMobile = window?.starknet_argentX as unknown as StarknetWindowObject & {
     isInAppBrowser: boolean
   }
   let isInAppBrowser = starknetMobile?.isInAppBrowser
@@ -30,10 +27,7 @@
   let cb = async (connector: Connector | null) => {
     setLoadingItem(connector?.id ?? false)
     try {
-      await connector?.connect()
-      await callback(connector?.wallet ?? null)
-    } catch (e) {
-      console.error(e)
+      await callback(connector ?? null)
     } finally {
       setLoadingItem(false)
     }
@@ -53,17 +47,15 @@
 
     if (isInAppBrowser && window?.starknet_argentX) {
       try {
-        const enabledValue = await sn.enable(window?.starknet_argentX)
-        callback(enabledValue ?? window?.starknet_argentX)
+        callback(new InjectedConnector({ options: { id: "argentX" } }))
       } catch {}
       return
     }
 
-    if (emailOnly) {
+    if (modalWallets.length === 1) {
       try {
         const [wallet] = modalWallets
-        await wallet.connector?.connect()
-        callback(wallet.connector.wallet)
+        await callback(wallet.connector)
       } catch (e) {
         console.error(e)
       }
@@ -71,9 +63,10 @@
   })
 </script>
 
-{#if !isInAppBrowser && !emailOnly}
+{#if !isInAppBrowser && modalWallets.length > 1}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
+    part="starknetkit-modal"
     class={`modal-font backdrop-blur-sm fixed inset-0 flex items-center 
             justify-center bg-black/25 z-[9999] ${darkModeControlClass}`}
     on:click={() => cb(null)}

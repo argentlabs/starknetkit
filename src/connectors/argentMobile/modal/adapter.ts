@@ -14,11 +14,13 @@ import {
 } from "@walletconnect/utils"
 
 import type { EthereumRpcConfig } from "./starknet/adapter"
+import { ProviderInterface } from "starknet"
 
 export interface NamespaceAdapterOptions {
   client: SignClient
   chainId?: string | number
   rpcUrl?: string
+  provider: ProviderInterface
 }
 
 export abstract class NamespaceAdapter {

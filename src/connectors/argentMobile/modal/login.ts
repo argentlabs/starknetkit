@@ -1,7 +1,7 @@
 import SignClient from "@walletconnect/sign-client"
 import type { SignClientTypes } from "@walletconnect/types"
 
-import { constants } from "starknet"
+import { RpcProvider, constants } from "starknet"
 
 // Using NetworkName as a value.
 const Network: typeof constants.NetworkName = constants.NetworkName
@@ -63,7 +63,11 @@ export const login = async <TAdapter extends NamespaceAdapter>(
   }
 
   const client = await SignClient.init(signClientOptions)
-  const adapter = new Adapter({ client, chainId, rpcUrl })
+
+  // TODO: remove provider and use rpcUrl directly
+  const provider = new RpcProvider({ nodeUrl: rpcUrl })
+
+  const adapter = new Adapter({ client, chainId, rpcUrl, provider })
 
   client.on("session_event", (_) => {
     // Handle session events, such as "chainChanged", "accountsChanged", etc.

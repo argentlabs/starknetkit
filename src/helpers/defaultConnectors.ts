@@ -1,4 +1,3 @@
-import { ProviderInterface } from "starknet"
 import { type Connector } from "../connectors"
 import {
   ArgentMobileConnector,
@@ -10,31 +9,28 @@ import { WebWalletConnector } from "../connectors/webwallet"
 export const defaultConnectors = ({
   argentMobileOptions,
   webWalletUrl,
-  provider,
 }: {
   argentMobileOptions?: ArgentMobileConnectorOptions
   webWalletUrl?: string
-  provider?: ProviderInterface
 }): Connector[] => {
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  const isSafari =
+    typeof window !== "undefined"
+      ? /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+      : false
 
   const defaultConnectors: Connector[] = []
 
   if (!isSafari) {
     defaultConnectors.push(
-      new InjectedConnector({ options: { id: "argentX", provider } }),
+      new InjectedConnector({ options: { id: "argentX" } }),
     )
     defaultConnectors.push(
-      new InjectedConnector({ options: { id: "braavos", provider } }),
+      new InjectedConnector({ options: { id: "braavos" } }),
     )
   }
 
-  defaultConnectors.push(
-    new ArgentMobileConnector({ ...argentMobileOptions, provider }),
-  )
-  defaultConnectors.push(
-    new WebWalletConnector({ url: webWalletUrl, provider }),
-  )
+  defaultConnectors.push(new ArgentMobileConnector(argentMobileOptions))
+  defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
 
   return defaultConnectors
 }

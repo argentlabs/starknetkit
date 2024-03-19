@@ -34,8 +34,7 @@ const checkIncognitoChrome = async (isChrome: boolean) => {
 
 export const openWebwallet = async (
   origin: string,
-  provider: ProviderInterface,
-): Promise<StarknetWindowObject | null> => {
+): Promise<StarknetWindowObject | undefined> => {
   const { userAgent } = navigator
   const isChrome = Boolean(
     navigator.vendor &&
@@ -54,8 +53,7 @@ export const openWebwallet = async (
     return await getWebWalletStarknetObject(
       origin,
       windowProxyClient,
-      null,
-      provider,
+      undefined,
     )
   }
 
@@ -69,9 +67,8 @@ export const openWebwallet = async (
     if (isConnected) {
       const starknetWindowObject = await getWebWalletStarknetObject(
         origin,
-        trpcProxyClient({ iframe: iframe.contentWindow }),
+        trpcProxyClient({ iframe: iframe.contentWindow ?? undefined }),
         { modal, iframe },
-        provider,
       )
       return starknetWindowObject
     }
@@ -80,8 +77,7 @@ export const openWebwallet = async (
     return await getWebWalletStarknetObject(
       origin,
       windowProxyClient,
-      null,
-      provider,
+      undefined,
     )
   }
 }

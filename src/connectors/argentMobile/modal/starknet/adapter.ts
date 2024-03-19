@@ -3,22 +3,24 @@ import type SignClient from "@walletconnect/sign-client"
 import type { SignerConnection } from "@walletconnect/signer-connection"
 import type { SessionTypes } from "@walletconnect/types"
 import type {
-  ConnectedStarknetWindowObject,
-  RpcMessage,
-} from "get-starknet-core"
-import type {
   AccountInterface,
   ProviderInterface,
   SignerInterface,
 } from "starknet"
 import { RpcProvider, constants } from "starknet"
 
+import {
+  AddInvokeTransactionParameters,
+  RequestFn,
+  StarknetWindowObject,
+  TypedData,
+} from "get-starknet-core"
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
+import { argentModal } from "../argentModal"
 import { StarknetRemoteAccount } from "./account"
 import { StarknetRemoteSigner } from "./signer"
 import type { IStarknetRpc } from "./starknet.model"
-import { argentModal } from "../argentModal"
 
 export interface EthereumRpcConfig {
   chains: string[]
@@ -34,7 +36,7 @@ export const deserializeStarknetChainId = (chainId: string): string =>
 
 export class StarknetAdapter
   extends NamespaceAdapter
-  implements ConnectedStarknetWindowObject
+  implements StarknetWindowObject
 {
   id = "argentMobile"
   name = "Argent Mobile"
@@ -48,6 +50,7 @@ export class StarknetAdapter
   // NamespaceAdapter
   public namespace = "starknet"
   public methods = [
+    "starknet_supportedSpecs",
     "starknet_signTypedData",
     "starknet_requestAddInvokeTransaction",
   ]
@@ -62,11 +65,12 @@ export class StarknetAdapter
   public rpc: EthereumRpcConfig
 
   private walletRpc: IStarknetRpc
+  private handleRequest: Record<string, (...args: any) => any> // TODO: improve typing
 
-  constructor({ client, chainId, rpcUrl }: NamespaceAdapterOptions) {
+  constructor({ client, chainId, rpcUrl, provider }: NamespaceAdapterOptions) {
     super()
 
-    this.chainId = String(chainId || "SN_GOERLI")
+    this.chainId = String(chainId ?? constants.NetworkName.SN_MAIN)
     this.rpc = {
       chains: chainId ? [this.formatChainId(this.chainId)] : [],
       methods: this.methods,
@@ -84,13 +88,22 @@ export class StarknetAdapter
 
     this.remoteSigner = new StarknetRemoteSigner(this.walletRpc)
 
-    this.provider = new RpcProvider({ nodeUrl: rpcUrl })
+    this.provider = provider ? provider : new RpcProvider({ nodeUrl: rpcUrl })
     this.account = new StarknetRemoteAccount(
       this.provider,
       "",
       this.remoteSigner,
       this.walletRpc,
     )
+
+    this.handleRequest = Object.freeze({
+      wallet_requestChainId: this.handleRequestChainId,
+      wallet_requestAccounts: this.handleRequestAccounts,
+      wallet_getPermissions: this.handleGetPermissions,
+      starknet_addInvokeTransaction: this.handleAddInvokeTransaction,
+      starknet_signTypedData: this.handleSignTypedData,
+      starknet_supportedSpecs: this.handleSupportedSpecs,
+    })
   }
 
   getNetworkName(chainId: string): constants.NetworkName {
@@ -105,13 +118,17 @@ export class StarknetAdapter
   }
 
   // StarknetWindowObject
+  request: RequestFn = async (call): Promise<any> => {
+    if (!this.session) {
+      throw new Error("No session")
+    }
 
-  async request<T extends RpcMessage>(
-    _call: Omit<T, "result">,
-  ): Promise<T["result"]> {
-    // request() is mostly used  for messages like `wallet_watchAsset` etc.
-    // regular transactions calls are done through .account.execute
-    throw new Error("Not implemented: .request()")
+    const requestToCall = this.handleRequest[call.type]
+    if (requestToCall) {
+      return requestToCall(call.params)
+    }
+
+    throw new Error(`Not implemented: .request() for ${call.type}`)
   }
 
   async enable(): Promise<string[]> {
@@ -127,14 +144,15 @@ export class StarknetAdapter
   }
 
   async isPreauthorized(): Promise<boolean> {
-    throw new Error("Not implemented: .isPreauthorized()")
+    // check if wc session is valid, if so, return true
+    return Boolean(this.client.session.getAll().find(this.isValidSession))
   }
 
-  on: ConnectedStarknetWindowObject["on"] = (event, handleEvent) => {
+  on: StarknetWindowObject["on"] = (event, handleEvent) => {
     this.eventEmitter.on(event, handleEvent)
   }
 
-  off: ConnectedStarknetWindowObject["off"] = (event, handleEvent) => {
+  off: StarknetWindowObject["off"] = (event, handleEvent) => {
     this.eventEmitter.off(event, handleEvent)
   }
 
@@ -208,5 +226,63 @@ export class StarknetAdapter
     )
     this.eventEmitter.emit("accountsChanged", this.accounts)
     this.selectedAddress = fixedAddress
+  }
+
+  private handleRequestChainId = () => {
+    return this.chainId === constants.NetworkName.SN_GOERLI
+      ? constants.StarknetChainId.SN_GOERLI
+      : constants.StarknetChainId.SN_MAIN
+  }
+
+  private handleRequestAccounts = () => {
+    return this.accounts
+  }
+
+  private handleGetPermissions = async () => {
+    if (await this.isPreauthorized()) {
+      return ["accounts"]
+    }
+
+    return []
+  }
+
+  private handleAddInvokeTransaction = async (
+    params: AddInvokeTransactionParameters,
+  ) => {
+    const { calls } = params as AddInvokeTransactionParameters
+
+    return await this.requestWallet({
+      method: "starknet_requestAddInvokeTransaction",
+      params: {
+        accountAddress: this.account.address,
+        executionRequest: {
+          calls: calls?.map(({ contract_address, ...rest }) => ({
+            ...rest,
+            contractAddress: contract_address,
+          })),
+        },
+      },
+    })
+  }
+
+  private handleSignTypedData = async (params: TypedData) => {
+    const typedDataParams = {
+      accountAddress: this.account.address,
+      typedData: params,
+    }
+
+    const response = (await this.requestWallet({
+      method: "starknet_signTypedData",
+      params: typedDataParams,
+    })) as { signature: string[] } | string[]
+
+    return "signature" in response ? response.signature : response
+  }
+
+  private handleSupportedSpecs = async () => {
+    return await this.requestWallet({
+      method: "starknet_supportedSpecs",
+      params: {},
+    })
   }
 }

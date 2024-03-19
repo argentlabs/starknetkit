@@ -1,8 +1,9 @@
-import type {
-  AccountChangeEventHandler,
-  StarknetWindowObject,
+import {
+  type StarknetWindowObject,
+  type AccountChangeEventHandler,
+  Permission,
+  StarknetChainId,
 } from "get-starknet-core"
-import type { AccountInterface, ProviderInterface } from "starknet"
 import {
   Connector,
   type ConnectorData,
@@ -13,17 +14,16 @@ import { setPopupOptions } from "./helpers/trpc"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
-  UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 
 let _wallet: StarknetWindowObject | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
-  provider?: ProviderInterface
 }
 
 export class WebWalletConnector extends Connector {
@@ -46,7 +46,11 @@ export class WebWalletConnector extends Connector {
     }
 
     this._wallet = _wallet
-    return this._wallet.isPreauthorized()
+    const permissions = await this._wallet.request({
+      type: "wallet_getPermissions",
+    })
+
+    return permissions.includes(Permission.Accounts)
   }
 
   get id(): string {
@@ -88,23 +92,25 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
+    let accounts: string[]
+
     try {
-      await this._wallet.enable({ starknetVersion: "v4" })
+      accounts = await this._wallet.request({
+        type: "wallet_requestAccounts",
+        params: { silentMode: false }, // explicit to show the modal
+      })
     } catch {
-      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
     }
 
-    if (!this._wallet.isConnected) {
-      throw new UserRejectedRequestError()
-    }
-
-    const account = this._wallet.account as unknown as AccountInterface
-
+    // Prevent trpc from throwing an error (closed prematurely)
+    // this happens when 2 requests to webwallet are made in a row (trpc-browser is closing the first popup and requesting a new one right after)
+    // won't be needed with chrome iframes will be enabled again (but still needed for other browsers)
+    await new Promise((r) => setTimeout(r, 100))
     const chainId = await this.chainId()
 
     return {
-      account: account.address,
+      account: accounts[0],
       chainId,
     }
   }
@@ -114,31 +120,34 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
-    if (!this._wallet?.isConnected) {
-      throw new UserNotConnectedError()
-    }
     _wallet = null
     this._wallet = _wallet
+    removeStarknetLastConnectedWallet()
   }
 
-  async account(): Promise<AccountInterface> {
+  async account(): Promise<string | null> {
     this._wallet = _wallet
 
-    if (!this._wallet || !this._wallet.account) {
+    if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet.account as unknown as AccountInterface
+    const [account] = await this._wallet.request({
+      type: "wallet_requestAccounts",
+      params: { silentMode: true },
+    })
+
+    return account ?? null
   }
 
-  async chainId(): Promise<bigint> {
-    if (!this._wallet || !this.wallet.account || !this._wallet.provider) {
+  async chainId(): Promise<StarknetChainId> {
+    if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const chainIdHex = await this._wallet.provider.getChainId()
-    const chainId = BigInt(chainIdHex)
-    return chainId
+    return this._wallet.request({
+      type: "wallet_requestChainId",
+    })
   }
 
   async initEventListener(accountChangeCb: AccountChangeEventHandler) {
@@ -169,7 +178,7 @@ export class WebWalletConnector extends Connector {
       location: "/interstitialLogin",
     })
 
-    _wallet = await openWebwallet(origin, this._options.provider)
+    _wallet = await openWebwallet(origin)
 
     this._wallet = _wallet
   }
