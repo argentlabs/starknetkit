@@ -137,7 +137,7 @@ export const connect = async ({
             const connectorData = (await connector?.connect()) ?? null
 
             if (resultType === "wallet") {
-              if (connector !== null && connector.id !== "argentWebWallet") {
+              if (connector !== null) {
                 setStarknetLastConnectedWallet(connector.id)
               }
 
