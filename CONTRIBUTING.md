@@ -59,13 +59,16 @@ Once you submit your PR:
 - Once approved, your PR will be merged.
 
 #### Pull request targets
+
 For the most common pull requests such as bug fixes, feature additions, documentation changes, etc., target the develop branch.
 
 ### Other notes
+
 - If you have commit access to the repository and want to make a big change or are unsure about something, make a new branch and open a pull request.
 - We’re using Prettier to format code, so don’t worry much about code formatting.
 - Don’t commit generated files, like minified JavaScript.
 - Don’t change the version number or changelog.
 
 ### Need help?
+
 If you want to contribute but have any questions, concerns or doubts, feel free to ping maintainers. Ideally create a pull request with WIP (Work in progress) in its title and ask questions in the pull request description.
