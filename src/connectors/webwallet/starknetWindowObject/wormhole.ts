@@ -58,9 +58,11 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
     "allow-popups",
   )
   iframe.allow = "clipboard-write"
+  iframe.id = "argent-webwallet-iframe"
 
   const modal = applyModalStyle(iframe)
   modal.style.display = shouldShow ? "block" : "none"
+  modal.id = "argent-webwallet-modal"
 
   // append the modal to the body
   window.document.body.appendChild(modal)
