@@ -4,7 +4,6 @@ import { trpcProxyClient } from "./trpc"
 import type { StarknetWindowObject } from "get-starknet-core"
 import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
 import { fetchAllowedDapps } from "./fetchAllowedDapps"
-import { ProviderInterface } from "starknet"
 
 const checkIncognitoChrome = async (isChrome: boolean) => {
   return new Promise((resolve) => {
