@@ -60,17 +60,30 @@ export const openWebwallet = async (
   const { allowedDapps } = await fetchAllowedDapps(network)
 
   if (allowedDapps.includes(window.location.hostname)) {
-    const { iframe, modal } = await createModal(origin, false)
-    const windowProxyClient = trpcProxyClient({})
-    const isConnected = await windowProxyClient.authorize.mutate()
-    if (isConnected) {
-      const starknetWindowObject = await getWebWalletStarknetObject(
-        origin,
-        trpcProxyClient({ iframe: iframe.contentWindow ?? undefined }),
-        { modal, iframe },
-      )
-      return starknetWindowObject
+    const modalId = "argent-webwallet-modal"
+    const iframeId = "argent-webwallet-iframe"
+
+    const existingIframe = document.getElementById(modalId)
+    const existingModal = document.getElementById(iframeId)
+
+    // avoid duplicate iframes
+    if (existingIframe && existingIframe && existingModal) {
+      existingIframe.remove()
+      existingModal.remove()
     }
+    const { iframe, modal } = await createModal(origin, false)
+
+    const iframeTrpcProxyClient = trpcProxyClient({
+      iframe: iframe.contentWindow ?? undefined,
+    })
+    await iframeTrpcProxyClient.authorize.mutate()
+    const starknetWindowObject = await getWebWalletStarknetObject(
+      origin,
+      iframeTrpcProxyClient,
+      { modal, iframe },
+    )
+    return starknetWindowObject
+    /* } */
   } else {
     const windowProxyClient = trpcProxyClient({})
     return await getWebWalletStarknetObject(

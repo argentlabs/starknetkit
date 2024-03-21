@@ -72,7 +72,9 @@ class ArgentModal {
     const wcParam = encodeURIComponent(wcUri)
     const href = encodeURIComponent(window.location.href)
 
-    const desktopWcParam = `${this.mobileUrl}app/wc?uri=${wcParam}`
+    const desktopWcParam = encodeURIComponent(
+      `${this.mobileUrl}app/wc?uri=${wcParam}`,
+    )
 
     this.showModal({
       desktop: `${this.bridgeUrl}?wc=${desktopWcParam}&device=desktop`,
