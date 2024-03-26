@@ -85,11 +85,10 @@ export class InjectedConnector extends Connector {
     chainId?: StarknetChainId,
     accounts?: string[],
   ): void {
-    const { SN_GOERLI, SN_MAIN, SN_SEPOLIA } = constants.StarknetChainId
+    const { SN_MAIN, SN_SEPOLIA } = constants.StarknetChainId
     const account = accounts?.[0]
     switch (chainId) {
       case SN_MAIN:
-      case SN_GOERLI:
       case SN_SEPOLIA:
         this.emit("change", { chainId, account })
         break

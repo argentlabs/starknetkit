@@ -126,8 +126,8 @@ const getBridgeUrl = (chainId: unknown) => {
   }
   const chainIdNumber = parseInt(`${chainId}`)
   if (
-    String(chainId).startsWith(Network.SN_GOERLI) ||
-    chainIdNumber === 5 // testnet numeric value
+    String(chainId).startsWith(Network.SN_SEPOLIA) ||
+    chainIdNumber === 11155111 // sepolia numeric value
   ) {
     return "https://login.hydrogen.argent47.net"
   }
@@ -148,8 +148,8 @@ const getMobileUrl = (chainId: unknown) => {
   }
   const chainIdNumber = parseInt(`${chainId}`)
   if (
-    String(chainId).startsWith(Network.SN_GOERLI) ||
-    chainIdNumber === 5 // testnet numeric value
+    String(chainId).startsWith(Network.SN_SEPOLIA) ||
+    chainIdNumber === 11155111 // sepolia numeric value
   ) {
     return "argent-dev://"
   }

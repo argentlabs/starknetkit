@@ -3,7 +3,7 @@ import { constants } from "starknet"
 // Using NetworkName as a value.
 const Network: typeof constants.NetworkName = constants.NetworkName
 
-const DEVELOPMENT_NETWORK = Network.SN_GOERLI
+const DEVELOPMENT_NETWORK = Network.SN_SEPOLIA
 
 export function mapTargetUrlToNetworkId(target: string): constants.NetworkName {
   try {
@@ -12,13 +12,13 @@ export function mapTargetUrlToNetworkId(target: string): constants.NetworkName {
       return DEVELOPMENT_NETWORK
     }
     if (origin.includes("hydrogen")) {
-      return Network.SN_GOERLI
+      return Network.SN_SEPOLIA
     }
     if (origin.includes("staging")) {
       return Network.SN_MAIN
     }
     if (origin.includes("dev")) {
-      return Network.SN_GOERLI
+      return Network.SN_SEPOLIA
     }
     if (origin.includes("argent.xyz")) {
       return Network.SN_MAIN
