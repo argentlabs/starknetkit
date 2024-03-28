@@ -72,12 +72,21 @@ class ArgentModal {
     const wcParam = encodeURIComponent(wcUri)
     const href = encodeURIComponent(window.location.href)
 
+    /* 
+    // KEEPING IN CASE NEEDS TO BE REVERTED
     const desktopWcParam = encodeURIComponent(
       `${this.mobileUrl}app/wc?uri=${wcParam}`,
-    )
 
     this.showModal({
       desktop: `${this.bridgeUrl}?wc=${desktopWcParam}&device=desktop`,
+      ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+      android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+    })
+
+    ) */
+
+    this.showModal({
+      desktop: `${this.bridgeUrl}?wc=${wcParam}&device=desktop`,
       ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
       android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
     })
