@@ -26,3 +26,5 @@ export const RPC_NODE_URL_TESTNET =
 
 export const RPC_NODE_URL_MAINNET =
   "https://cloud.argent-api.com/v1/starknet/mainnet/rpc/v0.6"
+
+export const OFFCHAIN_SESSION_ENTRYPOINT = "use_offchain_session"
