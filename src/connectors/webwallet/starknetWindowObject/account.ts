@@ -16,6 +16,7 @@ import {
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
+import { OFFCHAIN_SESSION_ENTRYPOINT } from "../constants"
 
 class UnimplementedSigner implements SignerInterface {
   async getPubKey(): Promise<string> {
@@ -64,7 +65,7 @@ export class MessageAccount extends Account implements AccountInterface {
       if (
         Array.isArray(calls) &&
         calls[0] &&
-        calls[0].entrypoint === "use_offchain_session"
+        calls[0].entrypoint === OFFCHAIN_SESSION_ENTRYPOINT
       ) {
         setPopupOptions({
           width: 1,

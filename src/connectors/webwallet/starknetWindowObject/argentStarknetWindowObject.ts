@@ -14,6 +14,7 @@ import {
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
+import { OFFCHAIN_SESSION_ENTRYPOINT } from "../constants"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -77,7 +78,7 @@ export const getArgentStarknetWindowObject = (
           if (
             Array.isArray(calls) &&
             calls[0] &&
-            calls[0].entrypoint === "use_offchain_session"
+            calls[0].entrypoint === OFFCHAIN_SESSION_ENTRYPOINT
           ) {
             setPopupOptions({
               width: 1,
@@ -86,9 +87,7 @@ export const getArgentStarknetWindowObject = (
               atLeftBottom: true,
             })
           }
-          const hash = await proxyLink.addInvokeTransaction.mutate(
-            (call.params as any).calls,
-          )
+          const hash = await proxyLink.addInvokeTransaction.mutate(calls)
 
           return { transaction_hash: hash }
         }

@@ -1,3 +1,4 @@
+import { OFFCHAIN_SESSION_ENTRYPOINT } from "../connectors/webwallet/constants"
 import type { InvokeFunctionResponse, Signature } from "starknet"
 import { z } from "zod"
 
@@ -164,16 +165,33 @@ export type IframeMethods = {
   connect: () => void
 }
 
+export const OffchainSessionDetailsSchema = z.object({
+  nonce: bignumberishSchema,
+  maxFee: bignumberishSchema.optional(),
+  version: z.string(),
+})
+
 export const RpcCallSchema = z
   .object({
     contract_address: z.string(),
     entrypoint: z.string(),
     calldata: z.array(bignumberishSchema).optional(),
+    offchainSessionDetails: OffchainSessionDetailsSchema.optional(),
   })
-  .transform(({ contract_address, entrypoint, calldata }) => ({
-    contractAddress: contract_address,
-    entrypoint,
-    calldata: calldata || [],
-  }))
+  .transform(
+    ({ contract_address, entrypoint, calldata, offchainSessionDetails }) =>
+      entrypoint === OFFCHAIN_SESSION_ENTRYPOINT
+        ? {
+            contractAddress: contract_address,
+            entrypoint,
+            calldata: calldata || [],
+            offchainSessionDetails: offchainSessionDetails || undefined,
+          }
+        : {
+            contractAddress: contract_address,
+            entrypoint,
+            calldata: calldata || [],
+          },
+  )
 
 export const RpcCallsArraySchema = z.array(RpcCallSchema).nonempty()
