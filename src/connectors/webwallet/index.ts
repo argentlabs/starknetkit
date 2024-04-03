@@ -19,6 +19,7 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
+import { openWebwallet } from "./helpers/openWebwallet"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -91,7 +92,8 @@ export class WebWalletConnector extends Connector {
 
     try {
       await this._wallet.enable({ starknetVersion: "v4" })
-    } catch {
+    } catch (e) {
+      console.log(e)
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
     }
@@ -171,11 +173,7 @@ export class WebWalletConnector extends Connector {
       origin,
       location: "/interstitialLogin",
     })
-    const wallet = await getWebWalletStarknetObject(
-      origin,
-      trpcProxyClient({}),
-      provider,
-    )
+    const wallet = await openWebwallet(origin, provider)
 
     _wallet = wallet ?? null
     this._wallet = _wallet

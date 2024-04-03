@@ -14,3 +14,9 @@ export const DEFAULT_WEBWALLET_ICON = `<svg
       fill="currentColor"
     />
   </svg>`
+
+export const TESTNET_WHITELIST_URL =
+  "https://static.hydrogen.argent47.net/webwallet/iframe_whitelist_testnet.json"
+
+export const MAINNET_WHITELIST_URL =
+  "https://static.argent.xyz/webwallet/iframe_whitelist_mainnet.json"

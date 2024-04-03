@@ -89,9 +89,9 @@ export class InjectedConnector extends Connector {
           chainId: BigInt(constants.StarknetChainId.SN_MAIN),
         })
         break
-      case "SN_GOERLI":
+      case "SN_SEPOLIA":
         this.emit("change", {
-          chainId: BigInt(constants.StarknetChainId.SN_GOERLI),
+          chainId: BigInt(constants.StarknetChainId.SN_SEPOLIA),
         })
         break
       // Braavos
@@ -100,9 +100,9 @@ export class InjectedConnector extends Connector {
           chainId: BigInt(constants.StarknetChainId.SN_MAIN),
         })
         break
-      case "goerli-alpha":
+      case "sepolia-alpha":
         this.emit("change", {
-          chainId: BigInt(constants.StarknetChainId.SN_GOERLI),
+          chainId: BigInt(constants.StarknetChainId.SN_SEPOLIA),
         })
         break
       default:
