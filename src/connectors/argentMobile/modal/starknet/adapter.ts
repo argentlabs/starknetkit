@@ -94,8 +94,8 @@ export class StarknetAdapter
   }
 
   getNetworkName(chainId: string): constants.NetworkName {
-    if (chainId === "SN_GOERLI") {
-      return constants.NetworkName.SN_GOERLI
+    if (chainId === "SN_SEPOLIA") {
+      return constants.NetworkName.SN_SEPOLIA
     }
 
     if (chainId === "SN_MAIN") {
