@@ -45,20 +45,24 @@ export const getWebWalletStarknetObject = async (
 
   if (iframeProps) {
     const { iframe, modal } = iframeProps
-    proxyLink.updateModal.subscribe(undefined, {
-      onData(modalEvent: ModalEvents) {
-        switch (modalEvent.action) {
-          case "show":
-            showModal(modal)
-            break
-          case "hide":
-            hideModal(modal)
-            break
-          case "updateHeight":
-            setIframeHeight(iframe, modalEvent.height)
-        }
+
+    proxyLink.updateModal.subscribe.apply(null, [
+      undefined,
+      {
+        onData(modalEvent: ModalEvents) {
+          switch (modalEvent.action) {
+            case "show":
+              showModal(modal)
+              break
+            case "hide":
+              hideModal(modal)
+              break
+            case "updateHeight":
+              setIframeHeight(iframe, modalEvent.height)
+          }
+        },
       },
-    })
+    ])
   }
 
   return starknetWindowObject
