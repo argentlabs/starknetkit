@@ -54,6 +54,7 @@ export const openWebwallet = async (
     return await getWebWalletStarknetObject(
       origin,
       windowProxyClient,
+      provider,
       undefined,
     )
   }
@@ -91,6 +92,7 @@ export const openWebwallet = async (
     return await getWebWalletStarknetObject(
       origin,
       windowProxyClient,
+      provider,
       undefined,
     )
   }
