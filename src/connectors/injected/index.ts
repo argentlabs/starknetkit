@@ -121,6 +121,13 @@ export class InjectedConnector extends Connector {
     let accounts
     try {
       accounts = await this._wallet.enable({ starknetVersion: "v5" })
+
+      const { provider } = this._options
+      if (provider) {
+        Object.assign(this._wallet.account, {
+          provider,
+        })
+      }
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
