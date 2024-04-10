@@ -17,7 +17,7 @@ const shortStringSchema = z
     "The shortString should not be an integer string",
   )
 
-const bignumberishSchema = z.union([
+export const BigNumberishSchema = z.union([
   z
     .string()
     .regex(
@@ -38,8 +38,12 @@ const bignumberishSchema = z.union([
 export const CallSchema = z.object({
   contractAddress: z.string(),
   entrypoint: z.string(),
-  calldata: z.array(bignumberishSchema).optional(),
+  calldata: z
+    .array(BigNumberishSchema.or(z.array(BigNumberishSchema)))
+    .optional(),
 })
+
+export const CallsArraySchema = z.array(CallSchema).nonempty()
 
 export const typedDataSchema = z.object({
   types: z.record(
@@ -108,13 +112,12 @@ export const StarknetMethodArgumentsSchemas = {
     }),
   ]),
   execute: z.tuple([
-    z.array(CallSchema).nonempty().or(CallSchema),
-    z.array(z.any()).optional(),
+    CallsArraySchema.or(CallSchema),
     z
       .object({
-        nonce: bignumberishSchema.optional(),
-        maxFee: bignumberishSchema.optional(),
-        version: bignumberishSchema.optional(),
+        nonce: BigNumberishSchema.optional(),
+        maxFee: BigNumberishSchema.optional(),
+        version: BigNumberishSchema.optional(),
       })
       .optional(),
   ]),

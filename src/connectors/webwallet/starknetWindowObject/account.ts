@@ -5,17 +5,17 @@ import {
   AccountInterface,
   ProviderInterface,
   SignerInterface,
-  typedData,
 } from "starknet"
+import type { TypedData } from "starknet-types"
 import type { StarknetMethods } from "../../../types/window"
 
-import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 import {
   EXECUTE_POPUP_HEIGHT,
   EXECUTE_POPUP_WIDTH,
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
+import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 
 class UnimplementedSigner implements SignerInterface {
   async getPubKey(): Promise<string> {
@@ -50,11 +50,11 @@ export class MessageAccount extends Account implements AccountInterface {
     super(provider, address, new UnimplementedSigner())
   }
 
-  execute: StarknetMethods["execute"] = async (
-    calls,
-    abis,
-    transactionsDetail,
-  ) => {
+  execute = async (
+    calls: Parameters<StarknetMethods["execute"]>[0],
+    abiOrDetails?: Parameters<StarknetMethods["execute"]>[1] | any[],
+    transactionDetails: Parameters<StarknetMethods["execute"]>[1] = {},
+  ): ReturnType<StarknetMethods["execute"]> => {
     try {
       setPopupOptions({
         width: EXECUTE_POPUP_WIDTH,
@@ -74,11 +74,12 @@ export class MessageAccount extends Account implements AccountInterface {
         })
       }
 
-      const txHash = await this.proxyLink.execute.mutate([
-        calls,
-        abis,
-        transactionsDetail,
-      ])
+      const details =
+        abiOrDetails === undefined || Array.isArray(abiOrDetails)
+          ? transactionDetails
+          : abiOrDetails
+
+      const txHash = await this.proxyLink.execute.mutate([calls, details])
       return {
         transaction_hash: txHash,
       }
@@ -91,7 +92,7 @@ export class MessageAccount extends Account implements AccountInterface {
   }
 
   signMessage: StarknetMethods["signMessage"] = async (
-    typedData: typedData.TypedData,
+    typedData: TypedData,
   ): Promise<Signature> => {
     try {
       setPopupOptions({
