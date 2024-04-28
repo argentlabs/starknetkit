@@ -27,6 +27,9 @@ export const defaultConnectors = ({
     defaultConnectors.push(
       new InjectedConnector({ options: { id: "braavos" } }),
     )
+    defaultConnectors.push(
+      new InjectedConnector({ options: { id: "bitkeep" } }),
+    )
   }
 
   defaultConnectors.push(new ArgentMobileConnector(argentMobileOptions))
