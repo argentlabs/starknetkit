@@ -7,6 +7,7 @@ import {
   RpcCallSchema,
   RpcCallsArraySchema,
   StarknetMethodArgumentsSchemas,
+  deployAccountContractSchema,
 } from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
 import { Permission } from "get-starknet-core"
@@ -115,6 +116,9 @@ const appRouter = t.router({
   updateModal: t.procedure.subscription(async () => {
     return
   }),
+  deploymentData: t.procedure
+    .output(deployAccountContractSchema)
+    .mutation(async () => null),
 })
 
 export type AppRouter = typeof appRouter

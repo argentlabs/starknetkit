@@ -93,6 +93,7 @@
     "prettier": "^3.0.3",
     "prettier-plugin-import-sort": "^0.0.7",
     "semantic-release": "^21.1.1",
+    "starknet-types": "^0.0.5",
     "svelte": "^4.0.0",
     "svelte-check": "^3.5.1",
     "svelte-preprocess": "^5.0.4",
