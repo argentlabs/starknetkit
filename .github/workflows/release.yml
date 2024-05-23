@@ -17,7 +17,7 @@ jobs:
         name: install-pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - uses: actions/setup-node@v3
