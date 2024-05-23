@@ -112,6 +112,9 @@ export const getArgentStarknetWindowObject = (
           /* return remoteHandle.call("watchAsset", params) */
           return proxyLink.watchAsset.mutate()
         }
+        case "wallet_deploymentData": {
+          return proxyLink.deploymentData.mutate()
+        }
         default:
           throw new Error("not implemented")
       }

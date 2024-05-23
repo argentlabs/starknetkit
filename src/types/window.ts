@@ -1,6 +1,7 @@
 import { OFFCHAIN_SESSION_ENTRYPOINT } from "../connectors/webwallet/constants"
 import type { InvokeFunctionResponse, Signature } from "starknet"
-import { z } from "zod"
+import { ZodType, z } from "zod"
+import { GetDeploymentDataResult } from "starknet-types"
 
 const HEX_REGEX = /^0x[0-9a-f]+$/i
 const DECIMAL_REGEX = /^\d+$/
@@ -195,3 +196,18 @@ export const RpcCallSchema = z
   )
 
 export const RpcCallsArraySchema = z.array(RpcCallSchema).nonempty()
+
+const VERSIONS = {
+  ZERO: 0,
+  ONE: 1,
+} as const
+
+export const deployAccountContractSchema = z.object({
+  address: z.string(),
+  class_hash: z.string(),
+  salt: z.string(),
+  calldata: z.array(z.string()),
+  sigdata: z.array(z.string()).optional(),
+  //version: z.literal([0, 1]),
+  version: z.nativeEnum(VERSIONS), // allow only 0 | 1, workaround since zod doesn't support literals as numbers
+}) satisfies ZodType<GetDeploymentDataResult>
