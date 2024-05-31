@@ -4,6 +4,7 @@ on:
     branches:
       - develop
       - main
+      - hotfix\/v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   release:
