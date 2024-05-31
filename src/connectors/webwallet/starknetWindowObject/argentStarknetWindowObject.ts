@@ -1,20 +1,19 @@
 import type { CreateTRPCProxyClient } from "@trpc/client"
+import type { constants } from "starknet"
 import type {
   AccountChangeEventHandler,
   NetworkChangeEventHandler,
   StarknetWindowObject,
   WalletEvents,
-} from "get-starknet-core"
-import type { constants } from "starknet"
-
-import { setPopupOptions, type AppRouter } from "../helpers/trpc"
+} from "starknet-types"
+import { OFFCHAIN_SESSION_ENTRYPOINT } from "../constants"
 import {
   EXECUTE_POPUP_HEIGHT,
   EXECUTE_POPUP_WIDTH,
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
-import { OFFCHAIN_SESSION_ENTRYPOINT } from "../constants"
+import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -53,7 +52,7 @@ export const getArgentStarknetWindowObject = (
           return proxyLink.requestAccounts.mutate(call.params as any)
         }
 
-        case "starknet_signTypedData": {
+        case "wallet_signTypedData": {
           setPopupOptions({
             width: SIGN_MESSAGE_POPUP_WIDTH,
             height: SIGN_MESSAGE_POPUP_HEIGHT,
@@ -67,7 +66,7 @@ export const getArgentStarknetWindowObject = (
           return proxyLink.getPermissions.mutate()
         }
 
-        case "starknet_addInvokeTransaction": {
+        case "wallet_addInvokeTransaction": {
           const calls = (call.params as any).calls
 
           setPopupOptions({

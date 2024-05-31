@@ -1,4 +1,5 @@
-import type { StarknetWindowObject, WalletProvider } from "get-starknet-core"
+import type { WalletProvider } from "get-starknet-core"
+import type { StarknetWindowObject } from "starknet-types"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 
 export const replaceArgentXIcon = async (

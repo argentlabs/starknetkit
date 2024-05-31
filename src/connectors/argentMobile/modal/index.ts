@@ -1,5 +1,4 @@
-import type { StarknetWindowObject } from "get-starknet-core"
-
+import type { StarknetWindowObject } from "starknet-types"
 import { login } from "./login"
 import type { IArgentLoginOptions } from "./login"
 import { StarknetAdapter } from "./starknet/adapter"

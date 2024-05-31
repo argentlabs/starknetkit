@@ -20,7 +20,7 @@ export const fetchAllowedDapps = async (
 
     if (cachedResponse) {
       const cachedTimestamp = parseInt(
-        cachedResponse.headers.get("X-Cache-Timestamp"),
+        cachedResponse.headers.get("X-Cache-Timestamp") ?? "0",
         10,
       )
       const currentTimestamp = new Date().getTime()
@@ -54,6 +54,6 @@ export const fetchAllowedDapps = async (
 
     return responseData
   } catch (error) {
-    throw new Error(error)
+    throw new Error(error as any)
   }
 }

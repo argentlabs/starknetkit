@@ -1,25 +1,22 @@
-import {
-  Permission,
-  type AccountChangeEventHandler,
-  type StarknetWindowObject,
-  StarknetChainId,
-} from "get-starknet-core"
+import { type AccountChangeEventHandler } from "get-starknet-core"
 import { constants } from "starknet"
-import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
+import { Permission, type StarknetWindowObject } from "starknet-types"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserRejectedRequestError,
 } from "../../errors"
+import { getStarknetChainId } from "../../helpers/getStarknetChainId"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
+import { getRandomPublicRPCNode } from "../../helpers/publicRcpNodes"
 import { resetWalletConnect } from "../../helpers/resetWalletConnect"
 import {
   Connector,
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
+import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
-import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
-import { getRandomPublicRPCNode } from "../../helpers/publicRcpNodes"
 
 export interface ArgentMobileConnectorOptions {
   dappName?: string
@@ -56,7 +53,7 @@ export class ArgentMobileConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return permissions.includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.Accounts)
   }
 
   get id(): string {
@@ -90,7 +87,7 @@ export class ArgentMobileConnector extends Connector {
 
     const accounts = await this._wallet.request({
       type: "wallet_requestAccounts",
-      params: { silentMode: false }, // explicit to show the modal
+      params: { silent_mode: false }, // explicit to show the modal
     })
 
     const chainId = await this.chainId()
@@ -120,20 +117,22 @@ export class ArgentMobileConnector extends Connector {
 
     const [account] = await this._wallet.request({
       type: "wallet_requestAccounts",
-      params: { silentMode: true },
+      params: { silent_mode: true },
     })
 
     return account ?? null
   }
 
-  async chainId(): Promise<StarknetChainId> {
+  async chainId(): Promise<constants.StarknetChainId> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet.request({
+    const chainId = await this._wallet.request({
       type: "wallet_requestChainId",
     })
+
+    return getStarknetChainId(chainId)
   }
 
   // needed, methods required by starknet-react. Otherwise an exception is throwd

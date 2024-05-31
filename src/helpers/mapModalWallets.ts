@@ -2,7 +2,8 @@ import { Connector } from "../connectors/connector"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
 import { isString } from "lodash-es"
-import { StarknetWindowObject, WalletProvider } from "get-starknet-core"
+import { WalletProvider } from "get-starknet-core"
+import type { StarknetWindowObject } from "starknet-types"
 
 interface SetConnectorsExpandedParams {
   availableConnectors: Connector[]
@@ -44,8 +45,8 @@ export const mapModalWallets = ({
           installed.id === "argentX"
             ? { light: ARGENT_X_ICON, dark: ARGENT_X_ICON }
             : isString(installed.icon)
-            ? { light: installed.icon, dark: installed.icon }
-            : installed.icon
+              ? { light: installed.icon, dark: installed.icon }
+              : installed.icon
 
         return {
           name: installed.name,

@@ -1,4 +1,5 @@
-import type { GetWalletOptions, StarknetWindowObject } from "get-starknet-core"
+import type { GetWalletOptions } from "get-starknet-core"
+import { StarknetWindowObject } from "starknet-types"
 import type {
   Connector,
   ConnectorData,

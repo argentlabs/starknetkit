@@ -1,7 +1,5 @@
-import { OFFCHAIN_SESSION_ENTRYPOINT } from "../connectors/webwallet/constants"
-import type { InvokeFunctionResponse, Signature } from "starknet"
-import { ZodType, z } from "zod"
-import { GetDeploymentDataResult } from "starknet-types"
+import { InvokeFunctionResponse, Signature } from "starknet"
+import { z } from "zod"
 
 const HEX_REGEX = /^0x[0-9a-f]+$/i
 const DECIMAL_REGEX = /^\d+$/
@@ -19,7 +17,7 @@ const shortStringSchema = z
     "The shortString should not be an integer string",
   )
 
-const bignumberishSchema = z.union([
+export const BigNumberishSchema = z.union([
   z
     .string()
     .regex(
@@ -40,8 +38,12 @@ const bignumberishSchema = z.union([
 export const CallSchema = z.object({
   contractAddress: z.string(),
   entrypoint: z.string(),
-  calldata: z.array(bignumberishSchema).optional(),
+  calldata: z
+    .array(BigNumberishSchema.or(z.array(BigNumberishSchema)))
+    .optional(),
 })
+
+export const CallsArraySchema = z.array(CallSchema).nonempty()
 
 export const typedDataSchema = z.object({
   types: z.record(
@@ -49,19 +51,24 @@ export const typedDataSchema = z.object({
       z.union([
         z.object({
           name: z.string(),
-          type: z.string(),
+          type: z.literal("merkletree"),
+          contains: z.string(),
         }),
         z.object({
           name: z.string(),
-          type: z.literal("merkletree"),
+          type: z.literal("enum"),
           contains: z.string(),
+        }),
+        z.object({
+          name: z.string(),
+          type: z.string(),
         }),
       ]),
     ),
   ),
   primaryType: z.string(),
   domain: z.record(z.unknown()),
-  message: z.record(z.unknown()),
+  message: z.any(),
 })
 
 export const StarknetMethodArgumentsSchemas = {
@@ -70,7 +77,7 @@ export const StarknetMethodArgumentsSchemas = {
       z
         .object({
           starknetVersion: z
-            .union([z.literal("v4"), z.literal("v5")])
+            .union([z.literal("v3"), z.literal("v4")])
             .optional(),
         })
         .optional(),
@@ -109,14 +116,18 @@ export const StarknetMethodArgumentsSchemas = {
       }),
     }),
   ]),
+  requestAccounts: z.tuple([
+    z.object({
+      silentMode: z.boolean().optional(),
+    }),
+  ]),
   execute: z.tuple([
-    z.array(CallSchema).nonempty().or(CallSchema),
-    z.array(z.any()).optional(),
+    CallsArraySchema.or(CallSchema),
     z
       .object({
-        nonce: bignumberishSchema.optional(),
-        maxFee: bignumberishSchema.optional(),
-        version: bignumberishSchema.optional(),
+        nonce: BigNumberishSchema.optional(),
+        maxFee: BigNumberishSchema.optional(),
+        version: BigNumberishSchema.optional(),
       })
       .optional(),
   ]),
@@ -136,7 +147,9 @@ export type StarknetMethods = {
   watchAsset: (
     ...args: z.infer<typeof StarknetMethodArgumentsSchemas.watchAsset>
   ) => Promise<boolean>
-
+  requestAccounts: (
+    ...args: z.infer<typeof StarknetMethodArgumentsSchemas.requestAccounts>
+  ) => Promise<string[]>
   execute: (
     ...args: z.infer<typeof StarknetMethodArgumentsSchemas.execute>
   ) => Promise<InvokeFunctionResponse>
@@ -148,6 +161,41 @@ export type StarknetMethods = {
     | { isLoggedIn: false }
     | { isLoggedIn: true; hasSession: boolean; isPreauthorized: boolean }
   >
+}
+
+export const StarknetExecuteBackwardCompatibleArgumentsSchemas = {
+  execute: z
+    .tuple([
+      CallsArraySchema.or(CallSchema),
+      z
+        .object({
+          nonce: BigNumberishSchema.optional(),
+          maxFee: BigNumberishSchema.optional(),
+          version: BigNumberishSchema.optional(),
+        })
+        .optional(),
+    ])
+    .or(
+      z.tuple([
+        CallsArraySchema.or(CallSchema),
+        z.array(z.any()).optional(),
+        z
+          .object({
+            nonce: BigNumberishSchema.optional(),
+            maxFee: BigNumberishSchema.optional(),
+            version: BigNumberishSchema.optional(),
+          })
+          .optional(),
+      ]),
+    ),
+} as const
+
+export type StarknetExecuteBackwardCompatibleMethods = {
+  execute: (
+    ...args: z.infer<
+      typeof StarknetExecuteBackwardCompatibleArgumentsSchemas.execute
+    >
+  ) => Promise<InvokeFunctionResponse>
 }
 
 export type ConnectMethods = {
@@ -167,16 +215,22 @@ export type IframeMethods = {
 }
 
 export const OffchainSessionDetailsSchema = z.object({
-  nonce: bignumberishSchema,
-  maxFee: bignumberishSchema.optional(),
+  nonce: BigNumberishSchema,
+  maxFee: BigNumberishSchema.optional(),
   version: z.string(),
 })
+
+export type OffchainSessionDetails = z.infer<
+  typeof OffchainSessionDetailsSchema
+>
+
+const OFFCHAIN_SESSION_ENTRYPOINT = "use_offchain_session"
 
 export const RpcCallSchema = z
   .object({
     contract_address: z.string(),
     entrypoint: z.string(),
-    calldata: z.array(bignumberishSchema).optional(),
+    calldata: z.array(BigNumberishSchema).optional(),
     offchainSessionDetails: OffchainSessionDetailsSchema.optional(),
   })
   .transform(
@@ -210,4 +264,4 @@ export const deployAccountContractSchema = z.object({
   sigdata: z.array(z.string()).optional(),
   //version: z.literal([0, 1]),
   version: z.nativeEnum(VERSIONS), // allow only 0 | 1, workaround since zod doesn't support literals as numbers
-}) satisfies ZodType<GetDeploymentDataResult>
+})

@@ -1,6 +1,7 @@
 import type {
   Abi,
   AccountInterface,
+  AllowArray,
   Call,
   DeclareContractPayload,
   DeclareContractResponse,
@@ -9,6 +10,7 @@ import type {
   InvokeFunctionResponse,
   ProviderInterface,
   SignerInterface,
+  UniversalDetails,
 } from "starknet"
 import { Account } from "starknet"
 
@@ -25,14 +27,19 @@ export class StarknetRemoteAccount extends Account implements AccountInterface {
   }
 
   public async execute(
-    calls: Call | Call[],
-    abis: Abi[] | undefined = undefined,
-    invocationDetails: InvocationsDetails = {},
+    transactions: AllowArray<Call>,
+    abisOrDetails?: Abi[] | UniversalDetails,
+    transactionsDetail: UniversalDetails = {},
   ): Promise<InvokeFunctionResponse> {
-    calls = Array.isArray(calls) ? calls : [calls]
+    const calls = Array.isArray(transactions) ? transactions : [transactions]
+    const details =
+      abisOrDetails === undefined || Array.isArray(abisOrDetails)
+        ? transactionsDetail
+        : abisOrDetails
+
     return await this.wallet.starknet_requestAddInvokeTransaction({
       accountAddress: this.address,
-      executionRequest: { calls, abis, invocationDetails },
+      executionRequest: { calls, invocationDetails: details },
     })
   }
 
