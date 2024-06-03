@@ -180,6 +180,7 @@ export const disconnect = async (options: DisconnectOptions = {}) => {
 
 export type {
   Connector,
+  ConnectorData,
   DisconnectOptions,
   ModalResult,
   StarknetWindowObject,
