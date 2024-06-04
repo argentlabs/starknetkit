@@ -6,9 +6,8 @@ import type {
   InvocationsSignerDetails,
   Signature,
   SignerInterface,
-  typedData,
 } from "starknet"
-
+import { TypedData } from "starknet-types"
 import type { IStarknetRpc } from "./starknet.model"
 
 export class StarknetRemoteSigner implements SignerInterface {
@@ -19,7 +18,7 @@ export class StarknetRemoteSigner implements SignerInterface {
   }
 
   public async signMessage(
-    typedData: typedData.TypedData,
+    typedData: TypedData,
     accountAddress: string,
   ): Promise<Signature> {
     const { signature } = await this.wallet.starknet_signTypedData({

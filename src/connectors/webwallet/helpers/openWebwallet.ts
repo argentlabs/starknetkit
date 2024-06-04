@@ -1,9 +1,9 @@
-import { createModal } from "../starknetWindowObject/wormhole"
-import { getWebWalletStarknetObject } from "../starknetWindowObject/getWebWalletStarknetObject"
-import { trpcProxyClient } from "./trpc"
-import type { StarknetWindowObject } from "get-starknet-core"
+import type { StarknetWindowObject } from "starknet-types"
 import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
+import { getWebWalletStarknetObject } from "../starknetWindowObject/getWebWalletStarknetObject"
+import { createModal } from "../starknetWindowObject/wormhole"
 import { fetchAllowedDapps } from "./fetchAllowedDapps"
+import { trpcProxyClient } from "./trpc"
 
 const checkIncognitoChrome = async (isChrome: boolean) => {
   return new Promise((resolve) => {

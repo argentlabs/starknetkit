@@ -1,10 +1,10 @@
-name: release
+name: Run all tests
+
 on:
   push:
     branches:
       - develop
-      - main
-      - hotfix\/v[0-9]+.[0-9]+.[0-9]+
+  pull_request:
 
 jobs:
   release:
@@ -31,9 +31,3 @@ jobs:
 
       - name: Build
         run: pnpm run build
-
-      - name: semantic-release
-        run: npx semantic-release --debug true --dry-run false
-        env:
-          GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

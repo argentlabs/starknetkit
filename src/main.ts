@@ -1,21 +1,19 @@
-import type { DisconnectOptions, StarknetWindowObject } from "get-starknet-core"
+import type { DisconnectOptions } from "get-starknet-core"
 import sn from "get-starknet-core"
 import snV3 from "get-starknet-coreV3"
-
-import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
-
+import type { StarknetWindowObject } from "starknet-types"
+import { ConnectorData, type Connector } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
+import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 import {
   removeStarknetLastConnectedWallet,
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
-import type { ConnectOptions, ModalResult, ModalWallet } from "./types/modal"
-
-import { ConnectorData, type Connector } from "./connectors"
 import css from "./theme.css?inline"
+import type { ConnectOptions, ModalResult, ModalWallet } from "./types/modal"
 
 let selectedConnector: Connector | null = null
 
@@ -182,10 +180,11 @@ export const disconnect = async (options: DisconnectOptions = {}) => {
 
 export type {
   Connector,
+  ConnectorData,
   DisconnectOptions,
+  ModalResult,
   StarknetWindowObject,
   defaultConnectors as starknetkitDefaultConnectors,
-  ModalResult,
 }
 
 export type * from "./types/legacy"

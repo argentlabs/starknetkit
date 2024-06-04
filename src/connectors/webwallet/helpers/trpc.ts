@@ -86,7 +86,7 @@ const appRouter = t.router({
 
   // RPC Messages
   requestAccounts: t.procedure
-    .input(z.object({ silentMode: z.boolean().optional() }))
+    .input(z.object({ silent_mode: z.boolean().optional() })) // TODO: update in webwallet to use silent_mode
     .output(z.string().array())
     .mutation(async () => []),
   requestChainId: t.procedure.output(z.string()).mutation(async () => ""),
@@ -118,7 +118,15 @@ const appRouter = t.router({
   }),
   deploymentData: t.procedure
     .output(deployAccountContractSchema)
-    .mutation(async () => null),
+    .mutation(async () => {
+      return {
+        address: "",
+        calldata: [],
+        version: 0,
+        class_hash: "",
+        salt: "",
+      }
+    }),
 })
 
 export type AppRouter = typeof appRouter

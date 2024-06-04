@@ -1,9 +1,8 @@
 import {
-  type StarknetWindowObject,
-  type AccountChangeEventHandler,
   Permission,
-  StarknetChainId,
-} from "get-starknet-core"
+  type AccountChangeEventHandler,
+  type StarknetWindowObject,
+} from "starknet-types"
 import {
   Connector,
   type ConnectorData,
@@ -19,6 +18,8 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
+import { constants } from "starknet"
+import { getStarknetChainId } from "../../helpers/getStarknetChainId"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -50,7 +51,7 @@ export class WebWalletConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return permissions.includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.Accounts)
   }
 
   get id(): string {
@@ -97,7 +98,7 @@ export class WebWalletConnector extends Connector {
     try {
       accounts = await this._wallet.request({
         type: "wallet_requestAccounts",
-        params: { silentMode: false }, // explicit to show the modal
+        params: { silent_mode: false }, // explicit to show the modal
       })
     } catch {
       throw new UserRejectedRequestError()
@@ -134,20 +135,22 @@ export class WebWalletConnector extends Connector {
 
     const [account] = await this._wallet.request({
       type: "wallet_requestAccounts",
-      params: { silentMode: true },
+      params: { silent_mode: true },
     })
 
     return account ?? null
   }
 
-  async chainId(): Promise<StarknetChainId> {
+  async chainId(): Promise<constants.StarknetChainId> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet.request({
+    const chainId = await this._wallet.request({
       type: "wallet_requestChainId",
     })
+
+    return getStarknetChainId(chainId)
   }
 
   async initEventListener(accountChangeCb: AccountChangeEventHandler) {
@@ -178,7 +181,7 @@ export class WebWalletConnector extends Connector {
       location: "/interstitialLogin",
     })
 
-    _wallet = await openWebwallet(origin)
+    _wallet = (await openWebwallet(origin)) ?? null
 
     this._wallet = _wallet
   }

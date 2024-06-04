@@ -1,8 +1,4 @@
-import {
-  Permission,
-  StarknetChainId,
-  StarknetWindowObject,
-} from "get-starknet-core"
+import { Permission, type StarknetWindowObject } from "starknet-types"
 import { constants } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -20,6 +16,7 @@ import {
   WALLET_NOT_FOUND_ICON_LIGHT,
 } from "./constants"
 import { isString } from "lodash-es"
+import { getStarknetChainId } from "../../helpers/getStarknetChainId"
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
   /** The wallet id. */
@@ -57,19 +54,20 @@ export class InjectedConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return permissions.includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.Accounts)
   }
 
-  async chainId(): Promise<StarknetChainId> {
+  async chainId(): Promise<constants.StarknetChainId> {
     this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet.request({
+    const chainId = await this._wallet.request({
       type: "wallet_requestChainId",
     })
+    return getStarknetChainId(chainId)
   }
 
   private async onAccountsChanged(accounts?: string[]): Promise<void> {
@@ -81,10 +79,7 @@ export class InjectedConnector extends Connector {
     this.emit("change", { account, chainId })
   }
 
-  private onNetworkChanged(
-    chainId?: StarknetChainId,
-    accounts?: string[],
-  ): void {
+  private onNetworkChanged(chainId?: string, accounts?: string[]): void {
     const { SN_MAIN, SN_SEPOLIA } = constants.StarknetChainId
     const account = accounts?.[0]
     switch (chainId) {
@@ -109,7 +104,7 @@ export class InjectedConnector extends Connector {
     try {
       accounts = await this._wallet.request({
         type: "wallet_requestAccounts",
-        params: { silentMode: false }, // explicit to show the modal
+        params: { silent_mode: false }, // explicit to show the modal
       })
     } catch {
       // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
@@ -156,7 +151,7 @@ export class InjectedConnector extends Connector {
     return this._wallet
       .request({
         type: "wallet_requestAccounts",
-        params: { silentMode: true },
+        params: { silent_mode: true },
       })
       .then((accounts) => accounts[0])
   }

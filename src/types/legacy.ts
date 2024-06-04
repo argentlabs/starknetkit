@@ -1,4 +1,4 @@
-import { StarknetWindowObject } from "get-starknet-core"
+import { StarknetWindowObject } from "starknet-types"
 import {
   IStarknetWindowObject as IStarknetWindowObjectV3,
   ConnectedStarknetWindowObject as ConnectedStarknetWindowObjectV3,

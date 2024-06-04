@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { StarknetWindowObject } from "get-starknet-core"
   import { onMount } from "svelte"
+  import type { StarknetWindowObject } from "starknet-types"
   import ConnectorButton from "./ConnectorButton.svelte"
   import type { ModalWallet } from "../types/modal"
   import type { Connector } from "../connectors/connector"
@@ -15,9 +15,10 @@
 
   let loadingItem: string | false = false
 
-  let starknetMobile = window?.starknet_argentX as unknown as StarknetWindowObject & {
-    isInAppBrowser: boolean
-  }
+  let starknetMobile =
+    window?.starknet_argentX as unknown as StarknetWindowObject & {
+      isInAppBrowser: boolean
+    }
   let isInAppBrowser = starknetMobile?.isInAppBrowser
 
   const setLoadingItem = (item: string | false) => {

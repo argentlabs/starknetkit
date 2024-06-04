@@ -1,4 +1,4 @@
-import type { StarknetWindowObject } from "get-starknet-core"
+import type { StarknetWindowObject } from "starknet-types"
 
 export const isInArgentMobileAppBrowser = (): boolean => {
   if (!window?.starknet_argentX) {

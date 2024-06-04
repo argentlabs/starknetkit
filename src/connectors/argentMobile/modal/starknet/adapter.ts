@@ -12,9 +12,9 @@ import { RpcProvider, constants } from "starknet"
 import {
   AddInvokeTransactionParameters,
   RequestFn,
-  StarknetWindowObject,
   TypedData,
 } from "get-starknet-core"
+import type { StarknetWindowObject } from "starknet-types"
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
 import { argentModal } from "../argentModal"
