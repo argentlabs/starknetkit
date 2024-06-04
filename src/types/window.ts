@@ -229,22 +229,22 @@ const OFFCHAIN_SESSION_ENTRYPOINT = "use_offchain_session"
 export const RpcCallSchema = z
   .object({
     contract_address: z.string(),
-    entrypoint: z.string(),
+    entry_point: z.string(),
     calldata: z.array(BigNumberishSchema).optional(),
     offchainSessionDetails: OffchainSessionDetailsSchema.optional(),
   })
   .transform(
-    ({ contract_address, entrypoint, calldata, offchainSessionDetails }) =>
-      entrypoint === OFFCHAIN_SESSION_ENTRYPOINT
+    ({ contract_address, entry_point, calldata, offchainSessionDetails }) =>
+      entry_point === OFFCHAIN_SESSION_ENTRYPOINT
         ? {
             contractAddress: contract_address,
-            entrypoint,
+            entrypoint: entry_point,
             calldata: calldata || [],
             offchainSessionDetails: offchainSessionDetails || undefined,
           }
         : {
             contractAddress: contract_address,
-            entrypoint,
+            entrypoint: entry_point,
             calldata: calldata || [],
           },
   )
