@@ -182,11 +182,12 @@ export type {
   Connector,
   ConnectorData,
   DisconnectOptions,
-  ModalResult,
   StarknetWindowObject,
   defaultConnectors as starknetkitDefaultConnectors,
 }
 
-export type * from "./types/legacy"
+export type * from "./types/modal"
+//export type * from "./types/legacy"
+export * from "./window"
 
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"

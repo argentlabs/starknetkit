@@ -8,7 +8,7 @@ import {
   RpcCallsArraySchema,
   StarknetMethodArgumentsSchemas,
   deployAccountContractSchema,
-} from "../../../types/window"
+} from "../../../window/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
 import { Permission } from "get-starknet-core"
 

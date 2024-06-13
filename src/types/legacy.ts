@@ -1,4 +1,4 @@
-import { StarknetWindowObject } from "starknet-types"
+/* import { StarknetWindowObject } from "starknet-types"
 import {
   IStarknetWindowObject as IStarknetWindowObjectV3,
   ConnectedStarknetWindowObject as ConnectedStarknetWindowObjectV3,
@@ -14,3 +14,4 @@ export type BackwardsCompatibleStarknetWindowObject = StarknetWindowObject &
 export type BackwardsCompatibleConnectedStarknetWindowObject =
   StarknetWindowObject &
     Omit<ConnectedStarknetWindowObjectV3, CommonOmittedProperties>
+ */

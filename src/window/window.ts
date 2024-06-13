@@ -68,9 +68,48 @@ export const typedDataSchema = z.object({
   ),
   primaryType: z.string(),
   domain: z.record(z.unknown()),
-  message: z.any(),
+  message: z.record(z.unknown()),
 })
 
+export const AssetSchema = z.object({
+  type: z.literal("ERC20"),
+  options: z.object({
+    address: z.string(),
+    symbol: z.string().optional(),
+    decimals: z.number().optional(),
+    image: z.string().optional(),
+    name: z.string().optional(),
+  }),
+})
+
+export const AddStarknetChainParametersSchema = z.union([
+  z.object({
+    id: z.string(),
+    chain_id: z.string(),
+    chain_name: z.string(),
+    rpc_urls: z.array(z.string()).optional(),
+    native_currency: AssetSchema.optional(),
+    block_explorer_url: z.array(z.string()).optional(),
+  }),
+  z
+    .object({
+      id: z.string(),
+      chainId: z.string(),
+      chainName: z.string(),
+      rpcUrls: z.array(z.string()).optional(),
+      nativeCurrency: AssetSchema.optional(),
+      blockExplorerUrl: z.array(z.string()).optional(),
+    })
+    // for backwards compatibility
+    .transform((value) => ({
+      id: value.id,
+      chain_id: value.chainId,
+      chain_name: value.chainName,
+      rpc_urls: value.rpcUrls,
+      native_currency: value.nativeCurrency,
+      block_explorer_url: value.blockExplorerUrl,
+    })),
+])
 export const StarknetMethodArgumentsSchemas = {
   enable: z
     .tuple([
@@ -83,42 +122,16 @@ export const StarknetMethodArgumentsSchemas = {
         .optional(),
     ])
     .or(z.tuple([])),
-  addStarknetChain: z.tuple([
-    z.object({
-      id: z.string(),
-      chainId: z.string(),
-      chainName: z.string(),
-      rpcUrls: z.array(z.string()).optional(),
-      nativeCurrency: z
-        .object({
-          name: z.string(),
-          symbol: z.string(),
-          decimals: z.number(),
-        })
-        .optional(),
-      blockExplorerUrls: z.array(z.string()).optional(),
-    }),
-  ]),
+  addStarknetChain: z.tuple([AddStarknetChainParametersSchema]),
   switchStarknetChain: z.tuple([
     z.object({
       chainId: z.string(),
     }),
   ]),
-  watchAsset: z.tuple([
-    z.object({
-      type: z.literal("ERC20"),
-      options: z.object({
-        address: z.string(),
-        symbol: z.string().optional(),
-        decimals: z.number().optional(),
-        image: z.string().optional(),
-        name: z.string().optional(),
-      }),
-    }),
-  ]),
+  watchAsset: z.tuple([AssetSchema]),
   requestAccounts: z.tuple([
     z.object({
-      silentMode: z.boolean().optional(),
+      silent_mode: z.boolean().optional(),
     }),
   ]),
   execute: z.tuple([
