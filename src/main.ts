@@ -13,7 +13,7 @@ import {
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
 import css from "./theme.css?inline"
-import type { ConnectOptions, ModalResult, ModalWallet } from "./types/modal"
+import type { ConnectOptions, ModalResult, ModalWallet } from "./window/modal"
 
 let selectedConnector: Connector | null = null
 
@@ -182,11 +182,11 @@ export type {
   Connector,
   ConnectorData,
   DisconnectOptions,
-  ModalResult,
   StarknetWindowObject,
   defaultConnectors as starknetkitDefaultConnectors,
 }
 
-export type * from "./types/legacy"
+export type * from "./window/modal"
+export * from "./window"
 
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"

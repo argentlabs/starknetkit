@@ -1,6 +1,6 @@
 import { Connector } from "../connectors/connector"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
-import type { ModalWallet, StoreVersion } from "../types/modal"
+import type { ModalWallet, StoreVersion } from "../window/modal"
 import { isString } from "lodash-es"
 import { WalletProvider } from "get-starknet-core"
 import type { StarknetWindowObject } from "starknet-types"

@@ -1,5 +1,5 @@
 import Bowser from "bowser"
-import type { StoreVersion } from "../types/modal"
+import type { StoreVersion } from "../window/modal"
 
 export const globalWindow = typeof window !== "undefined" ? window : null
 

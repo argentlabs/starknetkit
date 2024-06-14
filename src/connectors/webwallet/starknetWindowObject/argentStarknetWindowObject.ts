@@ -36,7 +36,6 @@ export type LoginStatus = {
 export type WebWalletStarknetWindowObject = StarknetWindowObject & {
   getLoginStatus(): Promise<LoginStatus>
 }
-
 export const getArgentStarknetWindowObject = (
   options: GetArgentStarknetWindowObject,
   proxyLink: CreateTRPCProxyClient<AppRouter>,

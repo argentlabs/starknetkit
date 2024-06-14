@@ -41,6 +41,11 @@
       "types": "./dist/injectedConnector.d.ts",
       "import": "./dist/injectedConnector.js",
       "require": "./dist/injectedConnector.cjs"
+    },
+    "./window": {
+      "types": "./dist/window.d.ts",
+      "import": "./dist/window.js",
+      "require": "./dist/window.cjs"
     }
   },
   "main": "./dist/starknetkit.cjs",
@@ -102,8 +107,11 @@
     "typescript": "^5.1.6",
     "vite": "^4.3.8",
     "vite-plugin-dts": "^3.0.0",
+    "vitest": "^1.6.0",
     "ws": "^8.8.1",
-    "zod": "^3.20.6"
+    "zod": "^3.20.6",
+    "starknet4": "npm:starknet@4.22.0",
+    "starknet5": "npm:starknet@5.29.0"
   },
   "peerDependencies": {
     "starknet": "^6.9.0"
