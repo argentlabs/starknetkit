@@ -187,7 +187,6 @@ export type {
 }
 
 export type * from "./types/modal"
-//export type * from "./types/legacy"
 export * from "./window"
 
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"
