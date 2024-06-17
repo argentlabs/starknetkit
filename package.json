@@ -89,7 +89,7 @@
     "@walletconnect/types": "^2.11.0",
     "@walletconnect/utils": "^2.11.0",
     "autoprefixer": "^10.4.7",
-    "eslint": "^8.48.0",
+    "eslint": "^9.0.0",
     "eslint-config-next": "^13.4.19",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
