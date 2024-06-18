@@ -3,10 +3,10 @@ import type { constants } from "starknet"
 import type {
   AccountChangeEventHandler,
   NetworkChangeEventHandler,
+  RpcTypeToMessageMap,
   StarknetWindowObject,
   WalletEvents,
 } from "starknet-types"
-import { OFFCHAIN_SESSION_ENTRYPOINT } from "../constants"
 import {
   EXECUTE_POPUP_HEIGHT,
   EXECUTE_POPUP_WIDTH,
@@ -52,10 +52,17 @@ export const getArgentStarknetWindowObject = (
         }
 
         case "wallet_signTypedData": {
+          const params =
+            call.params as RpcTypeToMessageMap["wallet_signTypedData"]["params"]
+
           setPopupOptions({
             width: SIGN_MESSAGE_POPUP_WIDTH,
             height: SIGN_MESSAGE_POPUP_HEIGHT,
-            location: "/signMessage",
+            location:
+              params?.primaryType === "Session" &&
+              params?.domain.name === "SessionAccount.session"
+                ? "/signSessionKeys"
+                : "/signMessage",
           })
           const data = Array.isArray(call.params) ? call.params : [call.params]
           return proxyLink.signTypedData.mutate(data as any)
@@ -73,18 +80,7 @@ export const getArgentStarknetWindowObject = (
             height: EXECUTE_POPUP_HEIGHT,
             location: "/review",
           })
-          if (
-            Array.isArray(calls) &&
-            calls[0] &&
-            calls[0].entrypoint === OFFCHAIN_SESSION_ENTRYPOINT
-          ) {
-            setPopupOptions({
-              width: 1,
-              height: 1,
-              location: "/executeSessionTx",
-              atLeftBottom: true,
-            })
-          }
+
           const hash = await proxyLink.addInvokeTransaction.mutate(calls)
 
           return { transaction_hash: hash }

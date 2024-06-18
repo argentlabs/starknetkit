@@ -227,40 +227,17 @@ export type IframeMethods = {
   connect: () => void
 }
 
-export const OffchainSessionDetailsSchema = z.object({
-  nonce: BigNumberishSchema,
-  maxFee: BigNumberishSchema.optional(),
-  version: z.string(),
-})
-
-export type OffchainSessionDetails = z.infer<
-  typeof OffchainSessionDetailsSchema
->
-
-const OFFCHAIN_SESSION_ENTRYPOINT = "use_offchain_session"
-
 export const RpcCallSchema = z
   .object({
     contract_address: z.string(),
     entry_point: z.string(),
     calldata: z.array(BigNumberishSchema).optional(),
-    offchainSessionDetails: OffchainSessionDetailsSchema.optional(),
   })
-  .transform(
-    ({ contract_address, entry_point, calldata, offchainSessionDetails }) =>
-      entry_point === OFFCHAIN_SESSION_ENTRYPOINT
-        ? {
-            contractAddress: contract_address,
-            entrypoint: entry_point,
-            calldata: calldata || [],
-            offchainSessionDetails: offchainSessionDetails || undefined,
-          }
-        : {
-            contractAddress: contract_address,
-            entrypoint: entry_point,
-            calldata: calldata || [],
-          },
-  )
+  .transform(({ contract_address, entry_point, calldata }) => ({
+    contractAddress: contract_address,
+    entrypoint: entry_point,
+    calldata: calldata || [],
+  }))
 
 export const RpcCallsArraySchema = z.array(RpcCallSchema).nonempty()
 
