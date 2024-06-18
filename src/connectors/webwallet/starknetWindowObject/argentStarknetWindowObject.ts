@@ -55,14 +55,14 @@ export const getArgentStarknetWindowObject = (
           const params =
             call.params as RpcTypeToMessageMap["wallet_signTypedData"]["params"]
 
+          const isSession =
+            params?.primaryType === "Session" &&
+            params?.domain.name === "SessionAccount.session"
+
           setPopupOptions({
             width: SIGN_MESSAGE_POPUP_WIDTH,
             height: SIGN_MESSAGE_POPUP_HEIGHT,
-            location:
-              params?.primaryType === "Session" &&
-              params?.domain.name === "SessionAccount.session"
-                ? "/signSessionKeys"
-                : "/signMessage",
+            location: isSession ? "/signSessionKeys" : "/signMessage",
           })
           const data = Array.isArray(call.params) ? call.params : [call.params]
           return proxyLink.signTypedData.mutate(data as any)
