@@ -1,6 +1,3 @@
-export const OFFCHAIN_SESSION_KEYS_EXECUTE_POPUP_WIDTH = 1
-export const OFFCHAIN_SESSION_KEYS_EXECUTE_POPUP_HEIGHT = 1
-
 /* all these sizes are optimistic */
 export const EXECUTE_POPUP_WIDTH = 385
 export const EXECUTE_POPUP_HEIGHT = 775
