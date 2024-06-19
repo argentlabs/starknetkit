@@ -50,9 +50,9 @@ export class StarknetAdapter
   // NamespaceAdapter
   public namespace = "starknet"
   public methods = [
-    "starknet_supportedSpecs",
-    "starknet_signTypedData",
-    "starknet_requestAddInvokeTransaction",
+    "wallet_supportedSpecs",
+    "wallet_signTypedData",
+    "wallet_requestAddInvokeTransaction",
   ]
   public events = ["chainChanged", "accountsChanged"]
 
@@ -100,9 +100,9 @@ export class StarknetAdapter
       wallet_requestChainId: this.handleRequestChainId,
       wallet_requestAccounts: this.handleRequestAccounts,
       wallet_getPermissions: this.handleGetPermissions,
-      starknet_addInvokeTransaction: this.handleAddInvokeTransaction,
-      starknet_signTypedData: this.handleSignTypedData,
-      starknet_supportedSpecs: this.handleSupportedSpecs,
+      wallet_addInvokeTransaction: this.handleAddInvokeTransaction,
+      wallet_signTypedData: this.handleSignTypedData,
+      wallet_supportedSpecs: this.handleSupportedSpecs,
     })
   }
 
@@ -252,7 +252,7 @@ export class StarknetAdapter
     const { calls } = params as AddInvokeTransactionParameters
 
     return await this.requestWallet({
-      method: "starknet_requestAddInvokeTransaction",
+      method: "wallet_requestAddInvokeTransaction",
       params: {
         accountAddress: this.account.address,
         executionRequest: {
@@ -272,7 +272,7 @@ export class StarknetAdapter
     }
 
     const response = (await this.requestWallet({
-      method: "starknet_signTypedData",
+      method: "wallet_signTypedData",
       params: typedDataParams,
     })) as { signature: string[] } | string[]
 
@@ -281,7 +281,7 @@ export class StarknetAdapter
 
   private handleSupportedSpecs = async () => {
     return await this.requestWallet({
-      method: "starknet_supportedSpecs",
+      method: "wallet_supportedSpecs",
       params: {},
     })
   }

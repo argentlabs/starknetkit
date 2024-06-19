@@ -37,7 +37,7 @@ export class StarknetRemoteAccount extends Account implements AccountInterface {
         ? transactionsDetail
         : abisOrDetails
 
-    return await this.wallet.starknet_requestAddInvokeTransaction({
+    return await this.wallet.wallet_requestAddInvokeTransaction({
       accountAddress: this.address,
       executionRequest: { calls, invocationDetails: details },
     })
