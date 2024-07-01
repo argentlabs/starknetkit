@@ -2,7 +2,7 @@ import type { DisconnectOptions } from "get-starknet-core"
 import sn from "get-starknet-core"
 import snV3 from "get-starknet-coreV3"
 import type { StarknetWindowObject } from "starknet-types"
-import { ConnectorData, type Connector } from "./connectors"
+import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
@@ -15,7 +15,7 @@ import Modal from "./modal/Modal.svelte"
 import css from "./theme.css?inline"
 import type { ConnectOptions, ModalResult, ModalWallet } from "./window/modal"
 
-let selectedConnector: Connector | null = null
+let selectedConnector: StarknetkitConnector | null = null
 
 export const connect = async ({
   modalMode = "canAsk",
@@ -129,7 +129,7 @@ export const connect = async ({
       target: getTarget(),
       props: {
         dappName,
-        callback: async (connector: Connector | null) => {
+        callback: async (connector: StarknetkitConnector | null) => {
           try {
             selectedConnector = connector
             const connectorData = (await connector?.connect()) ?? null
@@ -183,10 +183,11 @@ export type {
   ConnectorData,
   DisconnectOptions,
   StarknetWindowObject,
+  StarknetkitConnector,
   defaultConnectors as starknetkitDefaultConnectors,
 }
 
-export type * from "./window/modal"
 export * from "./window"
+export type * from "./window/modal"
 
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"

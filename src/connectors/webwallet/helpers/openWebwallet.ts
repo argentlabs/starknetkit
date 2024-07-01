@@ -83,7 +83,6 @@ export const openWebwallet = async (
       { modal, iframe },
     )
     return starknetWindowObject
-    /* } */
   } else {
     const windowProxyClient = trpcProxyClient({})
     return await getWebWalletStarknetObject(

@@ -1,12 +1,19 @@
 <script lang="ts">
-  import type { ModalWallet } from "../types/modal"
-  import type { Connector } from "../connectors/connector"
+  import { ModalWallet } from "../window"
+  import type { StarknetkitConnector } from "../connectors/connector"
 
   export let wallet: ModalWallet
   export let theme: "light" | "dark" | null = null
-  export let cb: (value: Connector | null) => Promise<void> = async () => {}
+  export let cb: (
+    value: StarknetkitConnector | null,
+  ) => Promise<void> = async () => {}
   export let loadingItem: string | false = false
-  const icon = theme === "dark" ? wallet.icon.dark : wallet.icon.light
+  const icon =
+    typeof wallet.icon === "string"
+      ? wallet.icon
+      : theme === "dark"
+        ? wallet.icon.dark
+        : wallet.icon.light
   const isSvg = icon?.startsWith("<svg")
 </script>
 

@@ -60,6 +60,8 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
+    "@starknet-io/get-starknet": "^4.0.0",
+    "@starknet-io/types-js": "^0.7.7",
     "@trpc/client": "^10.38.1",
     "@trpc/server": "^10.38.1",
     "@walletconnect/sign-client": "^2.11.0",
@@ -99,6 +101,8 @@
     "prettier-plugin-import-sort": "^0.0.7",
     "semantic-release": "^21.1.1",
     "starknet-types": "^0.7.2",
+    "starknet4": "npm:starknet@4.22.0",
+    "starknet5": "npm:starknet@5.29.0",
     "svelte": "^4.0.0",
     "svelte-check": "^3.5.1",
     "svelte-preprocess": "^5.0.4",
@@ -109,9 +113,7 @@
     "vite-plugin-dts": "^3.0.0",
     "vitest": "^1.6.0",
     "ws": "^8.8.1",
-    "zod": "^3.20.6",
-    "starknet4": "npm:starknet@4.22.0",
-    "starknet5": "npm:starknet@5.29.0"
+    "zod": "^3.20.6"
   },
   "peerDependencies": {
     "starknet": "^6.9.0"

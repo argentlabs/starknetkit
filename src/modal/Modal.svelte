@@ -2,14 +2,14 @@
   import { onMount } from "svelte"
   import type { StarknetWindowObject } from "starknet-types"
   import ConnectorButton from "./ConnectorButton.svelte"
-  import type { ModalWallet } from "../types/modal"
-  import type { Connector } from "../connectors/connector"
+  import type { StarknetkitConnector } from "../connectors/connector"
   import { InjectedConnector } from "../connectors/injected"
+  import { ModalWallet } from "../window"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
   export let callback: (
-    value: Connector | null,
+    value: StarknetkitConnector | null,
   ) => Promise<void> = async () => {}
   export let theme: "light" | "dark" | null = null
 
@@ -25,7 +25,7 @@
     loadingItem = item
   }
 
-  let cb = async (connector: Connector | null) => {
+  let cb = async (connector: StarknetkitConnector | null) => {
     setLoadingItem(connector?.id ?? false)
     try {
       await callback(connector ?? null)
