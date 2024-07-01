@@ -1,4 +1,4 @@
-import type { StarknetWindowObject } from "starknet-types"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { login } from "./login"
 import type { IArgentLoginOptions } from "./login"
 import { StarknetAdapter } from "./starknet/adapter"

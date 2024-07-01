@@ -10,7 +10,7 @@ import {
   RpcMessage,
   RpcTypeToMessageMap,
   type StarknetWindowObject,
-} from "starknet-types"
+} from "@starknet-io/types-js"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -117,7 +117,7 @@ export class InjectedConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return permissions?.includes(Permission.Accounts)
+    return permissions?.includes(Permission.ACCOUNTS)
   }
 
   async account(

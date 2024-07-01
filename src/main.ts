@@ -1,7 +1,6 @@
-import type { DisconnectOptions } from "get-starknet-core"
-import sn from "get-starknet-core"
-import snV3 from "get-starknet-coreV3"
-import type { StarknetWindowObject } from "starknet-types"
+import type { DisconnectOptions } from "@starknet-io/get-starknet"
+import sn from "@starknet-io/get-starknet-core"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
@@ -96,7 +95,7 @@ export const connect = async ({
   const modalWallets: ModalWallet[] = mapModalWallets({
     availableConnectors,
     installedWallets,
-    discoveryWallets: await snV3.getDiscoveryWallets(restOptions),
+    discoveryWallets: await sn.getDiscoveryWallets(restOptions),
     storeVersion,
   })
 
@@ -175,7 +174,7 @@ export const disconnect = async (options: DisconnectOptions = {}) => {
   }
   selectedConnector = null
 
-  return snV3.disconnect(options)
+  return sn.disconnect(options)
 }
 
 export type {

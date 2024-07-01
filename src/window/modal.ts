@@ -1,5 +1,5 @@
-import type { GetWalletOptions } from "get-starknet-core"
-import { StarknetWindowObject } from "starknet-types"
+import type { GetWalletOptions } from "@starknet-io/get-starknet-core"
+import { StarknetWindowObject } from "@starknet-io/types-js"
 import type { ArgentMobileConnectorOptions } from "../connectors/argentMobile"
 import type {
   ConnectorData,

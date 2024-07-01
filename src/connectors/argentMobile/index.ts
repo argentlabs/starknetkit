@@ -1,4 +1,4 @@
-import { type AccountChangeEventHandler } from "get-starknet-core"
+import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
 import {
   AccountInterface,
   ProviderInterface,
@@ -12,7 +12,7 @@ import {
   RpcMessage,
   RpcTypeToMessageMap,
   type StarknetWindowObject,
-} from "starknet-types"
+} from "@starknet-io/types-js"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -65,7 +65,7 @@ export class ArgentMobileConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return (permissions as Permission[]).includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.ACCOUNTS)
   }
 
   get id(): string {

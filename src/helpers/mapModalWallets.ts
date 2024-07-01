@@ -1,6 +1,6 @@
-import { WalletProvider } from "get-starknet-core"
+import { WalletProvider } from "@starknet-io/get-starknet-core"
 import { isString } from "lodash-es"
-import type { StarknetWindowObject } from "starknet-types"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { StarknetkitConnector } from "../connectors/connector"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../window/modal"

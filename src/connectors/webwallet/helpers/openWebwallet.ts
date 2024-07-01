@@ -1,4 +1,4 @@
-import type { StarknetWindowObject } from "starknet-types"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
 import { getWebWalletStarknetObject } from "../starknetWindowObject/getWebWalletStarknetObject"
 import { createModal } from "../starknetWindowObject/wormhole"

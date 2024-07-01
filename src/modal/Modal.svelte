@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import type { StarknetWindowObject } from "starknet-types"
+  import type { StarknetWindowObject } from "@starknet-io/types-js"
   import ConnectorButton from "./ConnectorButton.svelte"
   import type { StarknetkitConnector } from "../connectors/connector"
   import { InjectedConnector } from "../connectors/injected"

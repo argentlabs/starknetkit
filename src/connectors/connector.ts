@@ -5,7 +5,7 @@ import type {
   RpcMessage,
   RpcTypeToMessageMap,
   StarknetWindowObject,
-} from "starknet-types"
+} from "@starknet-io/types-js"
 
 /** Connector icons, as base64 encoded svg. */
 export type ConnectorIcons = StarknetWindowObject["icon"]

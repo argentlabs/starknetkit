@@ -11,7 +11,7 @@ import {
   RpcTypeToMessageMap,
   type AccountChangeEventHandler,
   type StarknetWindowObject,
-} from "starknet-types"
+} from "@starknet-io/types-js"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -58,7 +58,7 @@ export class WebWalletConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return (permissions as Permission[]).includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.ACCOUNTS)
   }
 
   get id(): string {

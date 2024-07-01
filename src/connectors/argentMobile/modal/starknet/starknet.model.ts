@@ -5,7 +5,7 @@ import type {
   InvokeFunctionResponse,
   Signature,
 } from "starknet"
-import { TypedData } from "starknet-types"
+import { TypedData } from "@starknet-io/types-js"
 
 // see https://github.com/WalletConnect/walletconnect-docs/pull/288/files
 export interface IStarknetRpc {
