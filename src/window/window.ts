@@ -6,7 +6,7 @@ const DECIMAL_REGEX = /^\d+$/
 
 const shortStringSchema = z
   .string()
-  .nonempty("The short string cannot be empty")
+  .min(1, "The short string cannot be empty")
   .max(31, "The short string cannot exceed 31 characters")
   .refine(
     (value) => !HEX_REGEX.test(value),
@@ -116,7 +116,7 @@ export const StarknetMethodArgumentsSchemas = {
       z
         .object({
           starknetVersion: z
-            .union([z.literal("v3"), z.literal("v4")])
+            .union([z.literal("v3"), z.literal("v4"), z.literal("v5")])
             .optional(),
         })
         .optional(),

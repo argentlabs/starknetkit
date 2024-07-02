@@ -1,5 +1,5 @@
 import { constants } from "starknet"
-import { ChainId } from "starknet-types"
+import { ChainId } from "@starknet-io/types-js"
 
 export const getStarknetChainId = (
   chainId: ChainId,

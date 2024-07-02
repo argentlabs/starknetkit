@@ -6,7 +6,7 @@ import type {
   RpcTypeToMessageMap,
   StarknetWindowObject,
   WalletEvents,
-} from "starknet-types"
+} from "@starknet-io/types-js"
 import {
   EXECUTE_POPUP_HEIGHT,
   EXECUTE_POPUP_WIDTH,

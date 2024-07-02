@@ -10,7 +10,7 @@ import {
   deployAccountContractSchema,
 } from "../../../window/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
-import { Permission } from "get-starknet-core"
+import { Permission } from "@starknet-io/types-js"
 
 const t = initTRPC.create({
   isServer: false,
@@ -95,9 +95,9 @@ const appRouter = t.router({
     .output(z.string().array())
     .mutation(async () => []),
   getPermissions: t.procedure
-    .output(z.array(z.enum([Permission.Accounts])))
+    .output(z.array(z.enum([Permission.ACCOUNTS])))
     .mutation(async () => {
-      return [Permission.Accounts]
+      return [Permission.ACCOUNTS]
     }),
   addInvokeTransaction: t.procedure
     .input(RpcCallSchema.or(RpcCallsArraySchema))

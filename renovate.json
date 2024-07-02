@@ -5,12 +5,15 @@
   "timezone": "Europe/London",
   "rebaseWhen": "never",
   "ignoreDeps": [
-    "starknet-types",
+    "starknet",
     "starknet4-deprecated",
     "starknet4",
     "starknet5",
     "get-starknet-core",
-    "get-starknet-coreV3"
+    "get-starknet-coreV3",
+    "starknet-types",
+    "@starknet-io/types-js",
+    "@starknet-io/get-starknet"
   ],
   "packageRules": [
     {

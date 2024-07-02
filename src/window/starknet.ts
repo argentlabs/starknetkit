@@ -1,4 +1,5 @@
-import type { StarknetWindowObject, Permission } from "get-starknet-core"
+import type { StarknetWindowObject } from "@starknet-io/get-starknet-core"
+import type { Permission } from "@starknet-io/types-js"
 import {
   ConnectedStarknetWindowObject as ConnectedStarknetWindowObjectV3,
   IStarknetWindowObject as IStarknetWindowObjectV3,

@@ -13,8 +13,8 @@ import {
   AddInvokeTransactionParameters,
   RequestFn,
   TypedData,
-} from "get-starknet-core"
-import type { StarknetWindowObject } from "starknet-types"
+} from "@starknet-io/get-starknet-core"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
 import { argentModal } from "../argentModal"
@@ -103,6 +103,9 @@ export class StarknetAdapter
       starknet_addInvokeTransaction: this.handleAddInvokeTransaction,
       starknet_signTypedData: this.handleSignTypedData,
       starknet_supportedSpecs: this.handleSupportedSpecs,
+      wallet_addInvokeTransaction: this.handleAddInvokeTransaction,
+      wallet_signTypedData: this.handleSignTypedData,
+      wallet_supportedSpecs: this.handleSupportedSpecs,
     })
   }
 

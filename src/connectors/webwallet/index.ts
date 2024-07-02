@@ -1,25 +1,32 @@
 import {
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+  WalletAccount,
+} from "starknet"
+import {
   Permission,
+  RequestFnCall,
+  RpcMessage,
+  RpcTypeToMessageMap,
   type AccountChangeEventHandler,
   type StarknetWindowObject,
-} from "starknet-types"
-import {
-  Connector,
-  type ConnectorData,
-  type ConnectorIcons,
-} from "../connector"
-import { setPopupOptions } from "./helpers/trpc"
-
+} from "@starknet-io/types-js"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserRejectedRequestError,
 } from "../../errors"
+import { getStarknetChainId } from "../../helpers/getStarknetChainId"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
+import {
+  Connector,
+  type ConnectorData,
+  type ConnectorIcons,
+} from "../connector"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
-import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
-import { constants } from "starknet"
-import { getStarknetChainId } from "../../helpers/getStarknetChainId"
+import { setPopupOptions } from "./helpers/trpc"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -51,7 +58,7 @@ export class WebWalletConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return (permissions as Permission[]).includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.ACCOUNTS)
   }
 
   get id(): string {
@@ -107,12 +114,26 @@ export class WebWalletConnector extends Connector {
     // Prevent trpc from throwing an error (closed prematurely)
     // this happens when 2 requests to webwallet are made in a row (trpc-browser is closing the first popup and requesting a new one right after)
     // won't be needed with chrome iframes will be enabled again (but still needed for other browsers)
-    await new Promise((r) => setTimeout(r, 100))
+    await new Promise((r) => setTimeout(r, 200))
     const chainId = await this.chainId()
 
     return {
       account: accounts[0],
       chainId,
+    }
+  }
+
+  async request<T extends RpcMessage["type"]>(
+    call: RequestFnCall<T>,
+  ): Promise<RpcTypeToMessageMap[T]["result"]> {
+    if (!this._wallet) {
+      throw new ConnectorNotConnectedError()
+    }
+    try {
+      return await this._wallet.request(call)
+    } catch (e) {
+      console.error(e)
+      throw new UserRejectedRequestError()
     }
   }
 
@@ -126,22 +147,19 @@ export class WebWalletConnector extends Connector {
     removeStarknetLastConnectedWallet()
   }
 
-  async account(): Promise<string | null> {
+  async account(
+    provider: ProviderOptions | ProviderInterface,
+  ): Promise<AccountInterface> {
     this._wallet = _wallet
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const [account] = await this._wallet.request({
-      type: "wallet_requestAccounts",
-      params: { silent_mode: true },
-    })
-
-    return account ?? null
+    return new WalletAccount(provider, this._wallet)
   }
 
-  async chainId(): Promise<constants.StarknetChainId> {
+  async chainId(): Promise<bigint> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
@@ -150,7 +168,8 @@ export class WebWalletConnector extends Connector {
       type: "wallet_requestChainId",
     })
 
-    return getStarknetChainId(chainId)
+    const hexChainId = getStarknetChainId(chainId)
+    return BigInt(hexChainId)
   }
 
   async initEventListener(accountChangeCb: AccountChangeEventHandler) {

@@ -1,6 +1,18 @@
-import { type AccountChangeEventHandler } from "get-starknet-core"
-import { constants } from "starknet"
-import { Permission, type StarknetWindowObject } from "starknet-types"
+import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
+import {
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+  WalletAccount,
+  constants,
+} from "starknet"
+import {
+  Permission,
+  RequestFnCall,
+  RpcMessage,
+  RpcTypeToMessageMap,
+  type StarknetWindowObject,
+} from "@starknet-io/types-js"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -53,7 +65,7 @@ export class ArgentMobileConnector extends Connector {
       type: "wallet_getPermissions",
     })
 
-    return (permissions as Permission[]).includes(Permission.Accounts)
+    return (permissions as Permission[]).includes(Permission.ACCOUNTS)
   }
 
   get id(): string {
@@ -110,20 +122,17 @@ export class ArgentMobileConnector extends Connector {
     this._wallet = null
   }
 
-  async account(): Promise<string | null> {
+  async account(
+    provider: ProviderOptions | ProviderInterface,
+  ): Promise<AccountInterface> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const [account] = await this._wallet.request({
-      type: "wallet_requestAccounts",
-      params: { silent_mode: true },
-    })
-
-    return account ?? null
+    return new WalletAccount(provider, this._wallet)
   }
 
-  async chainId(): Promise<constants.StarknetChainId> {
+  async chainId(): Promise<bigint> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
@@ -132,7 +141,24 @@ export class ArgentMobileConnector extends Connector {
       type: "wallet_requestChainId",
     })
 
-    return getStarknetChainId(chainId)
+    const hexChainId = getStarknetChainId(chainId)
+    return BigInt(hexChainId)
+  }
+
+  async request<T extends RpcMessage["type"]>(
+    call: RequestFnCall<T>,
+  ): Promise<RpcTypeToMessageMap[T]["result"]> {
+    this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotConnectedError()
+    }
+
+    try {
+      return await this._wallet.request(call)
+    } catch {
+      throw new UserRejectedRequestError()
+    }
   }
 
   // needed, methods required by starknet-react. Otherwise an exception is throwd
