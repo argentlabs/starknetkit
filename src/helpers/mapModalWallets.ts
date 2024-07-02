@@ -10,6 +10,7 @@ interface SetConnectorsExpandedParams {
   installedWallets: StarknetWindowObject[]
   discoveryWallets: WalletProvider[]
   storeVersion: StoreVersion | null
+  customOrder: boolean
 }
 
 export const mapModalWallets = ({
@@ -17,6 +18,7 @@ export const mapModalWallets = ({
   installedWallets,
   discoveryWallets,
   storeVersion,
+  customOrder,
 }: SetConnectorsExpandedParams): ModalWallet[] => {
   const starknetMobile =
     window?.starknet_argentX as unknown as StarknetWindowObject & {
@@ -32,10 +34,12 @@ export const mapModalWallets = ({
     availableConnectors.find((c) => c.id === w.id),
   )
 
-  const orderedByInstall = [
-    ...availableConnectors.filter((c) => allInstalledWallets.includes(c)),
-    ...availableConnectors.filter((c) => !allInstalledWallets.includes(c)),
-  ]
+  const orderedByInstall = customOrder
+    ? availableConnectors
+    : [
+        ...availableConnectors.filter((c) => allInstalledWallets.includes(c)),
+        ...availableConnectors.filter((c) => !allInstalledWallets.includes(c)),
+      ]
 
   const connectors = orderedByInstall
     .map<ModalWallet | null>((c) => {

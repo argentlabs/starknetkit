@@ -97,6 +97,7 @@ export const connect = async ({
     installedWallets,
     discoveryWallets: await sn.getDiscoveryWallets(restOptions),
     storeVersion,
+    customOrder: connectors?.length > 0,
   })
 
   const getTarget = (): ShadowRoot => {
