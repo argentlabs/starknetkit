@@ -129,11 +129,11 @@ export class StarknetAdapter
     let type = call.type as string
 
     if (
-      type === "starknet_addInvokeTransaction" ||
-      type === "starknet_supportedSpecs" ||
-      type === "starknet_signTypedData"
+      type === "wallet_addInvokeTransaction" ||
+      type === "wallet_supportedSpecs" ||
+      type === "wallet_signTypedData"
     ) {
-      type = type.replace("starknet_", "wallet_") as string
+      type = type.replace("wallet_", "starknet_") as string
     }
 
     const requestToCall = this.handleRequest[type]
