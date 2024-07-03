@@ -131,6 +131,7 @@ export class StarknetAdapter
 
     let type = call.type as string
 
+    // temporarily for backwards compatibility
     if (
       type === "wallet_addInvokeTransaction" ||
       type === "wallet_supportedSpecs" ||
