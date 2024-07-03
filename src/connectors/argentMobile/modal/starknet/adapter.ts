@@ -53,9 +53,6 @@ export class StarknetAdapter
     "starknet_supportedSpecs",
     "starknet_signTypedData",
     "starknet_requestAddInvokeTransaction",
-    "wallet_supportedSpecs",
-    "wallet_signTypedData",
-    "wallet_requestAddInvokeTransaction",
   ]
   public events = ["chainChanged", "accountsChanged"]
 
@@ -103,12 +100,12 @@ export class StarknetAdapter
       wallet_requestChainId: this.handleRequestChainId,
       wallet_requestAccounts: this.handleRequestAccounts,
       wallet_getPermissions: this.handleGetPermissions,
-      wallet_addInvokeTransaction: this.handleAddInvokeTransaction,
       starknet_addInvokeTransaction: this.handleAddInvokeTransaction,
-      wallet_signTypedData: this.handleSignTypedData,
       starknet_signTypedData: this.handleSignTypedData,
-      wallet_supportedSpecs: this.handleSupportedSpecs,
       starknet_supportedSpecs: this.handleSupportedSpecs,
+      wallet_addInvokeTransaction: this.handleAddInvokeTransaction,
+      wallet_signTypedData: this.handleSignTypedData,
+      wallet_supportedSpecs: this.handleSupportedSpecs,
     })
   }
 
@@ -129,18 +126,7 @@ export class StarknetAdapter
       throw new Error("No session")
     }
 
-    let type = call.type as string
-
-    if (
-      type === "starknet_addInvokeTransaction" ||
-      type === "starknet_supportedSpecs" ||
-      type === "starknet_signTypedData"
-    ) {
-      type = type.replace("starknet_", "wallet_") as string
-    }
-
-    const requestToCall = this.handleRequest[type]
-
+    const requestToCall = this.handleRequest[call.type]
     if (requestToCall) {
       return requestToCall(call.params)
     }
