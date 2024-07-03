@@ -1,4 +1,4 @@
-import { type Connector } from "../connectors"
+import { StarknetkitConnector } from "../connectors"
 import {
   ArgentMobileConnector,
   type ArgentMobileConnectorOptions,
@@ -12,13 +12,13 @@ export const defaultConnectors = ({
 }: {
   argentMobileOptions?: ArgentMobileConnectorOptions
   webWalletUrl?: string
-}): Connector[] => {
+}): StarknetkitConnector[] => {
   const isSafari =
     typeof window !== "undefined"
       ? /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
       : false
 
-  const defaultConnectors: Connector[] = []
+  const defaultConnectors: StarknetkitConnector[] = []
 
   if (!isSafari) {
     defaultConnectors.push(

@@ -13,8 +13,8 @@ import {
   AddInvokeTransactionParameters,
   RequestFn,
   TypedData,
-} from "get-starknet-core"
-import type { StarknetWindowObject } from "starknet-types"
+} from "@starknet-io/get-starknet-core"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
 import { argentModal } from "../argentModal"

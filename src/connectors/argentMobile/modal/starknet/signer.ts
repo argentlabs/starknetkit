@@ -7,7 +7,7 @@ import type {
   Signature,
   SignerInterface,
 } from "starknet"
-import { TypedData } from "starknet-types"
+import { TypedData } from "@starknet-io/types-js"
 import type { IStarknetRpc } from "./starknet.model"
 
 export class StarknetRemoteSigner implements SignerInterface {

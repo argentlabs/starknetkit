@@ -1,5 +1,16 @@
-import { Permission, type StarknetWindowObject } from "starknet-types"
-import { constants } from "starknet"
+import {
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+  WalletAccount,
+} from "starknet"
+import {
+  Permission,
+  RequestFnCall,
+  RpcMessage,
+  RpcTypeToMessageMap,
+  type StarknetWindowObject,
+} from "@starknet-io/types-js"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -15,8 +26,6 @@ import {
   WALLET_NOT_FOUND_ICON_DARK,
   WALLET_NOT_FOUND_ICON_LIGHT,
 } from "./constants"
-import { isString } from "lodash-es"
-import { getStarknetChainId } from "../../helpers/getStarknetChainId"
 /** Injected connector options. */
 export interface InjectedConnectorOptions {
   /** The wallet id. */
@@ -27,20 +36,74 @@ export interface InjectedConnectorOptions {
   icon?: ConnectorIcons
 }
 
+export interface InjectedConnectorOptions {
+  /** The wallet id. */
+  id: string
+  /** Wallet human readable name. */
+  name?: string
+  /** Wallet icons. */
+  icon?: ConnectorIcons
+}
+
+//  Icons used when the injected wallet is not installed
+//  Icons from media kits
+const walletIcons = {
+  argentX:
+    "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI0LjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA2NS4xOTUwOCA1Ny43MzU2MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNjUuMTk1MDggNTcuNzM1NjI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRkY4NzVCO30KPC9zdHlsZT4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTQwLjk4NTkyLDBIMjQuMjA4ODhjLTAuNTYsMC0xLjAxMDAxLDAuNDUxMDItMS4wMjE5NywxLjAxMjAyCgljLTAuMzM4OTksMTUuNzU1LTguNTgyMDMsMzAuNzA4OTgtMjIuNzcwMDIsNDEuMzAwOTljLTAuNDUwMDEsMC4zMzcwMS0wLjU1Mjk4LDAuOTY3OTktMC4yMjQsMS40MjNsOS44MTU5OCwxMy41NzMKCWMwLjMzNDA1LDAuNDYyMDEsMC45ODUwNSwwLjU2NTk4LDEuNDQyOTksMC4yMjY5OWM4Ljg3MTAzLTYuNTc5MDEsMTYuMDA3MDItMTQuNTE3LDIxLjE0NjA2LTIzLjMxNQoJYzUuMTM4LDguNzk4LDEyLjI3Mzk5LDE2LjczNTk5LDIxLjE0NiwyMy4zMTVjMC40NTY5NywwLjMzODk5LDEuMTA3OTcsMC4yMzUwMiwxLjQ0MTk2LTAuMjI2OTlsOS44MTYwNC0xMy41NzMKCWMwLjMyODk4LTAuNDU1MDIsMC4yMjY5OS0xLjA4Ni0wLjIyNC0xLjQyM0M1MC41ODk4NiwzMS43MjEwMSw0Mi4zNDY4OCwxNi43NjcwMyw0Mi4wMDc4OSwxLjAxMjAyCglDNDEuOTk1ODcsMC40NTEwMiw0MS41NDY4OSwwLDQwLjk4NTkyLDAiLz4KPC9zdmc+Cg==",
+  braavos:
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zMjMuNDQgNDEuMzg4NkMzMjQuMTk4IDQyLjY3MjggMzIzLjE5NSA0NC4yNjAzIDMyMS43MDQgNDQuMjYwM0MyOTEuNTEgNDQuMjYwMyAyNjYuOTY1IDY4LjE2NTYgMjY2LjM4OSA5Ny44NzFDMjU2LjA1IDk1Ljk0MDcgMjQ1LjMzNyA5NS43OTU2IDIzNC43NTQgOTcuNTc4N0MyMzQuMDIzIDY4LjAwOSAyMDkuNTQgNDQuMjYwMyAxNzkuNDQ1IDQ0LjI2MDNDMTc3Ljk1MyA0NC4yNjAzIDE3Ni45NDkgNDIuNjcxNiAxNzcuNzA3IDQxLjM4NjVDMTkyLjMyMyAxNi42MzMgMjE5LjQ4MyAwIDI1MC41NzMgMEMyODEuNjY0IDAgMzA4LjgyNCAxNi42MzM5IDMyMy40NCA0MS4zODg2WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzIzMjRfNjE4NjkpIi8+CjxwYXRoIGQ9Ik00MTguNzU2IDIyNi44OTRDNDI2LjM3IDIyOS4yIDQzMy41ODEgMjIyLjUxNyA0MzEuMDM2IDIxNC45NzlDNDA0LjUwNyAxMzYuNDAxIDMxNi41MzUgMTA0LjM1OCAyNTAuMTU5IDEwNC4zNThDMTgzLjY3NCAxMDQuMzU4IDkzLjczOTEgMTM3LjQxOCA2OS4zMDUxIDIxNS4zMzFDNjYuOTU3NCAyMjIuODE4IDc0LjE0NjUgMjI5LjI3NSA4MS42NDc5IDIyNi45NzdMMjQ0LjI1IDE3Ny4xNTFDMjQ3LjU2OSAxNzYuMTM0IDI1MS4xMTYgMTc2LjEyOCAyNTQuNDM5IDE3Ny4xMzVMNDE4Ljc1NiAyMjYuODk0WiIgZmlsbD0idXJsKCNwYWludDFfbGluZWFyXzIzMjRfNjE4NjkpIi8+CjxwYXRoIGQ9Ik02OS43MTY1IDIzOS40MjZMMjQ0LjM3IDE4Ni40NTZDMjQ3LjY2OSAxODUuNDU2IDI1MS4xOTEgMTg1LjQ1MyAyNTQuNDkyIDE4Ni40NDhMNDMwLjIzMiAyMzkuNDUyQzQ0NC43NiAyNDMuODMzIDQ1NC43MDEgMjU3LjIxNiA0NTQuNzAxIDI3Mi4zOVY0MzAuNDgxQzQ1NC4wMjggNDY5LjA3IDQxOS4zNjIgNTAwIDM4MC43ODYgNTAwSDMxNi43MTJDMzEwLjM3OSA1MDAgMzA1LjI1IDQ5NC44NzcgMzA1LjI1IDQ4OC41NDNWNDMzLjExNUMzMDUuMjUgNDExLjI4OSAzMTguMTY3IDM5MS41MzUgMzM4LjE1NSAzODIuNzkyQzM2NC45NDkgMzcxLjA3MSAzOTYuNjQ2IDM1NS4yMTggNDAyLjYwOCAzMjMuNDA2QzQwNC41MzIgMzEzLjEzOCAzOTcuODM3IDMwMy4yMzQgMzg3LjU5NSAzMDEuMTk4QzM2MS42OTkgMjk2LjA1MSAzMzIuOTg5IDI5OC4wMzkgMzA4LjcxMSAzMDguODk4QzI4MS4xNSAzMjEuMjI1IDI3My45NCAzNDEuNzMxIDI3MS4yNzEgMzY5LjI3TDI2OC4wMzYgMzk4LjkzOEMyNjcuMDQ3IDQwOC4wMDUgMjU4LjU0NiA0MTQuOTUyIDI0OS40MjkgNDE0Ljk1MkMyMzkuOTk4IDQxNC45NTIgMjMyLjkyNiA0MDcuNzY5IDIzMS45MDMgMzk4LjM4OEwyMjguNzI4IDM2OS4yN0MyMjYuNDQyIDM0NS42ODEgMjIyLjI5OCAzMjIuNzY3IDE5Ny45MTIgMzExLjg2QzE3MC4wOTUgMjk5LjQxOSAxNDIuMTQxIDI5NS4yODcgMTEyLjQwNCAzMDEuMTk4QzEwMi4xNjIgMzAzLjIzNCA5NS40NjcgMzEzLjEzOCA5Ny4zOTEzIDMyMy40MDZDMTAzLjQwNSAzNTUuNDk1IDEzNC44NTQgMzcwLjk4NSAxNjEuODQ0IDM4Mi43OTJDMTgxLjgzMyAzOTEuNTM1IDE5NC43NSA0MTEuMjg5IDE5NC43NSA0MzMuMTE1VjQ4OC41MzNDMTk0Ljc1IDQ5NC44NjcgMTg5LjYyMiA1MDAgMTgzLjI4OSA1MDBIMTE5LjIxNEM4MC42Mzc0IDUwMCA0NS45NzE2IDQ2OS4wNyA0NS4yOTc5IDQzMC40ODFWMjcyLjM0OUM0NS4yOTc5IDI1Ny4xOTQgNTUuMjE0MiAyNDMuODI0IDY5LjcxNjUgMjM5LjQyNloiIGZpbGw9InVybCgjcGFpbnQyX2xpbmVhcl8yMzI0XzYxODY5KSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzIzMjRfNjE4NjkiIHgxPSIyNDUuOTg2IiB5MT0iLTI3IiB4Mj0iNDI1LjQ5NiIgeTI9IjUwMi4zNzYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0Y1RDQ1RSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjk2MDAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDFfbGluZWFyXzIzMjRfNjE4NjkiIHgxPSIyNDUuOTg2IiB5MT0iLTI3IiB4Mj0iNDI1LjQ5NiIgeTI9IjUwMi4zNzYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0Y1RDQ1RSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjk2MDAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzIzMjRfNjE4NjkiIHgxPSIyNDUuOTg2IiB5MT0iLTI3IiB4Mj0iNDI1LjQ5NiIgeTI9IjUwMi4zNzYiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0Y1RDQ1RSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRjk2MDAiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4=",
+}
+
 export class InjectedConnector extends Connector {
   private _wallet?: StarknetWindowObject
-  private _options: InjectedConnectorOptions
+  private readonly _options: InjectedConnectorOptions
 
   constructor({ options }: { options: InjectedConnectorOptions }) {
     super()
     this._options = options
   }
 
+  get id(): string {
+    return this._options.id
+  }
+
+  get name(): string {
+    this.ensureWallet()
+    return this._options.name ?? this._wallet?.name ?? this._options.id
+  }
+
+  get icon(): ConnectorIcons {
+    this.ensureWallet()
+    const deafultIcon = {
+      dark:
+        walletIcons[this.id as keyof typeof walletIcons] ||
+        WALLET_NOT_FOUND_ICON_DARK,
+      light:
+        walletIcons[this.id as keyof typeof walletIcons] ||
+        WALLET_NOT_FOUND_ICON_LIGHT,
+    }
+    return this._options.icon || this._wallet?.icon || deafultIcon
+  }
+
   available(): boolean {
-    // This should be awaited ideally but it would break compatibility with
-    // starknet-react. Do we need to make this async? Is ensureWallet needed?
     this.ensureWallet()
     return this._wallet !== undefined
+  }
+
+  async chainId(): Promise<bigint> {
+    this.ensureWallet()
+    const locked = await this.isLocked()
+
+    if (!this._wallet || locked) {
+      throw new ConnectorNotConnectedError()
+    }
+
+    try {
+      const chainIdHex = await this.request({ type: "wallet_requestChainId" })
+      return BigInt(chainIdHex)
+    } catch {
+      throw new ConnectorNotFoundError()
+    }
   }
 
   async ready(): Promise<boolean> {
@@ -50,47 +113,24 @@ export class InjectedConnector extends Connector {
       return false
     }
 
-    const permissions = await this._wallet.request({
+    const permissions: Permission[] = await this.request({
       type: "wallet_getPermissions",
     })
 
-    return (permissions as Permission[]).includes(Permission.Accounts)
+    return permissions?.includes(Permission.ACCOUNTS)
   }
 
-  async chainId(): Promise<constants.StarknetChainId> {
+  async account(
+    provider: ProviderOptions | ProviderInterface,
+  ): Promise<AccountInterface> {
     this.ensureWallet()
+    const locked = await this.isLocked()
 
-    if (!this._wallet) {
+    if (locked || !this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const chainId = await this._wallet.request({
-      type: "wallet_requestChainId",
-    })
-    return getStarknetChainId(chainId)
-  }
-
-  private async onAccountsChanged(accounts?: string[]): Promise<void> {
-    if (!accounts) {
-      return void this.emit("disconnect")
-    }
-    const account = accounts[0]
-    const chainId = await this.chainId()
-    this.emit("change", { account, chainId })
-  }
-
-  private onNetworkChanged(chainId?: string, accounts?: string[]): void {
-    const { SN_MAIN, SN_SEPOLIA } = constants.StarknetChainId
-    const account = accounts?.[0]
-    switch (chainId) {
-      case SN_MAIN:
-      case SN_SEPOLIA:
-        this.emit("change", { chainId, account })
-        break
-      default:
-        this.emit("change", {})
-        break
-    }
+    return new WalletAccount(provider, this._wallet)
   }
 
   async connect(): Promise<ConnectorData> {
@@ -100,31 +140,32 @@ export class InjectedConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
-    let accounts: string[] | null
+    let accounts: string[]
     try {
-      accounts = await this._wallet.request({
+      accounts = await this.request({
         type: "wallet_requestAccounts",
-        params: { silent_mode: false }, // explicit to show the modal
       })
     } catch {
-      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
     }
 
     if (!accounts) {
-      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
       throw new UserRejectedRequestError()
     }
 
-    this._wallet.on("accountsChanged", this.onAccountsChanged.bind(this))
+    this._wallet.on("accountsChanged", async (accounts) => {
+      await this.onAccountsChanged(accounts)
+    })
 
-    this._wallet.on("networkChanged", this.onNetworkChanged.bind(this))
+    this._wallet.on("networkChanged", (chainId, accounts) => {
+      this.onNetworkChanged(chainId, accounts)
+    })
 
     await this.onAccountsChanged(accounts)
 
-    const account = accounts[0]
-    const chainId = await this.chainId()
+    const [account] = accounts
 
+    const chainId = await this.chainId()
     this.emit("connect", { account, chainId })
 
     return {
@@ -136,56 +177,74 @@ export class InjectedConnector extends Connector {
   async disconnect(): Promise<void> {
     this.ensureWallet()
     removeStarknetLastConnectedWallet()
-    if (!this.available()) {
+
+    if (!this._wallet) {
       throw new ConnectorNotFoundError()
     }
+
+    this.emit("disconnect")
   }
 
-  async account(): Promise<string> {
+  async request<T extends RpcMessage["type"]>(
+    call: RequestFnCall<T>,
+  ): Promise<RpcTypeToMessageMap[T]["result"]> {
     this.ensureWallet()
 
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet
-      .request({
-        type: "wallet_requestAccounts",
-        params: { silent_mode: true },
-      })
-      .then((accounts) => accounts[0])
+    try {
+      return await this._wallet.request(call)
+    } catch {
+      throw new UserRejectedRequestError()
+    }
   }
 
-  get id(): string {
-    return this._options.id
+  private async isLocked() {
+    const accounts = await this.request({
+      type: "wallet_requestAccounts",
+      params: { silent_mode: true },
+    })
+
+    return accounts.length === 0
   }
 
-  get name(): string {
-    if (!this._wallet) {
-      throw new ConnectorNotConnectedError()
+  private ensureWallet() {
+    // biome-ignore lint/suspicious/noExplicitAny: any
+    const global_object: Record<string, any> = globalThis
+
+    const wallet: StarknetWindowObject =
+      global_object?.[`starknet_${this._options.id}`]
+
+    if (wallet) {
+      this._wallet = wallet
     }
-    return this._wallet.name
   }
 
-  get icon(): ConnectorIcons {
-    const defaultIcons = {
-      dark: WALLET_NOT_FOUND_ICON_DARK,
-      light: WALLET_NOT_FOUND_ICON_LIGHT,
+  private async onAccountsChanged(accounts?: string[]): Promise<void> {
+    if (!accounts) {
+      this.emit("disconnect")
+    } else {
+      const [account] = accounts
+
+      if (account) {
+        const chainId = await this.chainId()
+        this.emit("change", { account, chainId })
+      } else {
+        this.emit("disconnect")
+      }
     }
+  }
 
-    if (this._options.icon) {
-      return this._options.icon
+  private onNetworkChanged(chainIdHex?: string, accounts?: string[]): void {
+    if (chainIdHex) {
+      const chainId = BigInt(chainIdHex)
+      const [account] = accounts || []
+      this.emit("change", { chainId, account })
+    } else {
+      this.emit("change", {})
     }
-
-    const walletIcon = this._wallet?.icon
-    if (walletIcon) {
-      const darkIcon = isString(walletIcon) ? walletIcon : walletIcon.dark
-      const lightIcon = isString(walletIcon) ? walletIcon : walletIcon.light
-
-      return { dark: darkIcon, light: lightIcon }
-    }
-
-    return defaultIcons
   }
 
   get wallet(): StarknetWindowObject {
@@ -194,51 +253,4 @@ export class InjectedConnector extends Connector {
     }
     return this._wallet
   }
-
-  private ensureWallet() {
-    const installed = getAvailableWallets(globalThis)
-    const wallet = installed.filter((w) => w.id === this._options.id)[0]
-    if (wallet) {
-      this._wallet = wallet
-    }
-  }
-}
-
-function getAvailableWallets(obj: Record<string, any>): StarknetWindowObject[] {
-  return Object.values(
-    Object.getOwnPropertyNames(obj).reduce<
-      Record<string, StarknetWindowObject>
-    >((wallets, key) => {
-      if (key.startsWith("starknet")) {
-        const wallet = obj[key]
-
-        if (isWalletObject(wallet) && !wallets[wallet.id]) {
-          wallets[wallet.id] = wallet as StarknetWindowObject
-        }
-      }
-      return wallets
-    }, {}),
-  )
-}
-
-// biome-ignore lint: wallet could be anything
-function isWalletObject(wallet: any): boolean {
-  try {
-    return (
-      wallet &&
-      [
-        // wallet's must have methods/members, see StarknetWindowObject
-        "request",
-        "on",
-        "off",
-        "version",
-        "id",
-        "name",
-        "icon",
-      ].every((key) => key in wallet)
-    )
-  } catch (err) {
-    /* empty */
-  }
-  return false
 }

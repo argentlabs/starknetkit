@@ -1,4 +1,4 @@
-import type { StarknetWindowObject } from "starknet-types"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { mapTargetUrlToNetworkId } from "../../../helpers/mapTargetUrlToNetworkId"
 import { getWebWalletStarknetObject } from "../starknetWindowObject/getWebWalletStarknetObject"
 import { createModal } from "../starknetWindowObject/wormhole"
@@ -83,7 +83,6 @@ export const openWebwallet = async (
       { modal, iframe },
     )
     return starknetWindowObject
-    /* } */
   } else {
     const windowProxyClient = trpcProxyClient({})
     return await getWebWalletStarknetObject(
