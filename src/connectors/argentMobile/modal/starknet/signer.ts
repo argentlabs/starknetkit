@@ -21,7 +21,7 @@ export class StarknetRemoteSigner implements SignerInterface {
     typedData: TypedData,
     accountAddress: string,
   ): Promise<Signature> {
-    const { signature } = await this.wallet.starknet_signTypedData({
+    const { signature } = await this.wallet.wallet_signTypedData({
       accountAddress,
       typedData,
     })
