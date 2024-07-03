@@ -103,6 +103,9 @@ export class StarknetAdapter
       wallet_requestChainId: this.handleRequestChainId,
       wallet_requestAccounts: this.handleRequestAccounts,
       wallet_getPermissions: this.handleGetPermissions,
+      starknet_addInvokeTransaction: this.handleAddInvokeTransaction,
+      starknet_signTypedData: this.handleSignTypedData,
+      starknet_supportedSpecs: this.handleSupportedSpecs,
       wallet_addInvokeTransaction: this.handleAddInvokeTransaction,
       wallet_signTypedData: this.handleSignTypedData,
       wallet_supportedSpecs: this.handleSupportedSpecs,
@@ -266,7 +269,7 @@ export class StarknetAdapter
     const { calls } = params as AddInvokeTransactionParameters
 
     return await this.requestWallet({
-      method: "wallet_requestAddInvokeTransaction",
+      method: "starknet_requestAddInvokeTransaction",
       params: {
         accountAddress: this.account.address,
         executionRequest: {
@@ -286,7 +289,7 @@ export class StarknetAdapter
     }
 
     const response = (await this.requestWallet({
-      method: "wallet_signTypedData",
+      method: "starknet_signTypedData",
       params: typedDataParams,
     })) as { signature: string[] } | string[]
 
@@ -295,7 +298,7 @@ export class StarknetAdapter
 
   private handleSupportedSpecs = async () => {
     return await this.requestWallet({
-      method: "wallet_supportedSpecs",
+      method: "starknet_supportedSpecs",
       params: {},
     })
   }
