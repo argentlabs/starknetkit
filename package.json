@@ -62,7 +62,7 @@
   "dependencies": {
     "@starknet-io/get-starknet": "^4.0.0",
     "@starknet-io/get-starknet-core": "^4.0.0",
-    "@starknet-io/types-js": "^0.7.2",
+    "@starknet-io/types-js": "^0.7.7",
     "@trpc/client": "^10.38.1",
     "@trpc/server": "^10.38.1",
     "@walletconnect/sign-client": "^2.11.0",
