@@ -50,6 +50,9 @@ export class StarknetAdapter
   // NamespaceAdapter
   public namespace = "starknet"
   public methods = [
+    "starknet_supportedSpecs",
+    "starknet_signTypedData",
+    "starknet_requestAddInvokeTransaction",
     "wallet_supportedSpecs",
     "wallet_signTypedData",
     "wallet_requestAddInvokeTransaction",
@@ -123,7 +126,18 @@ export class StarknetAdapter
       throw new Error("No session")
     }
 
-    const requestToCall = this.handleRequest[call.type]
+    let type = call.type as string
+
+    if (
+      type === "starknet_addInvokeTransaction" ||
+      type === "starknet_supportedSpecs" ||
+      type === "starknet_signTypedData"
+    ) {
+      type = type.replace("starknet_", "wallet_") as string
+    }
+
+    const requestToCall = this.handleRequest[type]
+
     if (requestToCall) {
       return requestToCall(call.params)
     }
