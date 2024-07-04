@@ -1,3 +1,9 @@
+import {
+  AddInvokeTransactionParameters,
+  RequestFn,
+  TypedData,
+} from "@starknet-io/get-starknet-core"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { JsonRpcProvider } from "@walletconnect/jsonrpc-provider"
 import type SignClient from "@walletconnect/sign-client"
 import type { SignerConnection } from "@walletconnect/signer-connection"
@@ -8,13 +14,6 @@ import type {
   SignerInterface,
 } from "starknet"
 import { RpcProvider, constants } from "starknet"
-
-import {
-  AddInvokeTransactionParameters,
-  RequestFn,
-  TypedData,
-} from "@starknet-io/get-starknet-core"
-import type { StarknetWindowObject } from "@starknet-io/types-js"
 import type { NamespaceAdapterOptions } from "../adapter"
 import { NamespaceAdapter } from "../adapter"
 import { argentModal } from "../argentModal"
@@ -55,7 +54,7 @@ export class StarknetAdapter
     "starknet_requestAddInvokeTransaction",
     "wallet_supportedSpecs",
     "wallet_signTypedData",
-    "wallet_requestAddInvokeTransaction",
+    "wallet_addInvokeTransaction",
   ]
   public events = ["chainChanged", "accountsChanged"]
 
@@ -274,9 +273,11 @@ export class StarknetAdapter
       params: {
         accountAddress: this.account.address,
         executionRequest: {
-          calls: calls?.map(({ contract_address, ...rest }) => ({
+          // will be removed when argent mobile will support entry_point and contract_address
+          calls: calls?.map(({ contract_address, entry_point, ...rest }) => ({
             ...rest,
             contractAddress: contract_address,
+            entrypoint: entry_point,
           })),
         },
       },
