@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.2.15",
+  "version": "2.2.16",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
