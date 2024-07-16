@@ -2,19 +2,27 @@ import type { CreateTRPCProxyClient } from "@trpc/client"
 import type { AppRouter } from "../helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./argentStarknetWindowObject"
 import { getArgentStarknetWindowObject } from "./argentStarknetWindowObject"
-import { hideModal, setIframeHeight, showModal } from "./wormhole"
+import {
+  hideModal,
+  setIframeHeight,
+  setIframeSize,
+  setIframeWidth,
+  showModal,
+} from "./wormhole"
 
 type IframeProps = {
   modal: HTMLDivElement
   iframe: HTMLIFrameElement
 }
 
-type ModalEvents =
+export type ModalEvents =
   | {
       action: "show" | "hide"
       visible: boolean
     }
   | { action: "updateHeight"; height: number }
+  | { action: "updateWidth"; width: number }
+  | { action: "updateSize"; width: number; height: number }
 
 export const getWebWalletStarknetObject = async (
   target: string,
@@ -49,6 +57,13 @@ export const getWebWalletStarknetObject = async (
             break
           case "updateHeight":
             setIframeHeight(iframe, modalEvent.height)
+            break
+          case "updateWidth":
+            setIframeWidth(iframe, modalEvent.width)
+            break
+          case "updateSize":
+            setIframeSize(iframe, modalEvent.width, modalEvent.height)
+            break
         }
       },
     })
