@@ -41,6 +41,19 @@ export const setIframeHeight = (modal: HTMLIFrameElement, height: number) => {
   modal.style.height = `min(${height || 420}px, 100%)`
 }
 
+export const setIframeWidth = (modal: HTMLIFrameElement, height: number) => {
+  modal.style.width = `min(${height || 380}px, 100%)`
+}
+
+export const setIframeSize = (
+  modal: HTMLIFrameElement,
+  width: number,
+  height: number,
+) => {
+  modal.style.width = `min(${width || 380}px, 100%)`
+  modal.style.height = `min(${height || 420}px, 100%)`
+}
+
 export const createModal = async (targetUrl: string, shouldShow: boolean) => {
   // make sure target url has always /iframes/comms as the path
   const url = new URL(targetUrl)
