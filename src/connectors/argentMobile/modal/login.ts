@@ -129,14 +129,14 @@ const getBridgeUrl = (chainId: unknown) => {
     String(chainId).startsWith(Network.SN_SEPOLIA) ||
     chainIdNumber === 11155111 // sepolia numeric value
   ) {
-    return "https://login.hydrogen.argent47.net"
+    return "https://mobile-login.hydrogen.argent47.net"
   }
 
   if (
     String(chainId).startsWith(Network.SN_MAIN) ||
     chainIdNumber === 1 // mainnet numeric value
   ) {
-    return "https://login.argent.xyz"
+    return "https://mobile-login.argent.xyz"
   }
 }
 
