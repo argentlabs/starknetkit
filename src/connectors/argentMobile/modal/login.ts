@@ -136,7 +136,7 @@ const getBridgeUrl = (chainId: unknown) => {
     String(chainId).startsWith(Network.SN_MAIN) ||
     chainIdNumber === 1 // mainnet numeric value
   ) {
-    return "https://mobile-login.argent.xyz"
+    return "https://login.argent.xyz"
   }
 }
 
