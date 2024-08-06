@@ -59,7 +59,7 @@ interface Urls {
 }
 
 class ArgentModal {
-  public bridgeUrl = "https://mobile-login.argent.xyz"
+  public bridgeUrl = "https://login.argent.xyz"
   public mobileUrl = "argent://"
   public type: "overlay" | "window" = "overlay"
   public wcUri?: string
@@ -73,7 +73,6 @@ class ArgentModal {
     const href = encodeURIComponent(window.location.href)
 
     this.showModal({
-      //desktop: `http://localhost:3001?wc=${wcParam}&href=${href}&device=desktop`,
       desktop: `${this.bridgeUrl}?wc=${wcParam}&href=${href}&device=desktop`,
       ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
       android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
@@ -83,7 +82,6 @@ class ArgentModal {
   public showApprovalModal(_: RequestArguments): void {
     if (device === "desktop") {
       this.showModal({
-        //desktop: `http://localhost:3001?action=sign`,
         desktop: `${this.bridgeUrl}?action=sign`,
         ios: "",
         android: "",
@@ -98,7 +96,6 @@ class ArgentModal {
     this should be ignored and not considered valid as it's only used for automatically redirecting the users to approve or reject a signing request.
     */
     this.showModal({
-      //desktop: `http://localhost:3001?action=sign&device=desktop&href=${href}`,
       desktop: `${this.bridgeUrl}?action=sign&device=desktop&href=${href}`,
       ios: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
       android: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
