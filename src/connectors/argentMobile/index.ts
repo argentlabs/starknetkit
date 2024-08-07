@@ -29,6 +29,8 @@ import {
 } from "../connector"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
+import { isInArgentMobileAppBrowser } from "./helpers"
+import { InjectedConnector } from "../injected"
 
 export interface ArgentMobileConnectorOptions {
   dappName?: string
@@ -40,7 +42,7 @@ export interface ArgentMobileConnectorOptions {
   rpcUrl?: string
 }
 
-export class ArgentMobileConnector extends Connector {
+export class ArgentMobileBaseConnector extends Connector {
   private _wallet: StarknetWindowObject | null = null
   private _options: ArgentMobileConnectorOptions
 
@@ -242,4 +244,14 @@ export class ArgentMobileConnector extends Connector {
   }
 }
 
-export { isInArgentMobileAppBrowser } from "./helpers"
+export class ArgentMobileConnector {
+  static init(options: ArgentMobileConnectorOptions = {}) {
+    if (isInArgentMobileAppBrowser()) {
+      return new InjectedConnector({ options: { id: "argentX" } })
+    } else {
+      return new ArgentMobileBaseConnector(options)
+    }
+  }
+}
+
+export { isInArgentMobileAppBrowser }

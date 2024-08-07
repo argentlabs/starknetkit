@@ -1,6 +1,10 @@
 import type { StarknetWindowObject } from "@starknet-io/types-js"
 
 export const isInArgentMobileAppBrowser = (): boolean => {
+  if (typeof window === "undefined") {
+    return false
+  }
+
   if (!window?.starknet_argentX) {
     return false
   }
