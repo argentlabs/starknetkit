@@ -1,6 +1,6 @@
 import { StarknetkitConnector } from "../connectors"
 import {
-  ArgentMobileConnector,
+  ArgentMobileBaseConnector,
   type ArgentMobileConnectorOptions,
 } from "../connectors/argentMobile"
 import { InjectedConnector } from "../connectors/injected"
@@ -29,7 +29,7 @@ export const defaultConnectors = ({
     )
   }
 
-  defaultConnectors.push(new ArgentMobileConnector(argentMobileOptions))
+  defaultConnectors.push(new ArgentMobileBaseConnector(argentMobileOptions))
   defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
 
   return defaultConnectors
