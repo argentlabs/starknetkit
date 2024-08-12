@@ -246,7 +246,7 @@ export class ArgentMobileBaseConnector extends Connector {
 
 export interface ArgentMobileConnectorInitParams {
   options: ArgentMobileConnectorOptions
-  inAppBrowserOptions: Omit<InjectedConnectorOptions, "id">
+  inAppBrowserOptions?: Omit<InjectedConnectorOptions, "id">
 }
 
 export class ArgentMobileConnector {
