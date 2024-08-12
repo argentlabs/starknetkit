@@ -6,7 +6,7 @@ type UseStarknetkitConnectors = {
 }
 
 const useStarknetkitConnectModal = (
-  options: Omit<ConnectOptions, "argentMobileOptions" | "webWalletUrl">,
+  options: Omit<ConnectOptions, "webWalletUrl">,
 ): UseStarknetkitConnectors => {
   const starknetkitConnectModal = async (): Promise<ModalResult> => {
     return await connect({
