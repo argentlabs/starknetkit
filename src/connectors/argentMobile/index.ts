@@ -37,7 +37,7 @@ export interface ArgentMobileConnectorOptions {
   projectId?: string
   chainId?: constants.NetworkName
   description?: string
-  url?: string
+  url: string
   icons?: string[]
   rpcUrl?: string
 }
