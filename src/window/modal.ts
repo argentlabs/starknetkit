@@ -10,7 +10,7 @@ import type {
 export type StoreVersion = "chrome" | "firefox" | "edge"
 
 export interface ConnectOptions extends GetWalletOptions {
-  argentMobileOptions?: ArgentMobileConnectorOptions
+  argentMobileOptions: ArgentMobileConnectorOptions
   dappName?: string
   connectors?: StarknetkitConnector[]
   modalMode?: "alwaysAsk" | "canAsk" | "neverAsk"

@@ -10,7 +10,7 @@ export const defaultConnectors = ({
   argentMobileOptions,
   webWalletUrl,
 }: {
-  argentMobileOptions?: ArgentMobileConnectorOptions
+  argentMobileOptions: ArgentMobileConnectorOptions
   webWalletUrl?: string
 }): StarknetkitConnector[] => {
   const isSafari =

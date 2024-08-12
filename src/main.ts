@@ -26,7 +26,7 @@ export const connect = async ({
   connectors = [],
   resultType = "wallet",
   ...restOptions
-}: ConnectOptions = {}): Promise<ModalResult> => {
+}: ConnectOptions): Promise<ModalResult> => {
   // force null in case it was disconnected from mobile app
   selectedConnector = null
   const availableConnectors =
