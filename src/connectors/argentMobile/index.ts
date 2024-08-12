@@ -33,11 +33,11 @@ import { isInArgentMobileAppBrowser } from "./helpers"
 import { InjectedConnector, InjectedConnectorOptions } from "../injected"
 
 export interface ArgentMobileConnectorOptions {
-  dappName?: string
+  dappName: string
   projectId?: string
   chainId?: constants.NetworkName
   description?: string
-  url?: string
+  url: string
   icons?: string[]
   rpcUrl?: string
 }
@@ -46,7 +46,7 @@ export class ArgentMobileBaseConnector extends Connector {
   private _wallet: StarknetWindowObject | null = null
   private _options: ArgentMobileConnectorOptions
 
-  constructor(options: ArgentMobileConnectorOptions = {}) {
+  constructor(options: ArgentMobileConnectorOptions) {
     super()
     this._options = options
   }
