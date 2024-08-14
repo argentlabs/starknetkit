@@ -12,7 +12,12 @@ import {
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
 import css from "./theme.css?inline"
-import type { ConnectOptions, ModalResult, ModalWallet } from "./window/modal"
+import type {
+  ConnectOptions,
+  ConnectOptionsWithConnectors,
+  ModalResult,
+  ModalWallet,
+} from "./types/modal"
 
 let selectedConnector: StarknetkitConnector | null = null
 
@@ -21,12 +26,14 @@ export const connect = async ({
   storeVersion = getStoreVersionFromBrowser(),
   modalTheme,
   dappName,
-  webWalletUrl = DEFAULT_WEBWALLET_URL,
-  argentMobileOptions,
-  connectors = [],
   resultType = "wallet",
   ...restOptions
-}: ConnectOptions): Promise<ModalResult> => {
+}: ConnectOptionsWithConnectors | ConnectOptions): Promise<ModalResult> => {
+  const { webWalletUrl = DEFAULT_WEBWALLET_URL, argentMobileOptions } =
+    restOptions as ConnectOptions
+
+  const { connectors } = restOptions as ConnectOptionsWithConnectors
+
   // force null in case it was disconnected from mobile app
   selectedConnector = null
   const availableConnectors =
@@ -66,8 +73,8 @@ export const connect = async ({
     const authorizedWallets = await sn.getAuthorizedWallets(restOptions)
 
     const wallet =
-      authorizedWallets.find((w) => w.id === lastWalletId) ??
-      installedWallets.length === 1
+      (authorizedWallets.find((w) => w.id === lastWalletId) ??
+      installedWallets.length === 1)
         ? installedWallets[0]
         : undefined
 
@@ -97,7 +104,7 @@ export const connect = async ({
     installedWallets,
     discoveryWallets: await sn.getDiscoveryWallets(restOptions),
     storeVersion,
-    customOrder: connectors?.length > 0,
+    customOrder: connectors ? connectors?.length > 0 : false,
   })
 
   const getTarget = (): ShadowRoot => {
@@ -157,7 +164,7 @@ export const connect = async ({
             setTimeout(() => modal.$destroy())
           }
         },
-        theme: modalTheme === "system" ? null : modalTheme ?? null,
+        theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
       },
     })
@@ -185,9 +192,10 @@ export type {
   StarknetWindowObject,
   StarknetkitConnector,
   defaultConnectors as starknetkitDefaultConnectors,
+  ConnectOptions,
+  ConnectOptionsWithConnectors,
 }
 
-export * from "./window"
-export type * from "./window/modal"
+export type * from "./types/modal"
 
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"
