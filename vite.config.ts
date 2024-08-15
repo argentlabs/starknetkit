@@ -27,7 +27,6 @@ export default defineConfig({
           __dirname,
           "src/connectors/injected/index.ts",
         ),
-        window: resolve(__dirname, "src/window/index.ts"),
       },
       formats: ["es", "cjs"],
     },

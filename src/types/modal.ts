@@ -10,14 +10,18 @@ import type {
 export type StoreVersion = "chrome" | "firefox" | "edge"
 
 export interface ConnectOptions extends GetWalletOptions {
-  argentMobileOptions: ArgentMobileConnectorOptions
   dappName?: string
-  connectors?: StarknetkitConnector[]
   modalMode?: "alwaysAsk" | "canAsk" | "neverAsk"
   modalTheme?: "light" | "dark" | "system"
   storeVersion?: StoreVersion | null
-  webWalletUrl?: string
   resultType?: "connector" | "wallet"
+  webWalletUrl?: string
+  argentMobileOptions: ArgentMobileConnectorOptions
+}
+
+export interface ConnectOptionsWithConnectors
+  extends Omit<ConnectOptions, "webWalletUrl" | "argentMobileOptions"> {
+  connectors?: StarknetkitConnector[]
 }
 
 export type ModalWallet = {

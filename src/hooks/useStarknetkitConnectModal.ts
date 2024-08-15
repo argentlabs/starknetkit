@@ -1,12 +1,12 @@
 import { connect } from "../main"
-import { ConnectOptions, ModalResult } from "../window/modal"
+import { ConnectOptionsWithConnectors, ModalResult } from "../types/modal"
 
 type UseStarknetkitConnectors = {
   starknetkitConnectModal: () => Promise<ModalResult>
 }
 
 const useStarknetkitConnectModal = (
-  options: Omit<ConnectOptions, "webWalletUrl">,
+  options: ConnectOptionsWithConnectors,
 ): UseStarknetkitConnectors => {
   const starknetkitConnectModal = async (): Promise<ModalResult> => {
     return await connect({

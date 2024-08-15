@@ -3,7 +3,7 @@ import { isString } from "lodash-es"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
 import { StarknetkitConnector } from "../connectors/connector"
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
-import type { ModalWallet, StoreVersion } from "../window/modal"
+import type { ModalWallet, StoreVersion } from "../types/modal"
 
 interface SetConnectorsExpandedParams {
   availableConnectors: StarknetkitConnector[]
