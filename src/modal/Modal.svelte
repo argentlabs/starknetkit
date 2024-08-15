@@ -4,7 +4,7 @@
   import ConnectorButton from "./ConnectorButton.svelte"
   import type { StarknetkitConnector } from "../connectors/connector"
   import { InjectedConnector } from "../connectors/injected"
-  import { ModalWallet } from "../window"
+  import { ModalWallet } from "../types/modal"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
