@@ -56,18 +56,19 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   async ready(): Promise<boolean> {
-    // check if session is valid and retrieve the wallet
-    // if no sessions, it will show the login modal
-    await this.ensureWallet()
     if (!this._wallet) {
       return false
     }
 
-    const permissions = await this._wallet.request({
-      type: "wallet_getPermissions",
-    })
+    try {
+      const permissions = await this._wallet.request({
+        type: "wallet_getPermissions",
+      })
 
-    return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+      return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+    } catch {
+      return false
+    }
   }
 
   get id(): string {
@@ -150,8 +151,6 @@ export class ArgentMobileBaseConnector extends Connector {
   async request<T extends RpcMessage["type"]>(
     call: RequestFnCall<T>,
   ): Promise<RpcTypeToMessageMap[T]["result"]> {
-    this.ensureWallet()
-
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
