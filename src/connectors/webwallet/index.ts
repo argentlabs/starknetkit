@@ -54,11 +54,15 @@ export class WebWalletConnector extends Connector {
     }
 
     this._wallet = _wallet
-    const permissions = await this._wallet.request({
-      type: "wallet_getPermissions",
-    })
+    try {
+      const permissions = await this._wallet.request({
+        type: "wallet_getPermissions",
+      })
 
-    return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+      return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+    } catch {
+      return false
+    }
   }
 
   get id(): string {
