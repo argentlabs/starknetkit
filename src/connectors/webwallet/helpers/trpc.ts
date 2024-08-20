@@ -1,3 +1,4 @@
+import { Permission } from "@starknet-io/types-js"
 import type { CreateTRPCProxyClient } from "@trpc/client"
 import { createTRPCProxyClient, loggerLink, splitLink } from "@trpc/client"
 import { initTRPC } from "@trpc/server"
@@ -10,7 +11,6 @@ import {
   deployAccountContractSchema,
 } from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
-import { Permission } from "@starknet-io/types-js"
 
 const t = initTRPC.create({
   isServer: false,
@@ -60,6 +60,14 @@ const appRouter = t.router({
     return true
   }),
   connect: t.procedure.mutation(async () => ""),
+  connectWebwallet: t.procedure
+    .output(
+      z.object({
+        account: z.string().array().optional(),
+        chainId: z.string().optional(),
+      }),
+    )
+    .mutation(async () => ({})),
   enable: t.procedure.output(z.string()).mutation(async () => ""),
   execute: t.procedure
     .input(StarknetMethodArgumentsSchemas.execute)

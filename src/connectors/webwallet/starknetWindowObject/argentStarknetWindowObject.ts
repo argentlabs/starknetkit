@@ -1,5 +1,3 @@
-import type { CreateTRPCProxyClient } from "@trpc/client"
-import type { constants } from "starknet"
 import type {
   AccountChangeEventHandler,
   NetworkChangeEventHandler,
@@ -7,6 +5,8 @@ import type {
   StarknetWindowObject,
   WalletEvents,
 } from "@starknet-io/types-js"
+import type { CreateTRPCProxyClient } from "@trpc/client"
+import type { constants } from "starknet"
 import {
   EXECUTE_POPUP_HEIGHT,
   EXECUTE_POPUP_WIDTH,
@@ -35,7 +35,12 @@ export type LoginStatus = {
 
 export type WebWalletStarknetWindowObject = StarknetWindowObject & {
   getLoginStatus(): Promise<LoginStatus>
+  connectWebwallet(): Promise<{
+    account?: string[]
+    chainId?: string
+  }>
 }
+
 export const getArgentStarknetWindowObject = (
   options: GetArgentStarknetWindowObject,
   proxyLink: CreateTRPCProxyClient<AppRouter>,
@@ -44,6 +49,9 @@ export const getArgentStarknetWindowObject = (
     ...options,
     getLoginStatus: () => {
       return proxyLink.getLoginStatus.mutate()
+    },
+    connectWebwallet: () => {
+      return proxyLink.connectWebwallet.mutate()
     },
     async request(call) {
       switch (call.type) {

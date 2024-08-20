@@ -76,7 +76,7 @@ export const openWebwallet = async (
     const iframeTrpcProxyClient = trpcProxyClient({
       iframe: iframe.contentWindow ?? undefined,
     })
-    await iframeTrpcProxyClient.authorize.mutate()
+
     const starknetWindowObject = await getWebWalletStarknetObject(
       origin,
       iframeTrpcProxyClient,

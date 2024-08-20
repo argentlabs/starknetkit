@@ -1,10 +1,4 @@
 import {
-  AccountInterface,
-  ProviderInterface,
-  ProviderOptions,
-  WalletAccount,
-} from "starknet"
-import {
   Permission,
   RequestFnCall,
   RpcMessage,
@@ -12,6 +6,12 @@ import {
   type AccountChangeEventHandler,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
+import {
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+  WalletAccount,
+} from "starknet"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -27,6 +27,7 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
+import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
 
 let _wallet: StarknetWindowObject | null = null
 
@@ -104,26 +105,23 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
-    let accounts: string[]
-
     try {
-      accounts = await this._wallet.request({
-        type: "wallet_requestAccounts",
-        params: { silent_mode: false }, // explicit to show the modal
-      })
+      const { account, chainId } = await (
+        this._wallet as WebWalletStarknetWindowObject
+      ).connectWebwallet()
+
+      if (!account || !chainId) {
+        return {}
+      }
+
+      const hexChainId = getStarknetChainId(chainId)
+
+      return {
+        account: account[0],
+        chainId: BigInt(hexChainId),
+      }
     } catch {
       throw new UserRejectedRequestError()
-    }
-
-    // Prevent trpc from throwing an error (closed prematurely)
-    // this happens when 2 requests to webwallet are made in a row (trpc-browser is closing the first popup and requesting a new one right after)
-    // won't be needed with chrome iframes will be enabled again (but still needed for other browsers)
-    await new Promise((r) => setTimeout(r, 200))
-    const chainId = await this.chainId()
-
-    return {
-      account: accounts[0],
-      chainId,
     }
   }
 
@@ -209,3 +207,5 @@ export class WebWalletConnector extends Connector {
     this._wallet = _wallet
   }
 }
+
+export type { WebWalletStarknetWindowObject }
