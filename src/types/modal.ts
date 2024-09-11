@@ -1,20 +1,27 @@
-import type { GetWalletOptions, StarknetWindowObject } from "get-starknet-core"
-import type { Connector, ConnectorIcons } from "../connectors/connector"
+import type { GetWalletOptions } from "@starknet-io/get-starknet-core"
+import { StarknetWindowObject } from "@starknet-io/types-js"
 import type { ArgentMobileConnectorOptions } from "../connectors/argentMobile"
-import { ProviderInterface } from "starknet"
+import type {
+  ConnectorData,
+  ConnectorIcons,
+  StarknetkitConnector,
+} from "../connectors/connector"
 
 export type StoreVersion = "chrome" | "firefox" | "edge"
 
 export interface ConnectOptions extends GetWalletOptions {
-  argentMobileOptions?: ArgentMobileConnectorOptions
   dappName?: string
-  connectors?: Connector[]
   modalMode?: "alwaysAsk" | "canAsk" | "neverAsk"
   modalTheme?: "light" | "dark" | "system"
   storeVersion?: StoreVersion | null
-  webWalletUrl?: string
   resultType?: "connector" | "wallet"
-  provider?: ProviderInterface
+  webWalletUrl?: string
+  argentMobileOptions: ArgentMobileConnectorOptions
+}
+
+export interface ConnectOptionsWithConnectors
+  extends Omit<ConnectOptions, "webWalletUrl" | "argentMobileOptions"> {
+  connectors?: StarknetkitConnector[]
 }
 
 export type ModalWallet = {
@@ -24,10 +31,11 @@ export type ModalWallet = {
   download?: string
   subtitle?: string
   title?: string
-  connector: Connector
+  connector: StarknetkitConnector
 }
 
 export type ModalResult = {
-  connector: Connector
+  connector: StarknetkitConnector | null
+  connectorData: ConnectorData | null
   wallet?: StarknetWindowObject | null
 }

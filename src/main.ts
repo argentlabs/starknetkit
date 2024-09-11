@@ -1,40 +1,39 @@
-import type {
-  ConnectedStarknetWindowObject,
-  DisconnectOptions,
-  DisconnectedStarknetWindowObject,
-  StarknetWindowObject,
-} from "get-starknet-core"
-import sn from "get-starknet-core"
-
-import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
-
+import type { DisconnectOptions } from "@starknet-io/get-starknet"
+import sn from "@starknet-io/get-starknet-core"
+import type { StarknetWindowObject } from "@starknet-io/types-js"
+import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
+import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 import {
   removeStarknetLastConnectedWallet,
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
 import Modal from "./modal/Modal.svelte"
-import type { ConnectOptions, ModalResult, ModalWallet } from "./types/modal"
-
-import { type Connector } from "./connectors"
 import css from "./theme.css?inline"
+import type {
+  ConnectOptions,
+  ConnectOptionsWithConnectors,
+  ModalResult,
+  ModalWallet,
+} from "./types/modal"
 
-let selectedConnector: Connector | null = null
+let selectedConnector: StarknetkitConnector | null = null
 
 export const connect = async ({
   modalMode = "canAsk",
   storeVersion = getStoreVersionFromBrowser(),
   modalTheme,
   dappName,
-  webWalletUrl = DEFAULT_WEBWALLET_URL,
-  argentMobileOptions,
-  connectors = [],
   resultType = "wallet",
-  provider,
   ...restOptions
-}: ConnectOptions = {}): Promise<ModalResult> => {
+}: ConnectOptionsWithConnectors | ConnectOptions): Promise<ModalResult> => {
+  const { webWalletUrl = DEFAULT_WEBWALLET_URL, argentMobileOptions } =
+    restOptions as ConnectOptions
+
+  const { connectors } = restOptions as ConnectOptionsWithConnectors
+
   // force null in case it was disconnected from mobile app
   selectedConnector = null
   const availableConnectors =
@@ -42,28 +41,28 @@ export const connect = async ({
       ? defaultConnectors({
           argentMobileOptions,
           webWalletUrl,
-          provider,
         })
       : connectors
 
   const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {
     try {
-      const connector = availableConnectors.find((c) => c.id === lastWalletId)
+      const connector =
+        availableConnectors.find((c) => c.id === lastWalletId) ?? null
+      let connectorData: ConnectorData | null = null
 
-      if (resultType === "wallet") {
-        await connector?.connect()
+      if (connector && resultType === "wallet") {
+        connectorData = await connector.connect()
       }
-
-      selectedConnector = connector ?? null
 
       return {
         connector,
         wallet: connector?.wallet ?? null,
+        connectorData,
       }
     } catch (error) {
       removeStarknetLastConnectedWallet()
-      throw new Error(error)
+      throw new Error(error as any)
     }
   }
 
@@ -71,21 +70,21 @@ export const connect = async ({
 
   // we return/display wallet options once per first-dapp (ever) connect
   if (modalMode === "canAsk" && lastWalletId) {
-    const preAuthorizedWallets = await sn.getPreAuthorizedWallets({
-      ...restOptions,
-    })
+    const authorizedWallets = await sn.getAuthorizedWallets(restOptions)
 
     const wallet =
-      preAuthorizedWallets.find((w) => w.id === lastWalletId) ??
-      installedWallets.length === 1
+      (authorizedWallets.find((w) => w.id === lastWalletId) ??
+      installedWallets.length === 1)
         ? installedWallets[0]
         : undefined
 
     if (wallet) {
       const connector = availableConnectors.find((c) => c.id === lastWalletId)
 
+      let connectorData: ConnectorData | null = null
+
       if (resultType === "wallet") {
-        await connector?.connect()
+        connectorData = (await connector?.connect()) ?? null
       }
 
       if (connector) {
@@ -93,7 +92,8 @@ export const connect = async ({
       }
 
       return {
-        connector,
+        connector: selectedConnector,
+        connectorData,
         wallet: connector?.wallet ?? null,
       }
     } // otherwise fallback to modal
@@ -104,6 +104,7 @@ export const connect = async ({
     installedWallets,
     discoveryWallets: await sn.getDiscoveryWallets(restOptions),
     storeVersion,
+    customOrder: connectors ? connectors?.length > 0 : false,
   })
 
   const getTarget = (): ShadowRoot => {
@@ -135,24 +136,26 @@ export const connect = async ({
       target: getTarget(),
       props: {
         dappName,
-        callback: async (connector: Connector | null) => {
+        callback: async (connector: StarknetkitConnector | null) => {
           try {
             selectedConnector = connector
+            const connectorData = (await connector?.connect()) ?? null
 
             if (resultType === "wallet") {
-              await connector?.connect()
-
-              if (connector !== null && connector.id !== "argentWebWallet") {
+              if (connector !== null) {
                 setStarknetLastConnectedWallet(connector.id)
               }
 
               resolve({
                 connector,
+                connectorData,
                 wallet: connector?.wallet ?? null,
               })
             } else {
               resolve({
                 connector,
+                wallet: null,
+                connectorData,
               })
             }
           } catch (error) {
@@ -161,7 +164,7 @@ export const connect = async ({
             setTimeout(() => modal.$destroy())
           }
         },
-        theme: modalTheme === "system" ? null : modalTheme ?? null,
+        theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
       },
     })
@@ -183,12 +186,16 @@ export const disconnect = async (options: DisconnectOptions = {}) => {
 }
 
 export type {
-  ConnectedStarknetWindowObject,
   Connector,
+  ConnectorData,
   DisconnectOptions,
-  DisconnectedStarknetWindowObject,
   StarknetWindowObject,
+  StarknetkitConnector,
   defaultConnectors as starknetkitDefaultConnectors,
+  ConnectOptions,
+  ConnectOptionsWithConnectors,
 }
+
+export type * from "./types/modal"
 
 export { useStarknetkitConnectModal } from "./hooks/useStarknetkitConnectModal"

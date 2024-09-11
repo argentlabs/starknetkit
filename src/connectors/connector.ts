@@ -1,14 +1,14 @@
 import EventEmitter from "eventemitter3"
-import type { StarknetWindowObject } from "get-starknet-core"
-import { AccountInterface } from "starknet"
+import { AccountInterface, ProviderInterface, ProviderOptions } from "starknet"
+import type {
+  RequestFnCall,
+  RpcMessage,
+  RpcTypeToMessageMap,
+  StarknetWindowObject,
+} from "@starknet-io/types-js"
 
 /** Connector icons, as base64 encoded svg. */
-export type ConnectorIcons = {
-  /** Dark-mode icon. */
-  dark?: string
-  /** Light-mode icon. */
-  light?: string
-}
+export type ConnectorIcons = StarknetWindowObject["icon"]
 
 /** Connector data. */
 export type ConnectorData = {
@@ -44,10 +44,19 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   abstract connect(): Promise<ConnectorData>
   /** Disconnect wallet. */
   abstract disconnect(): Promise<void>
-  /** Get current account. */
-  abstract account(): Promise<AccountInterface>
+  /** Get current account silently. Return null if the account is not authorized */
+  abstract account(
+    provider: ProviderOptions | ProviderInterface,
+  ): Promise<AccountInterface>
   /** Get current chain id. */
   abstract chainId(): Promise<bigint>
+  /** Create request call to wallet */
+  abstract request<T extends RpcMessage["type"]>(
+    call: RequestFnCall<T>,
+  ): Promise<RpcTypeToMessageMap[T]["result"]>
+}
+
+export abstract class StarknetkitConnector extends Connector {
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
 }

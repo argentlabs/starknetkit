@@ -1,30 +1,31 @@
 <script lang="ts">
-  import type { StarknetWindowObject } from "get-starknet-core"
   import { onMount } from "svelte"
+  import type { StarknetWindowObject } from "@starknet-io/types-js"
   import ConnectorButton from "./ConnectorButton.svelte"
-  import type { ModalWallet } from "../types/modal"
-  import type { Connector } from "../connectors/connector"
+  import type { StarknetkitConnector } from "../connectors/connector"
   import { InjectedConnector } from "../connectors/injected"
+  import { ModalWallet } from "../types/modal"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
   export let callback: (
-    value: Connector | null,
+    value: StarknetkitConnector | null,
   ) => Promise<void> = async () => {}
   export let theme: "light" | "dark" | null = null
 
   let loadingItem: string | false = false
 
-  let starknetMobile = window?.starknet_argentX as StarknetWindowObject & {
-    isInAppBrowser: boolean
-  }
+  let starknetMobile =
+    window?.starknet_argentX as unknown as StarknetWindowObject & {
+      isInAppBrowser: boolean
+    }
   let isInAppBrowser = starknetMobile?.isInAppBrowser
 
   const setLoadingItem = (item: string | false) => {
     loadingItem = item
   }
 
-  let cb = async (connector: Connector | null) => {
+  let cb = async (connector: StarknetkitConnector | null) => {
     setLoadingItem(connector?.id ?? false)
     try {
       await callback(connector ?? null)

@@ -1,9 +1,15 @@
+import { Permission } from "@starknet-io/types-js"
 import type { CreateTRPCProxyClient } from "@trpc/client"
 import { createTRPCProxyClient, loggerLink, splitLink } from "@trpc/client"
 import { initTRPC } from "@trpc/server"
 import { popupLink, windowLink } from "trpc-browser/link"
 import { z } from "zod"
-import { StarknetMethodArgumentsSchemas } from "../../../types/window"
+import {
+  RpcCallSchema,
+  RpcCallsArraySchema,
+  StarknetMethodArgumentsSchemas,
+  deployAccountContractSchema,
+} from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
 
 const t = initTRPC.create({
@@ -54,6 +60,14 @@ const appRouter = t.router({
     return true
   }),
   connect: t.procedure.mutation(async () => ""),
+  connectWebwallet: t.procedure
+    .output(
+      z.object({
+        account: z.string().array().optional(),
+        chainId: z.string().optional(),
+      }),
+    )
+    .mutation(async () => ({})),
   enable: t.procedure.output(z.string()).mutation(async () => ""),
   execute: t.procedure
     .input(StarknetMethodArgumentsSchemas.execute)
@@ -77,6 +91,27 @@ const appRouter = t.router({
         isLoggedIn: true,
       }
     }),
+
+  // RPC Messages
+  requestAccounts: t.procedure
+    .input(z.object({ silent_mode: z.boolean().optional() })) // TODO: update in webwallet to use silent_mode
+    .output(z.string().array())
+    .mutation(async () => []),
+  requestChainId: t.procedure.output(z.string()).mutation(async () => ""),
+  signTypedData: t.procedure
+    .input(StarknetMethodArgumentsSchemas.signMessage)
+    .output(z.string().array())
+    .mutation(async () => []),
+  getPermissions: t.procedure
+    .output(z.array(z.enum([Permission.ACCOUNTS])))
+    .mutation(async () => {
+      return [Permission.ACCOUNTS]
+    }),
+  addInvokeTransaction: t.procedure
+    .input(RpcCallSchema.or(RpcCallsArraySchema))
+    .output(z.string())
+    .mutation(async (_) => ""),
+
   addStarknetChain: t.procedure.mutation((_) => {
     throw Error("not implemented")
   }),
@@ -89,6 +124,17 @@ const appRouter = t.router({
   updateModal: t.procedure.subscription(async () => {
     return
   }),
+  deploymentData: t.procedure
+    .output(deployAccountContractSchema)
+    .mutation(async () => {
+      return {
+        address: "",
+        calldata: [],
+        version: 0,
+        class_hash: "",
+        salt: "",
+      }
+    }),
 })
 
 export type AppRouter = typeof appRouter

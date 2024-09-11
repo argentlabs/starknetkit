@@ -1,31 +1,38 @@
-import type {
-  AccountChangeEventHandler,
-  StarknetWindowObject,
-} from "get-starknet-core"
-import type { AccountInterface, ProviderInterface } from "starknet"
+import {
+  Permission,
+  RequestFnCall,
+  RpcMessage,
+  RpcTypeToMessageMap,
+  type AccountChangeEventHandler,
+  type StarknetWindowObject,
+} from "@starknet-io/types-js"
+import {
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+  WalletAccount,
+} from "starknet"
+import {
+  ConnectorNotConnectedError,
+  ConnectorNotFoundError,
+  UserRejectedRequestError,
+} from "../../errors"
+import { getStarknetChainId } from "../../helpers/getStarknetChainId"
+import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
   Connector,
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
-import { setPopupOptions, trpcProxyClient } from "./helpers/trpc"
-
-import {
-  ConnectorNotConnectedError,
-  ConnectorNotFoundError,
-  UserNotConnectedError,
-  UserRejectedRequestError,
-} from "../../errors"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
-import { getWebWalletStarknetObject } from "./starknetWindowObject/getWebWalletStarknetObject"
-import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import { openWebwallet } from "./helpers/openWebwallet"
+import { setPopupOptions } from "./helpers/trpc"
+import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
 
 let _wallet: StarknetWindowObject | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
-  provider?: ProviderInterface
 }
 
 export class WebWalletConnector extends Connector {
@@ -48,7 +55,15 @@ export class WebWalletConnector extends Connector {
     }
 
     this._wallet = _wallet
-    return this._wallet.isPreauthorized()
+    try {
+      const permissions = await this._wallet.request({
+        type: "wallet_getPermissions",
+      })
+
+      return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+    } catch {
+      return false
+    }
   }
 
   get id(): string {
@@ -91,24 +106,36 @@ export class WebWalletConnector extends Connector {
     }
 
     try {
-      await this._wallet.enable({ starknetVersion: "v4" })
+      const { account, chainId } = await (
+        this._wallet as WebWalletStarknetWindowObject
+      ).connectWebwallet()
+
+      if (!account || !chainId) {
+        return {}
+      }
+
+      const hexChainId = getStarknetChainId(chainId)
+
+      return {
+        account: account[0],
+        chainId: BigInt(hexChainId),
+      }
+    } catch {
+      throw new UserRejectedRequestError()
+    }
+  }
+
+  async request<T extends RpcMessage["type"]>(
+    call: RequestFnCall<T>,
+  ): Promise<RpcTypeToMessageMap[T]["result"]> {
+    if (!this._wallet) {
+      throw new ConnectorNotConnectedError()
+    }
+    try {
+      return await this._wallet.request(call)
     } catch (e) {
-      console.log(e)
-      // NOTE: Argent v3.0.0 swallows the `.enable` call on reject, so this won't get hit.
+      console.error(e)
       throw new UserRejectedRequestError()
-    }
-
-    if (!this._wallet.isConnected) {
-      throw new UserRejectedRequestError()
-    }
-
-    const account = this._wallet.account as unknown as AccountInterface
-
-    const chainId = await this.chainId()
-
-    return {
-      account: account.address,
-      chainId,
     }
   }
 
@@ -117,32 +144,34 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
-    if (!this._wallet?.isConnected) {
-      throw new UserNotConnectedError()
-    }
     _wallet = null
     this._wallet = _wallet
     removeStarknetLastConnectedWallet()
   }
 
-  async account(): Promise<AccountInterface> {
+  async account(
+    provider: ProviderOptions | ProviderInterface,
+  ): Promise<AccountInterface> {
     this._wallet = _wallet
 
-    if (!this._wallet || !this._wallet.account) {
+    if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    return this._wallet.account as unknown as AccountInterface
+    return new WalletAccount(provider, this._wallet)
   }
 
   async chainId(): Promise<bigint> {
-    if (!this._wallet || !this.wallet.account || !this._wallet.provider) {
+    if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
 
-    const chainIdHex = await this._wallet.provider.getChainId()
-    const chainId = BigInt(chainIdHex)
-    return chainId
+    const chainId = await this._wallet.request({
+      type: "wallet_requestChainId",
+    })
+
+    const hexChainId = getStarknetChainId(chainId)
+    return BigInt(hexChainId)
   }
 
   async initEventListener(accountChangeCb: AccountChangeEventHandler) {
@@ -168,14 +197,15 @@ export class WebWalletConnector extends Connector {
 
   private async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
-    const provider = this._options.provider
     setPopupOptions({
       origin,
       location: "/interstitialLogin",
     })
-    const wallet = await openWebwallet(origin, provider)
 
-    _wallet = wallet ?? null
+    _wallet = (await openWebwallet(origin)) ?? null
+
     this._wallet = _wallet
   }
 }
+
+export type { WebWalletStarknetWindowObject }

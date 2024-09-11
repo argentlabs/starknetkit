@@ -50,7 +50,7 @@ const wallet = await connect()
 By default, the list of connectors is:
 
 - Argent X
-- Braavos 
+- Braavos
 - Argent mobile
 - Argent webwallet
 
