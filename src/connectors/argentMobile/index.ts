@@ -1,18 +1,18 @@
 import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
 import {
-  AccountInterface,
-  ProviderInterface,
-  ProviderOptions,
-  WalletAccount,
-  constants,
-} from "starknet"
-import {
   Permission,
   RequestFnCall,
   RpcMessage,
   RpcTypeToMessageMap,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
+import {
+  Account,
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+  constants,
+} from "starknet"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -27,10 +27,10 @@ import {
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
-import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
-import type { StarknetAdapter } from "./modal/starknet/adapter"
-import { isInArgentMobileAppBrowser } from "./helpers"
 import { InjectedConnector, InjectedConnectorOptions } from "../injected"
+import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
+import { isInArgentMobileAppBrowser } from "./helpers"
+import type { StarknetAdapter } from "./modal/starknet/adapter"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -131,8 +131,12 @@ export class ArgentMobileBaseConnector extends Connector {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }
+    const accounts = await this._wallet.request({
+      type: "wallet_requestAccounts",
+      params: { silent_mode: true },
+    })
 
-    return new WalletAccount(provider, this._wallet)
+    return new Account(provider, accounts[0], "")
   }
 
   async chainId(): Promise<bigint> {
