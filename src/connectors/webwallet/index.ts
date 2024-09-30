@@ -52,6 +52,7 @@ export class WebWalletConnector extends Connector {
   async ready(): Promise<boolean> {
     if (!_wallet) {
       this._wallet = null
+      _address = null
       return false
     }
 
@@ -200,6 +201,7 @@ export class WebWalletConnector extends Connector {
     this._wallet.off("accountsChanged", accountChangeCb)
 
     _wallet = null
+    _address = null
     this._wallet = null
   }
 
