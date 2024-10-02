@@ -52,7 +52,9 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (connector && resultType === "wallet") {
-        connectorData = await connector.connect()
+        connectorData = await connector.connect({
+          silent_mode: true,
+        })
       }
 
       return {
