@@ -6,12 +6,12 @@ type UseStarknetkitConnectors = {
 }
 
 const useStarknetkitConnectModal = (
-  options: ConnectOptionsWithConnectors,
+  options?: ConnectOptionsWithConnectors,
 ): UseStarknetkitConnectors => {
   const starknetkitConnectModal = async (): Promise<ModalResult> => {
     return await connect({
       ...options,
-      resultType: options.resultType ?? "connector",
+      resultType: options?.resultType ?? "connector",
     })
   }
 

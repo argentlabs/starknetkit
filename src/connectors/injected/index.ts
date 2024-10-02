@@ -1,10 +1,4 @@
 import {
-  AccountInterface,
-  ProviderInterface,
-  ProviderOptions,
-  WalletAccount,
-} from "starknet"
-import {
   Permission,
   RequestFnCall,
   RpcMessage,
@@ -12,12 +6,19 @@ import {
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
+  Account,
+  AccountInterface,
+  ProviderInterface,
+  ProviderOptions,
+} from "starknet"
+import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserRejectedRequestError,
 } from "../../errors"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
+  ConnectOptions,
   Connector,
   type ConnectorData,
   type ConnectorIcons,
@@ -130,10 +131,15 @@ export class InjectedConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
 
-    return new WalletAccount(provider, this._wallet)
+    const accounts = await this.request({
+      type: "wallet_requestAccounts",
+      params: { silent_mode: true },
+    })
+
+    return new Account(provider, accounts[0], "")
   }
 
-  async connect(): Promise<ConnectorData> {
+  async connect(params: ConnectOptions): Promise<ConnectorData> {
     this.ensureWallet()
 
     if (!this._wallet) {
@@ -142,9 +148,16 @@ export class InjectedConnector extends Connector {
 
     let accounts: string[]
     try {
-      accounts = await this.request({
-        type: "wallet_requestAccounts",
-      })
+      accounts = await this.request(
+        params
+          ? {
+              type: "wallet_requestAccounts",
+              params,
+            }
+          : {
+              type: "wallet_requestAccounts",
+            },
+      )
     } catch {
       throw new UserRejectedRequestError()
     }

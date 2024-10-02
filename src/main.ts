@@ -52,7 +52,9 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (connector && resultType === "wallet") {
-        connectorData = await connector.connect()
+        connectorData = await connector.connect({
+          silent_mode: true,
+        })
       }
 
       return {
@@ -139,9 +141,8 @@ export const connect = async ({
         callback: async (connector: StarknetkitConnector | null) => {
           try {
             selectedConnector = connector
-            const connectorData = (await connector?.connect()) ?? null
-
             if (resultType === "wallet") {
+              const connectorData = (await connector?.connect()) ?? null
               if (connector !== null) {
                 setStarknetLastConnectedWallet(connector.id)
               }
@@ -155,7 +156,7 @@ export const connect = async ({
               resolve({
                 connector,
                 wallet: null,
-                connectorData,
+                connectorData: null,
               })
             }
           } catch (error) {

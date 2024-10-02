@@ -7,10 +7,10 @@ import {
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
+  Account,
   AccountInterface,
   ProviderInterface,
   ProviderOptions,
-  WalletAccount,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -30,6 +30,7 @@ import { setPopupOptions } from "./helpers/trpc"
 import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
 
 let _wallet: StarknetWindowObject | null = null
+let _address: string | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
@@ -51,6 +52,7 @@ export class WebWalletConnector extends Connector {
   async ready(): Promise<boolean> {
     if (!_wallet) {
       this._wallet = null
+      _address = null
       return false
     }
 
@@ -116,6 +118,8 @@ export class WebWalletConnector extends Connector {
 
       const hexChainId = getStarknetChainId(chainId)
 
+      _address = account[0]
+
       return {
         account: account[0],
         chainId: BigInt(hexChainId),
@@ -145,6 +149,7 @@ export class WebWalletConnector extends Connector {
     }
 
     _wallet = null
+    _address = null
     this._wallet = _wallet
     removeStarknetLastConnectedWallet()
   }
@@ -158,7 +163,11 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
 
-    return new WalletAccount(provider, this._wallet)
+    if (!_address) {
+      throw new ConnectorNotConnectedError()
+    }
+
+    return new Account(provider, _address, "")
   }
 
   async chainId(): Promise<bigint> {
@@ -192,6 +201,7 @@ export class WebWalletConnector extends Connector {
     this._wallet.off("accountsChanged", accountChangeCb)
 
     _wallet = null
+    _address = null
     this._wallet = null
   }
 
