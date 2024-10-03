@@ -179,6 +179,9 @@ export class InjectedConnector extends Connector {
     const [account] = accounts
 
     const chainId = await this.chainId()
+    /**
+     * @dev This emit ensures compatibility with starknet-react
+     */
     this.emit("connect", { account, chainId })
 
     return {
@@ -195,6 +198,9 @@ export class InjectedConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
+    /**
+     * @dev This emit ensures compatibility with starknet-react
+     */
     this.emit("disconnect")
   }
 
@@ -237,14 +243,23 @@ export class InjectedConnector extends Connector {
 
   private async onAccountsChanged(accounts?: string[]): Promise<void> {
     if (!accounts) {
+      /**
+       * @dev This emit ensures compatibility with starknet-react
+       */
       this.emit("disconnect")
     } else {
       const [account] = accounts
 
       if (account) {
         const chainId = await this.chainId()
+        /**
+         * @dev This emit ensures compatibility with starknet-react
+         */
         this.emit("change", { account, chainId })
       } else {
+        /**
+         * @dev This emit ensures compatibility with starknet-react
+         */
         this.emit("disconnect")
       }
     }
@@ -254,8 +269,14 @@ export class InjectedConnector extends Connector {
     if (chainIdHex) {
       const chainId = BigInt(chainIdHex)
       const [account] = accounts || []
+      /**
+       * @dev This emit ensures compatibility with starknet-react
+       */
       this.emit("change", { chainId, account })
     } else {
+      /**
+       * @dev This emit ensures compatibility with starknet-react
+       */
       this.emit("change", {})
     }
   }
