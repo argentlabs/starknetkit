@@ -58,9 +58,20 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   abstract request<T extends RpcMessage["type"]>(
     call: RequestFnCall<T>,
   ): Promise<RpcTypeToMessageMap[T]["result"]>
+
+  // getConnector() { TODO?
+  //   return this
+  // }
 }
 
 export abstract class StarknetkitConnector extends Connector {
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
+  abstract isCompoundConnector?: boolean // TODO I don't need this prolly
+}
+
+export abstract class StarknetkitCompoundConnector {
+  readonly isCompoundConnector = true
+  abstract connector: StarknetkitConnector
+  abstract fallbackConnector: StarknetkitConnector
 }

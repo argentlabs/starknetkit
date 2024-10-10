@@ -8,7 +8,7 @@ const Network: typeof constants.NetworkName = constants.NetworkName
 
 import type { NamespaceAdapter, NamespaceAdapterOptions } from "./adapter"
 import { argentModal } from "./argentModal"
-import { resetWalletConnect } from "../../../helpers/resetWalletConnect"
+import { resetWalletConnect } from "../../../../helpers/resetWalletConnect"
 
 export interface IArgentLoginOptions {
   projectId?: string
@@ -101,7 +101,7 @@ export const login = async <TAdapter extends NamespaceAdapter>(
 
     // Open QRCode modal if a URI was returned (i.e. we're not connecting an existing pairing).
     if (uri) {
-      argentModal.showConnectionModal(uri)
+      argentModal.showWalletConnectModal(uri)
       argentModal.wcUri = uri
 
       // Await session approval from the wallet.
