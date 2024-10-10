@@ -27,6 +27,11 @@
       "import": "./dist/starknetkit.js",
       "require": "./dist/starknetkit.cjs"
     },
+    "./injected": {
+      "types": "./dist/injectedConnector.d.ts",
+      "import": "./dist/injectedConnector.js",
+      "require": "./dist/injectedConnector.cjs"
+    },
     "./webwallet": {
       "types": "./dist/webwalletConnector.d.ts",
       "import": "./dist/webwalletConnector.js",
@@ -37,10 +42,15 @@
       "import": "./dist/argentMobile.js",
       "require": "./dist/argentMobile.cjs"
     },
-    "./injected": {
-      "types": "./dist/injectedConnector.d.ts",
-      "import": "./dist/injectedConnector.js",
-      "require": "./dist/injectedConnector.cjs"
+    "./argentCompound": {
+      "types": "./dist/argentCompound.d.ts",
+      "import": "./dist/argentCompound.js",
+      "require": "./dist/argentCompound.cjs"
+    },
+    "./braavos": {
+      "types": "./dist/braavos.d.ts",
+      "import": "./dist/braavos.js",
+      "require": "./dist/braavos.cjs"
     },
     "./window": {
       "types": "./dist/window.d.ts",

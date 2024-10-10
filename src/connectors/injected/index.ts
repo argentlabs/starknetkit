@@ -35,15 +35,7 @@ export interface InjectedConnectorOptions {
   name?: string
   /** Wallet icons. */
   icon?: ConnectorIcons
-}
-
-export interface InjectedConnectorOptions {
-  /** The wallet id. */
-  id: string
-  /** Wallet human readable name. */
-  name?: string
-  /** Wallet icons. */
-  icon?: ConnectorIcons
+  isCompoundConnector?: boolean
 }
 
 //  Icons used when the injected wallet is not installed
@@ -69,6 +61,7 @@ export class InjectedConnector extends Connector {
   }
 
   get name(): string {
+    console.log("HERE", this._options)
     this.ensureWallet()
     return this._options.name ?? this._wallet?.name ?? this._options.id
   }
