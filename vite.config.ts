@@ -38,4 +38,20 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  css: {
+    postcss: "./postcss.config.cjs",
+    preprocessorOptions: {
+      css: {
+        additionalData: `@import "@argent/x-ui/styles/tailwind.css";`,
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      "@argent/x-ui/styles": resolve(
+        __dirname,
+        "node_modules/@argent/x-ui/dist/styles",
+      ),
+    },
+  },
 })
