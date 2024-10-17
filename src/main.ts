@@ -21,6 +21,34 @@ import type {
 
 let selectedConnector: StarknetkitConnector | null = null
 
+
+/**
+ *
+ * @param [modalMode="canAsk"] - Choose connection behavior:
+ *                               - "canAsk" - Connect silently if possible, if not prompt a user with the modal
+ *                               - "alwaysAsk" - Always prompt a user with the modal
+ *                               - "neverAsk" - Connect silently if possible, if not fail gracefully
+ * @param [storeVersion=Current browser] - Name of the targeted store extension (chrome, firefox, or edge); It will select current browser by default
+ * @param [modalTheme] - Theme color
+ * @param [dappName] - Name of your dapp, displayed in the modal
+ * @param [resultType="wallet"] - It will by default return selected wallet's connector by default, otherwise null
+ * @param [connectors] - Array of wallet connectors to show in the modal
+ * @param [webWalletUrl="https://web.argent.xyz"] - Link to Argent's web wallet - Mainnet env by default, if as a dApp for integration and testing purposes, you need access to an internal testnet environment, please contact Argent
+ * @param [argentMobileOptions] - Argent Mobile connector options - used only when `connectors` is not explicitly passed
+ * @param [argentMobileOptions.dappName] - Name of the dapp
+ * @param [argentMobileOptions.projectId] - WalletConnect project id
+ * @param [argentMobileOptions.chainId] - Starknet chain ID (SN_MAIN or SN_SEPOLIA)
+ * @param [argentMobileOptions.description] - Dapp description
+ * @param [argentMobileOptions.url] - Dapp url
+ * @param [argentMobileOptions.icons] - Icon to show in the modal
+ * @param [argentMobileOptions.rpcUrl] - Custom RPC url
+ *
+ * @returns {
+ *    wallet: Selected wallet or null,
+ *    connectorData: Selected account and chain ID, or null
+ *    connector: Selected connector
+ *  }
+ */
 export const connect = async ({
   modalMode = "canAsk",
   storeVersion = getStoreVersionFromBrowser(),
@@ -172,10 +200,17 @@ export const connect = async ({
   })
 }
 
-// Should be used after a sucessful connect
+/**
+ * @returns Selected wallet if user was previously successfully connected, otherwise null
+ */
 export const getSelectedConnectorWallet = () =>
   selectedConnector ? selectedConnector.wallet : null
 
+/**
+ *
+ * @param [options] - Options
+ * @param [options.clearLastWallet] - Clear last connected wallet
+ */
 export const disconnect = async (options: DisconnectOptions = {}) => {
   removeStarknetLastConnectedWallet()
   if (selectedConnector) {

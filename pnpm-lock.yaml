@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@starknet-io/get-starknet':
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.2
+        version: 4.0.2
       '@starknet-io/get-starknet-core':
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.2
+        version: 4.0.2
       '@starknet-io/types-js':
         specifier: ^0.7.7
         version: 0.7.7
@@ -1095,11 +1095,11 @@ packages:
   '@stablelib/x25519@1.0.3':
     resolution: {integrity: sha512-KnTbKmUhPhHavzobclVJQG5kuivH+qDLpe84iRqX3CLrKp881cF160JvXJ+hjn1aMyCwYOKeIZefIH/P5cJoRw==}
 
-  '@starknet-io/get-starknet-core@4.0.0':
-    resolution: {integrity: sha512-M++JTbMxZJ5wCkw1f4vAXCY3BTlRMdxFScqsIgZonLXD3GKHPyM/pFi/JqorPO1o4RKHLnFX6M7r0izZ/NWpvA==}
+  '@starknet-io/get-starknet-core@4.0.2':
+    resolution: {integrity: sha512-JxUOMV6HYVUzmGJb0lyI+/L3KGQCcyQlCuEA9UvPVcR8okqTFFQgZpUm8YTyrgwF/5P/eRH620+Kc73i341eLw==}
 
-  '@starknet-io/get-starknet@4.0.0':
-    resolution: {integrity: sha512-SmnRzBewS0BVjtKzViSrWXi+SvOnSrj9hnvlx8B3ZnCq9A2NuX8pNI550lDBLl/ilIr587FH2VNAj6jdgsyhJQ==}
+  '@starknet-io/get-starknet@4.0.2':
+    resolution: {integrity: sha512-/yp6xE0sBYTtnRxOO+T1m1kMgw5AohBF/ppWuBxuT2Xc2GL/V9z7CGe1ltjvFLSSTHT7tly+0HpvYmBEst/QFQ==}
 
   '@starknet-io/types-js@0.7.7':
     resolution: {integrity: sha512-WLrpK7LIaIb8Ymxu6KF/6JkGW1sso988DweWu7p5QY/3y7waBIiPvzh27D9bX5KIJNRDyOoOVoHVEKYUYWZ/RQ==}
@@ -5778,14 +5778,14 @@ snapshots:
       '@stablelib/random': 1.0.2
       '@stablelib/wipe': 1.0.1
 
-  '@starknet-io/get-starknet-core@4.0.0':
+  '@starknet-io/get-starknet-core@4.0.2':
     dependencies:
       '@module-federation/runtime': 0.1.21
       '@starknet-io/types-js': 0.7.7
 
-  '@starknet-io/get-starknet@4.0.0':
+  '@starknet-io/get-starknet@4.0.2':
     dependencies:
-      '@starknet-io/get-starknet-core': 4.0.0
+      '@starknet-io/get-starknet-core': 4.0.2
       bowser: 2.11.0
 
   '@starknet-io/types-js@0.7.7': {}
