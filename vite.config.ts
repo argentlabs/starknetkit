@@ -21,12 +21,14 @@ export default defineConfig({
         ),
         argentMobile: resolve(
           __dirname,
-          "src/connectors/argentMobile/index.ts",
+          "src/connectors/argent/argentMobile/index.ts",
         ),
         injectedConnector: resolve(
           __dirname,
           "src/connectors/injected/index.ts",
         ),
+        argentCompound: resolve(__dirname, "src/connectors/argent/index.ts"),
+        braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
       },
       formats: ["es", "cjs"],
     },

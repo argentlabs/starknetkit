@@ -68,7 +68,7 @@ class ArgentModal {
   private popupWindow?: Window
   private closingTimeout?: NodeJS.Timeout
 
-  public showConnectionModal(wcUri: string) {
+  public showWalletConnectModal(wcUri: string) {
     const wcParam = encodeURIComponent(wcUri)
     const href = encodeURIComponent(window.location.href)
 

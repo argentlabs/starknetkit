@@ -17,20 +17,21 @@ import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserRejectedRequestError,
-} from "../../errors"
-import { getStarknetChainId } from "../../helpers/getStarknetChainId"
-import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
-import { getRandomPublicRPCNode } from "../../helpers/publicRcpNodes"
-import { resetWalletConnect } from "../../helpers/resetWalletConnect"
+} from "../../../errors"
+import { getStarknetChainId } from "../../../helpers/getStarknetChainId"
+import { removeStarknetLastConnectedWallet } from "../../../helpers/lastConnected"
+import { getRandomPublicRPCNode } from "../../../helpers/publicRcpNodes"
+import { resetWalletConnect } from "../../../helpers/resetWalletConnect"
 import {
   Connector,
   type ConnectorData,
   type ConnectorIcons,
-} from "../connector"
-import { InjectedConnector, InjectedConnectorOptions } from "../injected"
+} from "../../connector"
+import { InjectedConnector, InjectedConnectorOptions } from "../../injected"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
-import { isInArgentMobileAppBrowser } from "./helpers"
+import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
+import { ArgentX } from "../../injected/argentX"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -40,11 +41,12 @@ export interface ArgentMobileConnectorOptions {
   url: string
   icons?: string[]
   rpcUrl?: string
+  isCompoundConnector?: boolean
 }
 
 export class ArgentMobileBaseConnector extends Connector {
   private _wallet: StarknetWindowObject | null = null
-  private _options: ArgentMobileConnectorOptions
+  private readonly _options: ArgentMobileConnectorOptions
 
   constructor(options: ArgentMobileConnectorOptions) {
     super()
@@ -76,7 +78,7 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   get name(): string {
-    return "Argent (mobile)"
+    return this._options.isCompoundConnector ? "Argent" : "Argent (mobile)" // TODO ditch isCompoundConnector
   }
 
   get icon(): ConnectorIcons {
@@ -258,9 +260,7 @@ export class ArgentMobileConnector {
     inAppBrowserOptions,
   }: ArgentMobileConnectorInitParams): Connector {
     if (isInArgentMobileAppBrowser()) {
-      return new InjectedConnector({
-        options: { id: "argentX", ...inAppBrowserOptions },
-      })
+      return new ArgentX(inAppBrowserOptions)
     } else {
       return new ArgentMobileBaseConnector(options)
     }
