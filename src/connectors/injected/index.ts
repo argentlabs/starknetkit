@@ -27,15 +27,6 @@ import {
   WALLET_NOT_FOUND_ICON_DARK,
   WALLET_NOT_FOUND_ICON_LIGHT,
 } from "./constants"
-/** Injected connector options. */
-export interface InjectedConnectorOptions {
-  /** The wallet id. */
-  id: string
-  /** Wallet human readable name. */
-  name?: string
-  /** Wallet icons. */
-  icon?: ConnectorIcons
-}
 
 export interface InjectedConnectorOptions {
   /** The wallet id. */
