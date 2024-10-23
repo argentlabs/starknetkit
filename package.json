@@ -70,7 +70,7 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@argent/x-ui": "file:../x-ui",
+    "@argent/x-ui": "^1.70.1",
     "@starknet-io/get-starknet": "^4.0.0",
     "@starknet-io/get-starknet-core": "^4.0.0",
     "@starknet-io/types-js": "^0.7.7",

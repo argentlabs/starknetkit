@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@argent/x-ui':
-        specifier: file:../x-ui
-        version: file:../x-ui(cxhmlpreo3ggzh3aziih4sur7e)
+        specifier: ^1.70.1
+        version: 1.70.1(mcfj3t5w5z7ehabnwpmzvhdirm)
       '@starknet-io/get-starknet':
         specifier: ^4.0.0
         version: 4.0.0
@@ -63,9 +63,6 @@ importers:
       '@semantic-release/git':
         specifier: ^10.0.1
         version: 10.0.1(semantic-release@21.1.2(typescript@5.5.4))
-      '@sveltejs/adapter-auto':
-        specifier: ^3.2.5
-        version: 3.2.5(@sveltejs/kit@2.6.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^2.2.0
         version: 2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1))
@@ -201,8 +198,8 @@ packages:
       url-join: ^5.0.0
       zod: ^3.23.8
 
-  '@argent/x-ui@file:../x-ui':
-    resolution: {directory: ../x-ui, type: directory}
+  '@argent/x-ui@1.70.1':
+    resolution: {integrity: sha512-9m2pHnGteF0e649CWOMv7cszPaSVsYwfEi4rdYBolBbzeF3U9qF4NjBUH9BuhgX9NEfy2JSgZD2/LHiYRb2vBg==}
     peerDependencies:
       '@argent/x-shared': ^1.39.0
       '@chakra-ui/react': ^2.8.2
@@ -214,6 +211,8 @@ packages:
       '@zxcvbn-ts/language-common': ^2.0.1 || ^3.0.0
       '@zxcvbn-ts/language-en': ^2.1.0 || ^3.0.0
       colord: ^2.9.2
+      embla-carousel: ^8.3.0
+      embla-carousel-react: ^8.3.0
       emittery: ^1.0.1
       framer-motion: ^11.0.5
       history: ^5.3.0
@@ -1700,9 +1699,6 @@ packages:
     resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
     engines: {node: '>=12'}
 
-  '@polka/url@1.0.0-next.28':
-    resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
-
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
@@ -2152,20 +2148,6 @@ packages:
   '@starknet-io/types-js@0.7.7':
     resolution: {integrity: sha512-WLrpK7LIaIb8Ymxu6KF/6JkGW1sso988DweWu7p5QY/3y7waBIiPvzh27D9bX5KIJNRDyOoOVoHVEKYUYWZ/RQ==}
 
-  '@sveltejs/adapter-auto@3.2.5':
-    resolution: {integrity: sha512-27LR+uKccZ62lgq4N/hvyU2G+hTP9fxWEAfnZcl70HnyfAjMSsGk1z/SjAPXNCD1mVJIE7IFu3TQ8cQ/UH3c0A==}
-    peerDependencies:
-      '@sveltejs/kit': ^2.0.0
-
-  '@sveltejs/kit@2.6.4':
-    resolution: {integrity: sha512-qfcbyWw35cy6k9sQ1GUkhuE5qj+PgPKJx3/Aa3+veooWgN0DXZXqMS2PDgpgKDXRIFj6V1KWmMZYYPOhL45lXg==}
-    engines: {node: '>=18.13'}
-    hasBin: true
-    peerDependencies:
-      '@sveltejs/vite-plugin-svelte': ^3.0.0 || ^4.0.0-next.1
-      svelte: ^4.0.0 || ^5.0.0-next.0
-      vite: ^5.0.3
-
   '@sveltejs/vite-plugin-svelte-inspector@1.0.4':
     resolution: {integrity: sha512-zjiuZ3yydBtwpF3bj0kQNV0YXe+iKE545QGZVTaylW3eAzFr+pJ/cwK8lZEaRp4JtaJXhD5DyWAV4AxLh6DgaQ==}
     engines: {node: ^14.18.0 || >= 16}
@@ -2209,9 +2191,6 @@ packages:
 
   '@types/async-retry@1.4.8':
     resolution: {integrity: sha512-Qup/B5PWLe86yI5I3av6ePGaeQrIHNKCwbsQotD6aHQ6YkHsMUxVZkZsmx/Ry3VZQ6uysHwTjQ7666+k6UjVJA==}
-
-  '@types/cookie@0.6.0':
-    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
   '@types/debounce@1.2.4':
     resolution: {integrity: sha512-jBqiORIzKDOToaF63Fm//haOCHuwQuLa2202RK4MozpA6lh93eCBc+/8+wZn5OzjJt3ySdc+74SXWXB55Ewtyw==}
@@ -3135,10 +3114,6 @@ packages:
   cookie-es@1.2.2:
     resolution: {integrity: sha512-+W7VmiVINB+ywl1HGXJXmrqkOhpKrIiVZV6tQuV54ZyQC7MMuBt81Vc336GMLoHBq5hV/F9eXgt5Mnx0Rha5Fg==}
 
-  cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
-    engines: {node: '>= 0.6'}
-
   copy-to-clipboard@3.3.3:
     resolution: {integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==}
 
@@ -3370,9 +3345,6 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
-  devalue@5.1.1:
-    resolution: {integrity: sha512-maua5KUiapvEwiEAe+XnlZ3Rh0GD+qI1J/nb9vrJc3muPXvcF/8gXYTWF76+5DAqHyDUtOIImEuo0YKE9mshVw==}
-
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
 
@@ -3426,6 +3398,19 @@ packages:
 
   elliptic@6.5.7:
     resolution: {integrity: sha512-ESVCtTwiA+XhY3wyh24QqRGBoP3rEdDUl3EDUUo9tft074fi19IrdpH7hLCMMP3CIj7jb3W96rn8lt/BqIlt5Q==}
+
+  embla-carousel-react@8.3.0:
+    resolution: {integrity: sha512-P1FlinFDcIvggcErRjNuVqnUR8anyo8vLMIH8Rthgofw7Nj8qTguCa2QjFAbzxAUTQTPNNjNL7yt0BGGinVdFw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.1 || ^18.0.0
+
+  embla-carousel-reactive-utils@8.3.0:
+    resolution: {integrity: sha512-EYdhhJ302SC4Lmkx8GRsp0sjUhEN4WyFXPOk0kGu9OXZSRMmcBlRgTvHcq8eKJE1bXWBsOi1T83B+BSSVZSmwQ==}
+    peerDependencies:
+      embla-carousel: 8.3.0
+
+  embla-carousel@8.3.0:
+    resolution: {integrity: sha512-Ve8dhI4w28qBqR8J+aMtv7rLK89r1ZA5HocwFz6uMB/i5EiC7bGI7y+AM80yAVUJw3qqaZYK7clmZMUR8kM3UA==}
 
   emittery@1.0.3:
     resolution: {integrity: sha512-tJdCJitoy2lrC2ldJcqN4vkqJ00lT+tOWNT1hBJjO/3FDMJa5TTIiYGCKGkn/WfCyOzUMObeohbVTj00fhiLiA==}
@@ -3662,9 +3647,6 @@ packages:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     hasBin: true
-
-  esm-env@1.0.0:
-    resolution: {integrity: sha512-Cf6VksWPsTuW01vU9Mk/3vRue91Zevka5SjyNf3nEpokFRuqt/KjUQoGAwq9qMmhpLTHmXzSIrFRw8zxWzmFBA==}
 
   espree@9.6.1:
     resolution: {integrity: sha512-oruZaFkjorTpF32kDSI5/75ViwGeZginGGy2NoOSg3Q9bnwlnmDm4HLnkl0RE3n+njDXR037aY1+x58Z/zFdwQ==}
@@ -4008,9 +3990,6 @@ packages:
     resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
     engines: {node: '>= 0.4'}
 
-  globalyzer@0.1.0:
-    resolution: {integrity: sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==}
-
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
@@ -4018,9 +3997,6 @@ packages:
   globby@14.0.2:
     resolution: {integrity: sha512-s3Fq41ZVh7vbbe2PN3nrW7yC7U7MFVc5c98/iTl9c2GawNMKx/J648KQRW6WKkuU8GIbbh2IXfIRQjOZnXcTnw==}
     engines: {node: '>=18'}
-
-  globrex@0.1.2:
-    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -4185,9 +4161,6 @@ packages:
   import-lazy@4.0.0:
     resolution: {integrity: sha512-rKtvo6a868b5Hu3heneU+L4yEQ4jYKLtjpnPeUdK7h0yzXGmyBTypknlkCvHFBqfX9YlorEiMM6Dnq/5atfHkw==}
     engines: {node: '>=8'}
-
-  import-meta-resolve@4.1.0:
-    resolution: {integrity: sha512-I6fiaX09Xivtk+THaMfAwnA3MVA5Big1WHF1Dfx9hFuvNIWpXnorlkzhcQf6ehrqQiiZECRt1poOAkPmer3ruw==}
 
   import-sort-config@6.0.0:
     resolution: {integrity: sha512-FJpF2F3+30JXqH1rJKeajxoSCHCueai3/0ntDN4y3GJL5pjnLDt/VjCy5FzjH7u0NHnllL/zVEf1wfmsVxJlPQ==}
@@ -5056,10 +5029,6 @@ packages:
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
-
-  mrmime@2.0.0:
-    resolution: {integrity: sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw==}
-    engines: {node: '>=10'}
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
@@ -6166,10 +6135,6 @@ packages:
     resolution: {integrity: sha512-iuh+gPf28RkltuJC7W5MRi6XAjTDCAPC/prJUpQoG4vIP3MJZ+GTydVnodXA7pwvTKb2cA0m9OFZW/cdWy/I/w==}
     engines: {node: '>=6'}
 
-  sirv@2.0.4:
-    resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
-    engines: {node: '>= 10'}
-
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -6557,9 +6522,6 @@ packages:
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
 
-  tiny-glob@0.2.9:
-    resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
-
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -6588,10 +6550,6 @@ packages:
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
-
-  totalist@3.0.1:
-    resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
-    engines: {node: '>=6'}
 
   tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
@@ -7300,7 +7258,7 @@ snapshots:
       - encoding
       - typescript
 
-  '@argent/x-ui@file:../x-ui(cxhmlpreo3ggzh3aziih4sur7e)':
+  '@argent/x-ui@1.70.1(mcfj3t5w5z7ehabnwpmzvhdirm)':
     dependencies:
       '@argent/x-shared': 1.39.0(@scure/base@1.1.9)(@scure/bip39@1.4.0)(async-retry@1.3.3)(lodash-es@4.17.21)(typescript@5.5.4)(ua-parser-js@1.0.39)(url-join@5.0.0)(zod@3.23.8)
       '@chakra-ui/react': 2.10.2(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(framer-motion@11.11.7(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -7312,6 +7270,8 @@ snapshots:
       '@zxcvbn-ts/language-common': 3.0.4
       '@zxcvbn-ts/language-en': 3.0.2
       colord: 2.9.3
+      embla-carousel: 8.3.0
+      embla-carousel-react: 8.3.0(react@18.3.1)
       emittery: 1.0.3
       framer-motion: 11.11.7(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       history: 5.3.0
@@ -8344,7 +8304,7 @@ snapshots:
       '@types/node': 20.5.1
       chalk: 4.1.2
       cosmiconfig: 8.3.6(typescript@5.5.4)
-      cosmiconfig-typescript-loader: 4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.5.4))(ts-node@10.9.2(@types/node@20.14.15)(typescript@5.5.4))(typescript@5.5.4)
+      cosmiconfig-typescript-loader: 4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.5.4))(ts-node@10.9.2(@types/node@20.5.1)(typescript@5.5.4))(typescript@5.5.4)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -9023,8 +8983,6 @@ snapshots:
       '@pnpm/config.env-replace': 1.1.0
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
-
-  '@polka/url@1.0.0-next.28': {}
 
   '@popperjs/core@2.11.8': {}
 
@@ -9716,29 +9674,6 @@ snapshots:
 
   '@starknet-io/types-js@0.7.7': {}
 
-  '@sveltejs/adapter-auto@3.2.5(@sveltejs/kit@2.6.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))':
-    dependencies:
-      '@sveltejs/kit': 2.6.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1))
-      import-meta-resolve: 4.1.0
-
-  '@sveltejs/kit@2.6.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1))':
-    dependencies:
-      '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1))
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      devalue: 5.1.1
-      esm-env: 1.0.0
-      import-meta-resolve: 4.1.0
-      kleur: 4.1.5
-      magic-string: 0.30.11
-      mrmime: 2.0.0
-      sade: 1.8.1
-      set-cookie-parser: 2.7.0
-      sirv: 2.0.4
-      svelte: 4.2.18
-      tiny-glob: 0.2.9
-      vite: 4.5.3(@types/node@20.14.15)(terser@5.34.1)
-
   '@sveltejs/vite-plugin-svelte-inspector@1.0.4(@sveltejs/vite-plugin-svelte@2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1)))(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1))':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.18)(vite@4.5.3(@types/node@20.14.15)(terser@5.34.1))
@@ -9783,8 +9718,6 @@ snapshots:
   '@types/async-retry@1.4.8':
     dependencies:
       '@types/retry': 0.12.5
-
-  '@types/cookie@0.6.0': {}
 
   '@types/debounce@1.2.4': {}
 
@@ -11089,8 +11022,6 @@ snapshots:
 
   cookie-es@1.2.2: {}
 
-  cookie@0.6.0: {}
-
   copy-to-clipboard@3.3.3:
     dependencies:
       toggle-selection: 1.0.6
@@ -11101,7 +11032,7 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig-typescript-loader@4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.5.4))(ts-node@10.9.2(@types/node@20.14.15)(typescript@5.5.4))(typescript@5.5.4):
+  cosmiconfig-typescript-loader@4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6(typescript@5.5.4))(ts-node@10.9.2(@types/node@20.5.1)(typescript@5.5.4))(typescript@5.5.4):
     dependencies:
       '@types/node': 20.5.1
       cosmiconfig: 8.3.6(typescript@5.5.4)
@@ -11298,8 +11229,6 @@ snapshots:
 
   detect-node-es@1.1.0: {}
 
-  devalue@5.1.1: {}
-
   didyoumean@1.2.2: {}
 
   diff-sequences@29.6.3: {}
@@ -11354,6 +11283,18 @@ snapshots:
       inherits: 2.0.4
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
+
+  embla-carousel-react@8.3.0(react@18.3.1):
+    dependencies:
+      embla-carousel: 8.3.0
+      embla-carousel-reactive-utils: 8.3.0(embla-carousel@8.3.0)
+      react: 18.3.1
+
+  embla-carousel-reactive-utils@8.3.0(embla-carousel@8.3.0):
+    dependencies:
+      embla-carousel: 8.3.0
+
+  embla-carousel@8.3.0: {}
 
   emittery@1.0.3: {}
 
@@ -11787,8 +11728,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  esm-env@1.0.0: {}
-
   espree@9.6.1:
     dependencies:
       acorn: 8.12.1
@@ -12172,8 +12111,6 @@ snapshots:
       define-properties: 1.2.1
       gopd: 1.0.1
 
-  globalyzer@0.1.0: {}
-
   globby@11.1.0:
     dependencies:
       array-union: 2.1.0
@@ -12191,8 +12128,6 @@ snapshots:
       path-type: 5.0.0
       slash: 5.1.0
       unicorn-magic: 0.1.0
-
-  globrex@0.1.2: {}
 
   gopd@1.0.1:
     dependencies:
@@ -12354,8 +12289,6 @@ snapshots:
   import-from@4.0.0: {}
 
   import-lazy@4.0.0: {}
-
-  import-meta-resolve@4.1.0: {}
 
   import-sort-config@6.0.0:
     dependencies:
@@ -13359,8 +13292,6 @@ snapshots:
       '@motionone/vue': 10.16.4
 
   mri@1.2.0: {}
-
-  mrmime@2.0.0: {}
 
   ms@2.0.0: {}
 
@@ -14517,12 +14448,6 @@ snapshots:
       figures: 2.0.0
       pkg-conf: 2.1.0
 
-  sirv@2.0.4:
-    dependencies:
-      '@polka/url': 1.0.0-next.28
-      mrmime: 2.0.0
-      totalist: 3.0.1
-
   sisteransi@1.0.5: {}
 
   slash@3.0.0: {}
@@ -14977,11 +14902,6 @@ snapshots:
 
   through@2.3.8: {}
 
-  tiny-glob@0.2.9:
-    dependencies:
-      globalyzer: 0.1.0
-      globrex: 0.1.2
-
   tinybench@2.9.0: {}
 
   tinypool@0.8.4: {}
@@ -14999,8 +14919,6 @@ snapshots:
   toggle-selection@1.0.6: {}
 
   toidentifier@1.0.1: {}
-
-  totalist@3.0.1: {}
 
   tough-cookie@4.1.4:
     dependencies:
