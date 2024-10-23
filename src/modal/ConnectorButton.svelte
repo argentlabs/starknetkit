@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ModalWallet } from "../types/modal"
   import type { StarknetkitConnector } from "../connectors/connector"
+  import { getConnector } from "../main.js"
 
   export let wallet: ModalWallet
   export let theme: "light" | "dark" | null = null
@@ -15,6 +16,8 @@
         ? wallet.icon.dark
         : wallet.icon.light
   const isSvg = icon?.startsWith("<svg")
+
+  console.log(wallet)
 </script>
 
 {#if wallet.download}
@@ -61,14 +64,19 @@
     role="button"
     tabindex="0"
     on:click={async () => {
-      cb(wallet.connector)
+      console.log("HERE", wallet, getConnector(wallet.connector))
+      cb(getConnector(wallet.connector))
     }}
     on:keyup={async (e) => {
       if (e.key === "Enter") {
-        cb(wallet.connector)
+        cb(getConnector(wallet.connector))
       }
     }}
   >
+    {#if wallet.isCompoundConnector}
+      <!-- TODO testing -->
+      compound
+    {/if}
     <span class="w-8 h-8" />
     <div class="flex flex-col justify-center items-center">
       <p class="font-semibold text-base p">

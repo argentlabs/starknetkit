@@ -1,8 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@500;600&display=swap");
 
-@tailwind utilities;
-@tailwind components;
-@tailwind base;
+@import "tailwindcss/utilities.css";
+@import "tailwindcss/components.css";
+@import "tailwindcss/base.css";
+
+@import "@argent/x-ui/styles/tailwind.css";
 
 .modal-font {
   font-family:
@@ -29,7 +31,7 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 14px;
-  letter-spacing: 0em;
+  letter-spacing: 0;
   text-align: left;
 }
 
