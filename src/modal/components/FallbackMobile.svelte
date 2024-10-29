@@ -1,14 +1,23 @@
-<script>
-  import Line from "./Line.svelte";
+<script lang="ts">
+  import HorizontalLine from "./HorizontalLine.svelte";
   import LargeButton from "./buttons/LargeButton.svelte";
+
+  export let handleClick: () => void = () => {}
 </script>
 
 <footer class="flex flex-col gap-4 w-full">
-  <Line />
-  <LargeButton>
+  <HorizontalLine />
+  <LargeButton
+    handleClick={handleClick}
+    handleKeyup={(e) => {
+    if (e.key === "Enter") {
+      handleClick()
+    }
+  }}
+  >
     <div class="flex flex-row-reverse items-center gap-2">
 
-      <span>
+      <span class="text-primary">
         Connect to Argent mobile instead
       </span>
 
