@@ -7,7 +7,7 @@ export function extractConnector(
   connector: StarknetkitConnector | StarknetkitCompoundConnector,
   useFallback: boolean = false,
 ) {
-  if (connector.isCompoundConnector) {
+  if ((connector as StarknetkitCompoundConnector).isCompoundConnector) {
     return useFallback
       ? (connector as StarknetkitCompoundConnector).fallbackConnector
       : (connector as StarknetkitCompoundConnector).connector

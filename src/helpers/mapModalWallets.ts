@@ -81,7 +81,7 @@ export const mapModalWallets = ({
         let icon
         let name
 
-        if (_c.isCompoundConnector) {
+        if ((_c as StarknetkitCompoundConnector).isCompoundConnector) {
           icon = _c.icon
           name = _c.name
         } else {
