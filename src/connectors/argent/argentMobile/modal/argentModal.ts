@@ -11,6 +11,7 @@ export interface RequestArguments {
   params?: unknown[] | object
 }
 
+// TODO - SK-47 - remove this
 const overlayStyle = {
   position: "fixed",
   top: "0",
@@ -29,6 +30,7 @@ const overlayStyle = {
   fontFamily: "'Barlow', sans-serif",
 }
 
+// TODO - SK-47 - remove this
 const iframeStyle = {
   width: "840px",
   height: "540px",
