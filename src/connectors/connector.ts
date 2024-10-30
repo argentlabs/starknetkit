@@ -30,6 +30,7 @@ export interface ConnectorEvents {
 
 export type ConnectOptions = {
   silent_mode: boolean
+  onlyQRCode?: boolean
 }
 
 export abstract class Connector extends EventEmitter<ConnectorEvents> {
