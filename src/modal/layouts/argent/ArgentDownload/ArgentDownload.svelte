@@ -13,6 +13,8 @@
   import Link from "../../../components/buttons/Link.svelte";
   import HorizontalLine from "../../../components/HorizontalLine.svelte";
 
+  export let showInstallExtension: boolean = false
+
   export let handleExtensionClick: () => void = () => {}
 </script>
 
@@ -29,18 +31,20 @@
       </svelte:fragment>
     </ArgentDownloadItem>
 
-    <ArgentDownloadItem title="Argent X" subtitle="Install Argent extension." handleClick={handleExtensionClick}>
-      <svelte:fragment slot="icons">
-        <ChromeIcon />
-        <FirefoxIcon />
-        <EdgeIcon />
-        <BraveIcon />
-      </svelte:fragment>
+    {#if showInstallExtension}
+      <ArgentDownloadItem title="Argent X" subtitle="Install Argent extension." handleClick={handleExtensionClick}>
+        <svelte:fragment slot="icons">
+          <ChromeIcon />
+          <FirefoxIcon />
+          <EdgeIcon />
+          <BraveIcon />
+        </svelte:fragment>
 
-      <svelte:fragment slot="graphic">
-        <ArgentXGraphic />
-      </svelte:fragment>
-    </ArgentDownloadItem>
+        <svelte:fragment slot="graphic">
+          <ArgentXGraphic />
+        </svelte:fragment>
+      </ArgentDownloadItem>
+    {/if}
   </div>
 
   <footer class="flex flex-col gap-4">
