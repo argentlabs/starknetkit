@@ -1,4 +1,8 @@
 import { getDevice } from "./getDevice"
+import Modal from "../../../../modal/Modal.svelte"
+import { Layout, ModalWallet } from "../../../../types/modal"
+import { getModalTarget } from "../../../../helpers/modal"
+import { StarknetkitConnector } from "../../../connector"
 
 const device = getDevice()
 
@@ -40,6 +44,17 @@ const iframeStyle = {
   transform: "translate(-50%,-50%)",
 }
 
+const iframeStyleOnlyQR = {
+  width: "245px",
+  height: "245px",
+  borderRadius: "40px",
+  zIndex: "99999",
+  backgroundColor: "white",
+  border: "none",
+  outline: "none",
+}
+
+// TODO - SK-47 - remove this
 const overlayHtml = `
   <div id="argent-mobile-modal-container" style="position: relative">
     <iframe class="argent-iframe" allow="clipboard-write"></iframe>
@@ -52,11 +67,19 @@ const overlayHtml = `
   </div>
 `
 
+const overlayHtmlOnlyQR = `
+  <div id="argent-mobile-modal-container" style="position: relative; display: flex; justify-content: center; align-items: center">
+    <iframe class="argent-iframe" allow="clipboard-write"></iframe>
+  </div>
+`
+
 interface Urls {
   readonly desktop: string
   readonly ios: string
   readonly android: string
 }
+
+type ModalWalletExtended = ModalWallet & { dappName: string }
 
 class ArgentModal {
   public bridgeUrl = "https://login.argent.xyz"
@@ -67,21 +90,64 @@ class ArgentModal {
   private overlay?: HTMLDivElement
   private popupWindow?: Window
   private closingTimeout?: NodeJS.Timeout
+  private standaloneConnectorModal?: Modal
 
-  public showWalletConnectModal(wcUri: string) {
+  public showWalletConnectModal(
+    wcUri: string,
+    modalWallet: ModalWalletExtended,
+  ) {
     const wcParam = encodeURIComponent(wcUri)
     const href = encodeURIComponent(window.location.href)
 
-    this.showModal({
-      desktop: `${this.bridgeUrl}?wc=${wcParam}&href=${href}&device=desktop`,
+    this.showModal(
+      {
+        desktop: `${this.bridgeUrl}?wc=${wcParam}&href=${href}&device=desktop&onlyQR=true`,
+        ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+        android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+      },
+      modalWallet,
+    )
+  }
+
+  public getWalletConnectQR(wcUri: string) {
+    const wcParam = encodeURIComponent(wcUri)
+    const href = encodeURIComponent(window.location.href)
+
+    this.getQR({
+      desktop: `${this.bridgeUrl}?wc=${wcParam}&href=${href}&device=desktop&onlyQR=true`,
       ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
       android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
     })
   }
 
+  private getQR(urls: Urls) {
+    const overlay = document.createElement("div")
+    const shadow = document.querySelector("#starknetkit-modal-container")
+
+    if (shadow?.shadowRoot) {
+      // TODO handle else
+      const slot = shadow.shadowRoot.querySelector(".qr-code-slot")
+
+      if (slot) {
+        // TODO handle else
+        slot.innerHTML = overlayHtmlOnlyQR
+        document.body.appendChild(overlay)
+        this.overlay = overlay
+
+        const iframe = slot.querySelector("iframe") as HTMLIFrameElement
+        iframe.setAttribute("src", urls.desktop)
+
+        for (const [key, value] of Object.entries(iframeStyleOnlyQR)) {
+          iframe.style[key as any] = value
+        }
+      }
+    }
+  }
+
+  // TODO handle this
   public showApprovalModal(_: RequestArguments): void {
     if (device === "desktop") {
-      this.showModal({
+      this.showModalOld({
         desktop: `${this.bridgeUrl}?action=sign`,
         ios: "",
         android: "",
@@ -95,26 +161,50 @@ class ArgentModal {
     Additionally when there is a signing request triggered by the dapp it will hit the deep link with an incomplete URI, 
     this should be ignored and not considered valid as it's only used for automatically redirecting the users to approve or reject a signing request.
     */
-    this.showModal({
+    this.showModalOld({
       desktop: `${this.bridgeUrl}?action=sign&device=desktop&href=${href}`,
       ios: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
       android: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
     })
   }
 
-  public closeModal(success?: "animateSuccess") {
+  // TODO - SK-47 - remove this
+  public closeModal(success?: boolean) {
+    const modal = this.standaloneConnectorModal
     if (success) {
-      this.overlay
-        ?.querySelector("iframe")
-        ?.contentWindow?.postMessage("argent-login.success", "*")
-      this.popupWindow?.postMessage("argent-login.success", "*")
-      this.closingTimeout = setTimeout(this.close, 3400)
+      modal?.$set({ layout: Layout.success })
+      setTimeout(() => modal?.$destroy(), 3000)
     } else {
-      this.close()
+      modal?.$set({ layout: Layout.failure })
     }
   }
 
-  private showModal(urls: Urls) {
+  private showModal(urls: Urls, modalWallet: ModalWalletExtended) {
+    this.standaloneConnectorModal = new Modal({
+      target: getModalTarget(),
+      props: {
+        layout: Layout.qrCode,
+        dappName: modalWallet.dappName,
+        showBackButton: false,
+        selectedWallet: modalWallet,
+        callback: async (wallet) => {
+          try {
+            const connector = wallet?.connector as StarknetkitConnector
+
+            this.standaloneConnectorModal?.$destroy()
+            await connector.connect()
+          } catch (err) {
+            this.standaloneConnectorModal?.$set({ layout: Layout.failure })
+          }
+        },
+      },
+    })
+
+    this.getQR(urls)
+  }
+
+  // TODO - SK-47 - remove this
+  private showModalOld(urls: Urls) {
     clearTimeout(this.closingTimeout)
     if (this.overlay || this.popupWindow) {
       this.close()
@@ -161,6 +251,7 @@ class ArgentModal {
     closeButton.addEventListener("click", () => this.closeModal())
   }
 
+  // TODO - SK-47 - remove this
   private close = () => {
     this.overlay?.remove()
     this.popupWindow?.close()
