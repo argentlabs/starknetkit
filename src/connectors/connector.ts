@@ -73,5 +73,7 @@ export abstract class StarknetkitConnector extends Connector {
 export abstract class StarknetkitCompoundConnector {
   readonly isCompoundConnector = true
   abstract connector: StarknetkitConnector
-  abstract fallbackConnector: StarknetkitConnector
+  abstract fallbackConnector: StarknetkitConnector | null
+  abstract get name(): string
+  abstract get icon(): ConnectorIcons
 }
