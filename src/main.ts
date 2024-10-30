@@ -138,8 +138,6 @@ export const connect = async ({
     } // otherwise fallback to modal
   }
 
-  // console.log("connectors?.length", connectors?.length)
-
   const modalWallets: ModalWallet[] = mapModalWallets({
     availableConnectors,
     installedWallets,
@@ -153,34 +151,6 @@ export const connect = async ({
       target: getModalTarget(),
       props: {
         dappName,
-        // callback: async (connector: StarknetkitConnector | null) => {
-        //   try {
-        //     selectedConnector = connector
-        //     if (resultType === "wallet") {
-        //       const connectorData = (await connector?.connect()) ?? null
-        //       if (connector !== null) {
-        //         setStarknetLastConnectedWallet(connector.id)
-        //       }
-        //
-        //       resolve({
-        //         connector,
-        //         connectorData,
-        //         wallet: connector?.wallet ?? null,
-        //       })
-        //     } else {
-        //       resolve({
-        //         connector,
-        //         wallet: null,
-        //         connectorData: null,
-        //       })
-        //     }
-        //   } catch (error) {
-        //     reject(error)
-        //   } finally {
-        //     setTimeout(() => modal.$destroy())
-        //   }
-        // },
-        // theme: modalTheme === "system" ? null : (modalTheme ?? null),
         callback: async (
           modalWallet: ModalWallet | null,
           useFallback: boolean = false,
