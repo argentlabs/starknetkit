@@ -1,13 +1,17 @@
 import type { DisconnectOptions } from "@starknet-io/get-starknet"
 import sn from "@starknet-io/get-starknet-core"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
+
 import {
-  Connector,
-  ConnectorData,
-  StarknetkitCompoundConnector,
-  StarknetkitConnector,
-} from "./connectors"
+  ConnectOptions,
+  ConnectOptionsWithConnectors,
+  Layout,
+  ModalResult,
+  ModalWallet,
+} from "./types/modal"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
+
+import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 import {
@@ -15,39 +19,12 @@ import {
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
-import Modal from "./modal/Modal.svelte"
-// import css from "@argent/x-ui/styles/tailwind.css?inline"
-import css from "./theme.css?inline"
+import { extractConnector, findConnectorById } from "./helpers/connector"
+import { getModalTarget } from "./helpers/modal"
 
-import type {
-  ConnectOptions,
-  ConnectOptionsWithConnectors,
-  ModalResult,
-  ModalWallet,
-} from "./types/modal"
+import Modal from "./modal/Modal.svelte"
 
 let selectedConnector: StarknetkitConnector | null = null
-
-export function getConnector( // TODO Maybe just add getConnector to both, StarknetkitConnector and StarknetkitCompoundConnector, then use .getConnector() where needed
-  connector: StarknetkitConnector | StarknetkitCompoundConnector,
-) {
-  if (connector.isCompoundConnector) {
-    return (connector as StarknetkitCompoundConnector).connector
-  }
-  return connector
-}
-
-export function findConnectorById(
-  connectors: (StarknetkitConnector | StarknetkitCompoundConnector)[],
-  id: string | null,
-) {
-  const connector = connectors.find((c) => getConnector(c).id === id)
-
-  if (!connector) {
-    return null
-  }
-  return getConnector(connector)
-}
 
 /**
  *
@@ -109,6 +86,7 @@ export const connect = async ({
       if (connector && resultType === "wallet") {
         connectorData = await connector.connect({
           silent_mode: true,
+          onlyQRCode: true,
         })
       }
 
@@ -141,7 +119,11 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (resultType === "wallet") {
-        connectorData = (await connector?.connect()) ?? null
+        connectorData =
+          (await connector?.connect({
+            onlyQRCode: true,
+            silent_mode: false,
+          })) ?? null
       }
 
       if (connector) {
@@ -166,36 +148,9 @@ export const connect = async ({
     customOrder: connectors ? connectors?.length > 0 : false,
   })
 
-  const getTarget = (): ShadowRoot => {
-    const modalId = "starknetkit-modal-container"
-    const existingElement = document.getElementById(modalId)
-
-    if (existingElement) {
-      if (existingElement.shadowRoot) {
-        // element already exists, use the existing as target
-        return existingElement.shadowRoot
-      }
-      // element exists but shadowRoot cannot be accessed
-      // delete the element and create new
-      existingElement.remove()
-    }
-
-    const element = document.createElement("div")
-    // set id for future retrieval
-    element.id = modalId
-    document.body.appendChild(element)
-    const target = element.attachShadow({ mode: "open" })
-
-    const styleElement = document.createElement("style")
-    styleElement.textContent = css
-    target.appendChild(styleElement)
-
-    return target
-  }
-
   return new Promise((resolve, reject) => {
     const modal = new Modal({
-      target: getTarget(),
+      target: getModalTarget(),
       props: {
         dappName,
         // callback: async (connector: StarknetkitConnector | null) => {
@@ -226,6 +181,59 @@ export const connect = async ({
         //   }
         // },
         // theme: modalTheme === "system" ? null : (modalTheme ?? null),
+        callback: async (
+          modalWallet: ModalWallet | null,
+          useFallback: boolean = false,
+        ) => {
+          try {
+            if (!modalWallet) {
+              throw new Error("Connector error")
+            }
+
+            selectedConnector = extractConnector(
+              modalWallet.connector,
+              useFallback,
+            )
+
+            modal.$set({ selectedWallet: modalWallet })
+
+            if (resultType === "wallet") {
+              if (selectedConnector?.name === "Argent (mobile)") {
+                modal.$set({ layout: Layout.qrCode })
+              } else {
+                modal.$set({ layout: Layout.connecting })
+              }
+
+              const connectorData =
+                (await selectedConnector?.connect({
+                  onlyQRCode: true,
+                  silent_mode: false,
+                })) ?? null
+              if (selectedConnector !== null) {
+                setStarknetLastConnectedWallet(selectedConnector.id)
+              }
+
+              resolve({
+                connector: selectedConnector,
+                connectorData,
+                wallet: selectedConnector?.wallet ?? null,
+              })
+            } else {
+              resolve({
+                connector: selectedConnector,
+                wallet: null,
+                connectorData: null,
+              })
+            }
+
+            modal.$set({ layout: Layout.success })
+            setTimeout(() => modal.$destroy(), 3000)
+          } catch (error) {
+            modal.$set({ layout: Layout.failure })
+            reject(error)
+          }
+        },
+        theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
       },
     })
