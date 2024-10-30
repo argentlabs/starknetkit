@@ -42,10 +42,15 @@
       "import": "./dist/argentMobile.js",
       "require": "./dist/argentMobile.cjs"
     },
-    "./argentCompound": {
-      "types": "./dist/argentCompound.d.ts",
-      "import": "./dist/argentCompound.js",
-      "require": "./dist/argentCompound.cjs"
+    "./argent": {
+      "types": "./dist/argent.d.ts",
+      "import": "./dist/argent.js",
+      "require": "./dist/argent.cjs"
+    },
+    "./argentX": {
+      "types": "./dist/argentX.d.ts",
+      "import": "./dist/argentX.js",
+      "require": "./dist/argentX.cjs"
     },
     "./braavos": {
       "types": "./dist/braavos.d.ts",
