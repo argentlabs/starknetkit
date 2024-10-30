@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { StoreVersion } from "../../../types/modal"
-
   import ChromeIcon from "../../components/icons/brands/ChromeIcon.svelte";
   import FirefoxIcon from "../../components/icons/brands/FirefoxIcon.svelte";
   import EdgeIcon from "../../components/icons/brands/EdgeIcon.svelte";
@@ -9,7 +7,7 @@
 
   export let extensionName: string = ""
 
-  export let downloadLinks: Record<StoreVersion, "" | undefined> | undefined = {
+  export let downloadLinks: Record<string, string> | undefined = {
     chrome: "",
     edge: "",
     firefox: "",
