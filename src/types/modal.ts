@@ -6,9 +6,21 @@ import {
   ConnectorIcons,
   StarknetkitCompoundConnector,
   StarknetkitConnector,
-} from "../connectors/connector"
+} from "../connectors"
 
 export type StoreVersion = "chrome" | "firefox" | "edge"
+
+export type Theme = "dark" | "light" | null
+
+export enum Layout {
+  walletList = "walletList",
+  connecting = "connecting",
+  success = "success",
+  failure = "failure",
+  qrCode = "qrCode",
+  argentDownload = "argentDownload",
+  extensionDownloadList = "extensionDownloadList",
+}
 
 export interface ConnectOptions extends GetWalletOptions {
   dappName?: string
@@ -30,11 +42,16 @@ export type ModalWallet = {
   id: string
   icon: ConnectorIcons
   download?: string
+  downloads?: Record<string, string>
   subtitle?: string
   title?: string
   connector: StarknetkitConnector | StarknetkitCompoundConnector
-  isCompoundConnector?: boolean
 }
+
+export type Callback = (
+  value: ModalWallet | null,
+  useFallback?: boolean,
+) => Promise<void>
 
 export type ModalResult = {
   connector: StarknetkitConnector | null
