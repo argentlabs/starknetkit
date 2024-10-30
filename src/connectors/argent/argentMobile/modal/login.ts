@@ -1,14 +1,13 @@
 import SignClient from "@walletconnect/sign-client"
 import type { SignClientTypes } from "@walletconnect/types"
-
 import { RpcProvider, constants } from "starknet"
-
-// Using NetworkName as a value.
-const Network: typeof constants.NetworkName = constants.NetworkName
-
 import type { NamespaceAdapter, NamespaceAdapterOptions } from "./adapter"
 import { argentModal } from "./argentModal"
 import { resetWalletConnect } from "../../../../helpers/resetWalletConnect"
+import { ModalWallet } from "../../../../types/modal"
+
+// Using NetworkName as a value.
+const Network: typeof constants.NetworkName = constants.NetworkName
 
 export interface IArgentLoginOptions {
   projectId?: string
@@ -22,6 +21,8 @@ export interface IArgentLoginOptions {
   mobileUrl?: string
   modalType?: "overlay" | "window"
   walletConnect?: SignClientTypes.Options
+  onlyQRCode?: boolean
+  modalWallet?: ModalWallet
 }
 
 export const login = async <TAdapter extends NamespaceAdapter>(
@@ -37,6 +38,8 @@ export const login = async <TAdapter extends NamespaceAdapter>(
     url,
     icons,
     walletConnect,
+    onlyQRCode,
+    modalWallet,
   }: IArgentLoginOptions,
   Adapter: new (options: NamespaceAdapterOptions) => TAdapter,
 ): Promise<TAdapter | null> => {
@@ -101,13 +104,20 @@ export const login = async <TAdapter extends NamespaceAdapter>(
 
     // Open QRCode modal if a URI was returned (i.e. we're not connecting an existing pairing).
     if (uri) {
-      argentModal.showWalletConnectModal(uri)
+      if (onlyQRCode) {
+        argentModal.getWalletConnectQR(uri)
+      } else {
+        argentModal.showWalletConnectModal(uri, {
+          ...modalWallet,
+          dappName: name || "",
+        } as ModalWallet & { dappName: string })
+      }
       argentModal.wcUri = uri
 
       // Await session approval from the wallet.
       const session = await approval()
       adapter.updateSession(session)
-      argentModal.closeModal("animateSuccess")
+      argentModal.closeModal(true)
     }
 
     return adapter
