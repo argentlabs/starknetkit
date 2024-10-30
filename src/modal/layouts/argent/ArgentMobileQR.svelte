@@ -1,7 +1,7 @@
 <script lang="ts">
   import InstallWallet from "../../components/InstallWallet.svelte";
 
-  export let handleClick: () => void = () => {}
+  export let handleInstallClick: () => void = () => {}
 </script>
 
 <style>
@@ -58,5 +58,5 @@
     </div>
   </div>
 
-  <InstallWallet walletName="Argent" handleClick={handleClick} />
+  <InstallWallet walletName="Argent" handleClick={handleInstallClick} />
 </section>
