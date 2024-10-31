@@ -163,7 +163,8 @@ export const connect = async ({
             modal.$set({ selectedWallet: modalWallet })
 
             if (!modalWallet.installed) {
-              return modal.$set({ layout: Layout.extensionDownloadList })
+              modal.$set({ layout: Layout.extensionDownloadList })
+              return
             }
 
             selectedConnector = extractConnector(
