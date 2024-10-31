@@ -148,7 +148,7 @@ class ArgentModal {
     }
   }
 
-  // TODO handle this
+  // TODO - SK-47 - handle this
   public showApprovalModal(_: RequestArguments): void {
     if (device === "desktop") {
       this.showModalOld({
