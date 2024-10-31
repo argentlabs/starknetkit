@@ -71,6 +71,9 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "dev": "vite build --watch"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@argent/x-ui": "^1.70.1",
     "@starknet-io/get-starknet": "^4.0.0",
