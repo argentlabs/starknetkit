@@ -1,12 +1,11 @@
+import { injectedWalletIcons } from "../injected"
 import { ArgentX } from "../injected/argentX"
+import { getInjectedArgentX } from "./helpers/getInjectedArgentX"
 import {
   ArgentMobileBaseConnector,
   ArgentMobileConnectorOptions,
   isInArgentMobileAppBrowser,
 } from "./argentMobile"
-
-import { getInjectedArgentX } from "./helpers/getInjectedArgentX"
-import { DEFAULT_ARGENT_MOBILE_ICON } from "./argentMobile/constants"
 import { StarknetkitCompoundConnector } from "../connector"
 
 /**
@@ -16,19 +15,12 @@ function hasInjectedArgentX(): boolean {
   return Boolean(getInjectedArgentX())
 }
 
-type ArgentCompoundSettings = ArgentMobileConnectorOptions
+type ArgentSettings = ArgentMobileConnectorOptions
 
-// TODO think about naming
-//  - ArgentUnified
-//  - ArgentOneButton
-//  - ArgentCompound
-//  - Argent
+const ArgentIcon =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9IkhpdG8gaW4gY29udGFpbmVyIj4KPHBhdGggaWQ9IlZlY3RvciIgZD0iTTE4Ljc5OTkgNS45MkgxMy4yMDAzQzEzLjAxMzIgNS45MiAxMi44NjMyIDYuMDc0MDIgMTIuODU5MiA2LjI2NTQ3QzEyLjc0NiAxMS42NDcgOS45OTQ3NyAxNi43NTQ2IDUuMjU5MyAyMC4zNzI0QzUuMTA4OTUgMjAuNDg3MiA1LjA3NDcgMjAuNzAzIDUuMTg0NjIgMjAuODU4NEw4LjQ2MDg3IDI1LjQ5NDNDOC41NzIzMyAyNS42NTIgOC43ODk1IDI1LjY4NzcgOC45NDIzNyAyNS41NzE4QzExLjkwMzMgMjMuMzI0NCAxNC4yODUgMjAuNjEzNCAxNi4wMDAxIDE3LjYwODVDMTcuNzE1MiAyMC42MTM0IDIwLjA5NyAyMy4zMjQ0IDIzLjA1OCAyNS41NzE4QzIzLjIxMDcgMjUuNjg3NyAyMy40Mjc5IDI1LjY1MiAyMy41Mzk1IDI1LjQ5NDNMMjYuODE1NyAyMC44NTg0QzI2LjkyNTUgMjAuNzAzIDI2Ljg5MTIgMjAuNDg3MiAyNi43NDEgMjAuMzcyNEMyMi4wMDU0IDE2Ljc1NDYgMTkuMjU0MiAxMS42NDcgMTkuMTQxMiA2LjI2NTQ3QzE5LjEzNzEgNi4wNzQwMiAxOC45ODcgNS45MiAxOC43OTk5IDUuOTJaIiBmaWxsPSIjRkY4NzVCIi8+CjwvZz4KPC9zdmc+Cg=="
 
-// TODO
-//  - get qr code
-//  - get full modal for both ux flows?
-
-export class ArgentCompound
+export class Argent
   extends StarknetkitCompoundConnector
   implements StarknetkitCompoundConnector
 {
@@ -36,18 +28,22 @@ export class ArgentCompound
   readonly argentMobile?: ArgentMobileBaseConnector
 
   readonly connector: ArgentX | ArgentMobileBaseConnector
-  readonly fallbackConnector: ArgentX | ArgentMobileBaseConnector
+  readonly fallbackConnector: ArgentMobileBaseConnector | null
 
-  constructor(settings: ArgentCompoundSettings) {
+  get name() {
+    return "Argent"
+  }
+  get icon() {
+    return ArgentIcon
+  }
+
+  constructor(settings: ArgentSettings) {
     super()
 
     this.argentX = new ArgentX({
-      name: "Argent",
-      icon: DEFAULT_ARGENT_MOBILE_ICON,
-      isCompoundConnector: true,
+      icon: injectedWalletIcons.argentX,
     })
     this.argentMobile = new ArgentMobileBaseConnector({
-      isCompoundConnector: true,
       ...settings,
     })
 
@@ -56,28 +52,7 @@ export class ArgentCompound
       this.fallbackConnector = this.argentMobile
     } else {
       this.connector = this.argentMobile
-      this.fallbackConnector = this.argentX
+      this.fallbackConnector = null
     }
   }
-
-  getArgentXConnector() {
-    return this.argentX
-  }
-
-  getArgentMobileConnector() {
-    return this.argentMobile
-  }
 }
-
-//
-// // Second way
-// const compoundConnector = new ArgentCompound({
-//   url: typeof window !== "undefined" ? window.location.href : "",
-//   dappName: "Example dapp",
-// })
-//
-// compoundConnector.getConector()
-//
-// compoundConnector.getArgentX()
-// compoundConnector.getArgentMobile()
-// compoundConnector.getFallback()

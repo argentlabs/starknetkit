@@ -3,7 +3,8 @@
 
   export let title: string
   export let subtitle: string
-  export let link: string
+  export let link: string | undefined = undefined
+  export let handleClick: (() => void) | undefined = undefined
 </script>
 
 <div class="flex flex-row gap-3 px-4 py-3 rounded-xl bg-surface-elevated">
@@ -15,7 +16,17 @@
     <div class="flex gap-3">
       <slot name="icons" />
     </div>
-    <Button as="a" href={link} className="bg-button-secondary text-primary hover:bg-button-secondary-hover flex w-[140px] h-[32px] text-b3 rounded-3xl justify-center items-center" >
+    <Button
+      as={handleClick ? "button" : "a"}
+      href={link}
+      handleClick={handleClick}
+      handleKeyup={(e) => {
+        if (handleClick && e.key === "Enter") {
+          handleClick()
+        }
+      }}
+      className="bg-button-secondary text-primary hover:bg-button-secondary-hover flex w-[140px] h-[32px] text-b3 rounded-3xl justify-center items-center"
+    >
       Download
     </Button>
   </div>

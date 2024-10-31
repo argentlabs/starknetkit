@@ -42,10 +42,15 @@
       "import": "./dist/argentMobile.js",
       "require": "./dist/argentMobile.cjs"
     },
-    "./argentCompound": {
-      "types": "./dist/argentCompound.d.ts",
-      "import": "./dist/argentCompound.js",
-      "require": "./dist/argentCompound.cjs"
+    "./argent": {
+      "types": "./dist/argent.d.ts",
+      "import": "./dist/argent.js",
+      "require": "./dist/argent.cjs"
+    },
+    "./argentX": {
+      "types": "./dist/argentX.d.ts",
+      "import": "./dist/argentX.js",
+      "require": "./dist/argentX.cjs"
     },
     "./braavos": {
       "types": "./dist/braavos.d.ts",
@@ -61,14 +66,14 @@
   "main": "./dist/starknetkit.cjs",
   "module": "./dist/starknetkit.js",
   "types": "./dist/starknetkit.d.ts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "dev": "vite build --watch"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@argent/x-ui": "^1.70.1",
     "@starknet-io/get-starknet": "^4.0.0",

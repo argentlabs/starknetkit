@@ -3,7 +3,7 @@
 
   export let browser: string
   export let href: string
-  export let extensionName: string = "Argent X"
+  export let extensionName: string = ""
 </script>
 
 <li>

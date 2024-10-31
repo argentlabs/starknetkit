@@ -6,10 +6,15 @@
   export let as: "button" | "a" = "button"
   export let isLarge: boolean = false
 
-  export let height = isLarge ? "min-h-12" : "min-h-8"
+  const height = isLarge ? "min-h-12" : "min-h-8"
+
+  export let handleClick: (e: MouseEvent) => void = (e: MouseEvent) => console.log("click", e)
+  export let handleKeyup: (e: KeyboardEvent) => void = (e: KeyboardEvent) => console.log("keyup", e)
 </script>
 
 <Link
+  handleClick={handleClick}
+  handleKeyup={handleKeyup}
   as={as}
   href={href}
   className={`
