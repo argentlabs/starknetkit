@@ -11,7 +11,12 @@ import {
 } from "./types/modal"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 
-import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
+import {
+  Connector,
+  ConnectorData,
+  StarknetkitConnector,
+  StarknetkitCompoundConnector,
+} from "./connectors"
 import { ArgentMobileBaseConnector } from "./connectors/argent/argentMobile"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
@@ -244,6 +249,7 @@ export type {
   DisconnectOptions,
   StarknetWindowObject,
   StarknetkitConnector,
+  StarknetkitCompoundConnector,
   defaultConnectors as starknetkitDefaultConnectors,
   ConnectOptions,
   ConnectOptionsWithConnectors,
