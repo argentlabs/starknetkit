@@ -12,6 +12,7 @@ import {
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 
 import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
+import { ArgentMobileBaseConnector } from "./connectors/argent/argentMobile"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 import {
@@ -173,7 +174,7 @@ export const connect = async ({
             )
 
             if (resultType === "wallet") {
-              if (selectedConnector?.name === "Argent (mobile)") {
+              if (selectedConnector instanceof ArgentMobileBaseConnector) {
                 modal.$set({ layout: Layout.qrCode })
               } else {
                 modal.$set({ layout: Layout.connecting })
