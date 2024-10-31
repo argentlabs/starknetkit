@@ -27,10 +27,19 @@ export function getModalWallet(
   const connector = extractConnector(
     connectorOrCompoundConnector,
   ) as StarknetkitConnector
+
+  const isCompoundConnector = (
+    connectorOrCompoundConnector as StarknetkitCompoundConnector
+  ).isCompoundConnector
+
   return {
-    name: connector.name,
+    name: isCompoundConnector
+      ? connectorOrCompoundConnector.name
+      : connector.name,
     id: connector.id,
-    icon: connector.icon,
+    icon: isCompoundConnector
+      ? connectorOrCompoundConnector.icon
+      : connector.icon,
     connector: connectorOrCompoundConnector,
     installed: true,
     title:
