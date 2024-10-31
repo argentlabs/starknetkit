@@ -24,6 +24,7 @@ import { extractConnector, findConnectorById } from "./helpers/connector"
 import { getModalTarget } from "./helpers/modal"
 
 import Modal from "./modal/Modal.svelte"
+import { ModalInstance } from "./modal/Modal"
 
 let selectedConnector: StarknetkitConnector | null = null
 
@@ -212,7 +213,7 @@ export const connect = async ({
         theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
       },
-    })
+    }) as ModalInstance // Prevents vite build errors
   })
 }
 
