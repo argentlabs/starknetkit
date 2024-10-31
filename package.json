@@ -66,9 +66,6 @@
   "main": "./dist/starknetkit.cjs",
   "module": "./dist/starknetkit.js",
   "types": "./dist/starknetkit.d.ts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
