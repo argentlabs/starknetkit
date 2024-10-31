@@ -127,11 +127,9 @@ class ArgentModal {
     const shadow = document.querySelector("#starknetkit-modal-container")
 
     if (shadow?.shadowRoot) {
-      // TODO handle else
       const slot = shadow.shadowRoot.querySelector(".qr-code-slot")
 
       if (slot) {
-        // TODO handle else
         slot.innerHTML = overlayHtmlOnlyQR
         document.body.appendChild(overlay)
         this.overlay = overlay
@@ -142,7 +140,11 @@ class ArgentModal {
         for (const [key, value] of Object.entries(iframeStyleOnlyQR)) {
           iframe.style[key as any] = value
         }
+      } else {
+        throw new Error("Cannot find QR code slot")
       }
+    } else {
+      throw new Error("Cannot find modal")
     }
   }
 
@@ -189,12 +191,12 @@ class ArgentModal {
         dappName: modalWallet.dappName,
         showBackButton: false,
         selectedWallet: modalWallet,
-        callback: async (wallet) => {
+        callback: async (wallet: ModalWallet | null) => {
           try {
             const connector = wallet?.connector as StarknetkitConnector
 
             this.standaloneConnectorModal?.$destroy()
-            await connector.connect()
+            await connector?.connect()
           } catch (err) {
             this.standaloneConnectorModal?.$set({ layout: Layout.failure })
           }
