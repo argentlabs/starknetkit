@@ -160,12 +160,16 @@ export const connect = async ({
               throw new Error("Connector error")
             }
 
+            modal.$set({ selectedWallet: modalWallet })
+
+            if (!modalWallet.installed) {
+              return modal.$set({ layout: Layout.extensionDownloadList })
+            }
+
             selectedConnector = extractConnector(
               modalWallet.connector,
               useFallback,
             )
-
-            modal.$set({ selectedWallet: modalWallet })
 
             if (resultType === "wallet") {
               if (selectedConnector?.name === "Argent (mobile)") {

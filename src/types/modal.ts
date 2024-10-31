@@ -41,6 +41,7 @@ export type ModalWallet = {
   name: string
   id: string
   icon: ConnectorIcons
+  installed: boolean
   download?: string
   downloads?: Record<string, string>
   subtitle?: string

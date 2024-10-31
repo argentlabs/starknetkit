@@ -32,6 +32,7 @@ export function getModalWallet(
     id: connector.id,
     icon: connector.icon,
     connector: connectorOrCompoundConnector,
+    installed: true,
     title:
       "title" in connector && isString(connector.title)
         ? connector.title
@@ -74,6 +75,8 @@ export const mapModalWallets = ({
 
   const connectors = orderedByInstall
     .map<ModalWallet | null>((_c) => {
+      const isCompoundConnector = (_c as StarknetkitCompoundConnector)
+        .isCompoundConnector
       const c = extractConnector(_c)
 
       const installed = installedWallets.find((w) => w.id === c?.id)
@@ -81,7 +84,7 @@ export const mapModalWallets = ({
         let icon
         let name
 
-        if ((_c as StarknetkitCompoundConnector).isCompoundConnector) {
+        if (isCompoundConnector) {
           icon = _c.icon
           name = _c.name
         } else {
@@ -100,6 +103,7 @@ export const mapModalWallets = ({
           id: installed.id,
           icon,
           connector: _c,
+          installed: true,
           downloads: discoveryWallets.find((d) => d.id === c?.id)?.downloads,
         }
       }
@@ -120,6 +124,7 @@ export const mapModalWallets = ({
           id: discovery.id,
           icon: { light: discoveryIcon, dark: discoveryIcon },
           connector: _c,
+          installed: false,
           download: downloads[storeVersion as keyof typeof downloads],
           downloads: downloads,
         }
