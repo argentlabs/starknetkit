@@ -209,6 +209,7 @@ export const connect = async ({
                 wallet: null,
                 connectorData: null,
               })
+              modal.$destroy()
             }
           } catch (error) {
             modal.$set({ layout: Layout.failure })
