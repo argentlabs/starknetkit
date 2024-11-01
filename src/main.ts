@@ -200,6 +200,9 @@ export const connect = async ({
                 connectorData,
                 wallet: selectedConnector?.wallet ?? null,
               })
+
+              modal.$set({ layout: Layout.success })
+              setTimeout(() => modal.$destroy(), 3000)
             } else {
               resolve({
                 connector: selectedConnector,
@@ -207,9 +210,6 @@ export const connect = async ({
                 connectorData: null,
               })
             }
-
-            modal.$set({ layout: Layout.success })
-            setTimeout(() => modal.$destroy(), 3000)
           } catch (error) {
             modal.$set({ layout: Layout.failure })
             reject(error)
