@@ -43,7 +43,7 @@
   let isInAppBrowser = isInArgentMobileAppBrowser()
 
   export let theme: Theme = "dark"
-  export let darkModeControlClass =  theme === "dark" ? "dark" : ""
+  export let darkModeControlClass =  (theme === "dark" ? "dark" : "") as Theme
 
   onMount(async () => {
     if (theme === "dark" || (theme == undefined && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
@@ -93,7 +93,7 @@
       />
 
       {#if layout === Layout.walletList}
-        <WalletList walletList={modalWallets} {theme} {callback} />
+        <WalletList walletList={modalWallets} theme={darkModeControlClass} {callback} />
       {:else if layout === Layout.connecting}
         <Connecting
           walletName={selectedConnector?.name}
@@ -101,7 +101,7 @@
           handleFallback={() => callback(selectedWallet, true)}
         >
           {#if selectedConnector?.icon}
-            <DynamicIcon icon={selectedConnector.icon} theme={theme} />
+            <DynamicIcon icon={selectedConnector.icon} theme={darkModeControlClass} />
           {/if}
         </Connecting>
       {:else if layout === Layout.success}
