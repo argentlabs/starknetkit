@@ -166,10 +166,14 @@ export class StarknetAdapter
   }
 
   on: StarknetWindowObject["on"] = (event, handleEvent) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.eventEmitter.on(event, handleEvent)
   }
 
   off: StarknetWindowObject["off"] = (event, handleEvent) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.eventEmitter.off(event, handleEvent)
   }
 
