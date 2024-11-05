@@ -53,6 +53,16 @@
       return
     }
 
+    const userAgent = navigator.userAgent.toLowerCase()
+    const isBraavosMobileApp = userAgent.includes("braavos")
+
+    if (isBraavosMobileApp && window?.starknet_braavos) {
+      try {
+        callback(new InjectedConnector({ options: { id: "braavos" } }))
+      } catch {}
+      return
+    }
+
     if (modalWallets.length === 1) {
       try {
         const [wallet] = modalWallets

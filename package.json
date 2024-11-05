@@ -37,6 +37,11 @@
       "import": "./dist/argentMobile.js",
       "require": "./dist/argentMobile.cjs"
     },
+    "./braavosMobile": {
+      "types": "./dist/braavosMobile.d.ts",
+      "import": "./dist/braavosMobile.js",
+      "require": "./dist/braavosMobile.cjs"
+    },
     "./injected": {
       "types": "./dist/injectedConnector.d.ts",
       "import": "./dist/injectedConnector.js",
