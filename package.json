@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.4.0-beta-braavos-mobile.1",
+  "version": "2.4.0",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
