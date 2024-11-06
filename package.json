@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.3.4",
+  "version": "2.4.0-beta-braavos-mobile.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
@@ -36,6 +36,11 @@
       "types": "./dist/argentMobile.d.ts",
       "import": "./dist/argentMobile.js",
       "require": "./dist/argentMobile.cjs"
+    },
+    "./braavosMobile": {
+      "types": "./dist/braavosMobile.d.ts",
+      "import": "./dist/braavosMobile.js",
+      "require": "./dist/braavosMobile.cjs"
     },
     "./injected": {
       "types": "./dist/injectedConnector.d.ts",
