@@ -172,7 +172,6 @@ class ArgentModal {
     })
   }
 
-  // TODO - SK-47 - remove this
   public closeModal(success?: boolean) {
     const modal = this.standaloneConnectorModal
     if (success) {
@@ -180,6 +179,19 @@ class ArgentModal {
       setTimeout(() => modal?.$destroy(), 3000)
     } else {
       modal?.$set({ layout: Layout.failure })
+    }
+  }
+
+  // TODO - SK-47 - remove this
+  public closeModalOld(success?: boolean) {
+    if (success) {
+      this.overlay
+        ?.querySelector("iframe")
+        ?.contentWindow?.postMessage("argent-login.success", "*")
+      this.popupWindow?.postMessage("argent-login.success", "*")
+      this.closingTimeout = setTimeout(this.close, 3400)
+    } else {
+      this.close()
     }
   }
 
