@@ -28,7 +28,7 @@ export const defaultConnectors = ({
     | StarknetkitCompoundConnector
   )[] = []
 
-  defaultConnectors.push(new Argent(argentMobileOptions))
+  defaultConnectors.push(new Argent({ mobile: argentMobileOptions }))
 
   if (!isSafari) {
     defaultConnectors.push(new Braavos())
