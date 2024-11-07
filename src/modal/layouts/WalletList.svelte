@@ -1,13 +1,16 @@
 <script lang="ts">
+  import { Callback, ModalWallet, Theme } from "../../types/modal"
   import WalletButton from "../components/buttons/WalletButton.svelte"
 
-  export let walletList: { title: string, subtitle?: string, icon: string }[] // TODO type
+  export let theme: Theme
+  export let callback: Callback = async () => {}
+  export let walletList: ModalWallet[]
 </script>
 
 <section>
   <ul class="flex flex-col gap-3">
     {#each walletList as wallet}
-      <li><WalletButton {wallet} /></li>
+      <li><WalletButton {wallet} {theme} {callback} /></li>
     {/each}
   </ul>
 </section>

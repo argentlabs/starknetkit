@@ -4,7 +4,11 @@
   import ReloadIcon from "../components/icons/ReloadIcon.svelte";
   import FallbackMobile from "../components/FallbackMobile.svelte";
 
-  export let extensionName: string = "Argent X"
+  export let walletName: string = ""
+  export let showFallback: boolean = false
+
+  export let handleCallback: () => void = async () => {}
+  export let handleFallback: () => void = async () => {}
 </script>
 
 <section class="flex flex-col justify-center items-center flex-grow">
@@ -19,12 +23,22 @@
       <p class="text-primary text-p3 font-[400]">Please try connecting again.</p>
     </div>
 
-    <Button isLarge={true}>
+    <Button
+      handleClick={handleCallback}
+      handleKeyup={(e) => {
+        if (e.key === "Enter") {
+          handleCallback()
+        }
+      }}
+      isLarge={true}
+    >
       <div class="flex gap-2">
-        <ReloadIcon /> Retry connecting to {extensionName}
+        <ReloadIcon /> Retry connecting to {walletName}
       </div>
     </Button>
   </div>
 
-  <FallbackMobile />
+  {#if showFallback}
+    <FallbackMobile handleClick={handleFallback} />
+  {/if}
 </section>

@@ -8,8 +8,7 @@ import {
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
 import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
-import { DEFAULT_ARGENT_MOBILE_ICON } from "../connectors/argent/argentMobile/constants"
-import { findConnectorById, getConnector } from "../main"
+import { extractConnector, findConnectorById } from "./connector"
 
 interface SetConnectorsExpandedParams {
   availableConnectors: (StarknetkitConnector | StarknetkitCompoundConnector)[]
@@ -17,6 +16,42 @@ interface SetConnectorsExpandedParams {
   discoveryWallets: WalletProvider[]
   storeVersion: StoreVersion | null
   customOrder: boolean
+}
+
+export function getModalWallet(
+  connectorOrCompoundConnector:
+    | StarknetkitConnector
+    | StarknetkitCompoundConnector,
+  discoveryWallets?: WalletProvider[],
+): ModalWallet {
+  const connector = extractConnector(
+    connectorOrCompoundConnector,
+  ) as StarknetkitConnector
+
+  const isCompoundConnector = (
+    connectorOrCompoundConnector as StarknetkitCompoundConnector
+  ).isCompoundConnector
+
+  return {
+    name: isCompoundConnector
+      ? connectorOrCompoundConnector.name
+      : connector.name,
+    id: connector.id,
+    icon: isCompoundConnector
+      ? connectorOrCompoundConnector.icon
+      : connector.icon,
+    connector: connectorOrCompoundConnector,
+    installed: true,
+    title:
+      "title" in connector && isString(connector.title)
+        ? connector.title
+        : undefined,
+    subtitle:
+      "subtitle" in connector && isString(connector.subtitle)
+        ? connector.subtitle
+        : undefined,
+    downloads: discoveryWallets?.find((d) => d.id === connector.id)?.downloads,
+  }
 }
 
 export const mapModalWallets = ({
@@ -32,43 +67,35 @@ export const mapModalWallets = ({
     return []
   }
 
-  const allInstalledWallets = installedWallets.map(
-    (
-      w, // TODO this logic
-    ) => findConnectorById(availableConnectors, w.id),
+  const allInstalledWallets = installedWallets.map((w) =>
+    findConnectorById(availableConnectors, w.id),
   )
-
-  // console.log("customOrder", customOrder)
 
   const orderedByInstall = customOrder
     ? availableConnectors
     : [
         ...availableConnectors.filter((c) =>
-          allInstalledWallets.includes(getConnector(c)),
+          allInstalledWallets.includes(extractConnector(c)),
         ),
         ...availableConnectors.filter(
-          (c) => !allInstalledWallets.includes(getConnector(c)),
+          (c) => !allInstalledWallets.includes(extractConnector(c)),
         ),
       ]
 
-  // console.log(
-  //   "availableConnectors, orderedByInstall",
-  //   availableConnectors,
-  //   orderedByInstall,
-  // )
-
   const connectors = orderedByInstall
     .map<ModalWallet | null>((_c) => {
-      const c = getConnector(_c)
+      const isCompoundConnector = (_c as StarknetkitCompoundConnector)
+        .isCompoundConnector
+      const c = extractConnector(_c)
 
-      const installed = installedWallets.find((w) => w.id === c.id)
+      const installed = installedWallets.find((w) => w.id === c?.id)
       if (installed) {
         let icon
         let name
 
-        if (_c.isCompoundConnector) {
-          icon = DEFAULT_ARGENT_MOBILE_ICON // TODO
-          name = "Argent" // TODO
+        if (isCompoundConnector) {
+          icon = _c.icon
+          name = _c.name
         } else {
           icon =
             installed.id === "argentX"
@@ -84,8 +111,9 @@ export const mapModalWallets = ({
           name,
           id: installed.id,
           icon,
-          connector: c,
-          isCompoundConnector: Boolean(_c?.isCompoundConnector),
+          connector: _c,
+          installed: true,
+          downloads: discoveryWallets.find((d) => d.id === c?.id)?.downloads,
         }
       }
 
@@ -93,7 +121,7 @@ export const mapModalWallets = ({
         .filter((w) =>
           Boolean(w.downloads[storeVersion as keyof typeof w.downloads]),
         )
-        .find((d) => d.id === c.id)
+        .find((d) => d.id === c?.id)
 
       if (discovery) {
         const { downloads } = discovery
@@ -104,8 +132,10 @@ export const mapModalWallets = ({
           name: discovery.name,
           id: discovery.id,
           icon: { light: discoveryIcon, dark: discoveryIcon },
-          connector: c,
+          connector: _c,
+          installed: false,
           download: downloads[storeVersion as keyof typeof downloads],
+          downloads: downloads,
         }
       }
 
@@ -113,20 +143,9 @@ export const mapModalWallets = ({
         return null
       }
 
-      return {
-        name: c.name, // TODO
-        id: c.id,
-        icon: c.icon,
-        connector: c,
-        title: "title" in c && isString(c.title) ? c.title : undefined,
-        subtitle:
-          "subtitle" in c && isString(c.subtitle) ? c.subtitle : undefined,
-        isCompoundConnector: Boolean(_c?.isCompoundConnector),
-      }
+      return getModalWallet(_c, discoveryWallets)
     })
     .filter((c): c is ModalWallet => c !== null)
-
-  // console.log("connectors", connectors)
 
   return connectors
 }

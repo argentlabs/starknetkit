@@ -27,11 +27,12 @@ import {
   type ConnectorData,
   type ConnectorIcons,
 } from "../../connector"
-import { InjectedConnector, InjectedConnectorOptions } from "../../injected"
+import { InjectedConnectorOptions } from "../../injected"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { ArgentX } from "../../injected/argentX"
+import { getModalWallet } from "../../../helpers/mapModalWallets"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -41,7 +42,7 @@ export interface ArgentMobileConnectorOptions {
   url: string
   icons?: string[]
   rpcUrl?: string
-  isCompoundConnector?: boolean
+  onlyQR?: boolean
 }
 
 export class ArgentMobileBaseConnector extends Connector {
@@ -78,7 +79,7 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   get name(): string {
-    return this._options.isCompoundConnector ? "Argent" : "Argent (mobile)" // TODO ditch isCompoundConnector
+    return "Argent (mobile)"
   }
 
   get icon(): ConnectorIcons {
@@ -95,8 +96,14 @@ export class ArgentMobileBaseConnector extends Connector {
     return this._wallet
   }
 
-  async connect(): Promise<ConnectorData> {
-    await this.ensureWallet()
+  async connect(
+    props:
+      | {
+          onlyQRCode?: boolean
+        }
+      | undefined,
+  ): Promise<ConnectorData> {
+    await this.ensureWallet({ onlyQRCode: props?.onlyQRCode })
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
@@ -188,7 +195,13 @@ export class ArgentMobileBaseConnector extends Connector {
     this._wallet = null
   }
 
-  private async ensureWallet(): Promise<void> {
+  private async ensureWallet(
+    props:
+      | {
+          onlyQRCode?: boolean
+        }
+      | undefined,
+  ): Promise<void> {
     const { getStarknetWindowObject } = await import("./modal")
     const { chainId, projectId, dappName, description, url, icons, rpcUrl } =
       this._options
@@ -201,6 +214,7 @@ export class ArgentMobileBaseConnector extends Connector {
         : publicRPCNode.testnet)
 
     const options = {
+      onlyQRCode: props?.onlyQRCode,
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
       name: dappName,
       projectId: projectId ?? DEFAULT_PROJECT_ID,
@@ -208,6 +222,7 @@ export class ArgentMobileBaseConnector extends Connector {
       url,
       icons,
       rpcUrl: providerRpcUrl,
+      modalWallet: getModalWallet(this),
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {

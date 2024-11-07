@@ -12,6 +12,7 @@ export default {
       colors: {
         "primary-orange-400": "var(--color-primary-orange-400)",
         "surface-default": "var(--color-surface-default)",
+        ...tailwindThemeConfig.colors,
       },
       fontSize: {
         ...tailwindThemeConfig.fontSize,

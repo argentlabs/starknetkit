@@ -1,8 +1,9 @@
 <script lang="ts">
   import FallbackMobile from "../components/FallbackMobile.svelte";
 
-  export let extensionName: string = "Argent X"
-  export let showFallback: boolean = true
+  export let walletName: string = ""
+  export let showFallback: boolean = false
+  export let handleFallback: () => void = async () => {}
 </script>
 
 <section class="flex flex-col justify-center items-center flex-grow">
@@ -12,10 +13,10 @@
       <slot />
     </div>
 
-    <h3 class="text-primary text-h4 font-bold">Connecting to {extensionName}...</h3>
+    <h3 class="text-primary text-h4 font-bold">Connecting to {walletName}...</h3>
   </div>
 
   {#if showFallback}
-    <FallbackMobile />
+    <FallbackMobile handleClick={handleFallback} />
   {/if}
 </section>
