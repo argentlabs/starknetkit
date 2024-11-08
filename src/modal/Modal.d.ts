@@ -22,4 +22,5 @@ interface ModalProps {
 interface ModalInstance extends SvelteComponent {
   $set(props: Partial<ModalProps>): void
   $destroy(): void
+  getLayout: () => Layout
 }

@@ -27,6 +27,9 @@
   function setLayout(newLayout: Layout): void {
     layout = newLayout
   }
+  export function getLayout() {
+    return layout
+  }
 
   export let modalWallets: ModalWallet[] = []
   export let selectedWallet: ModalWallet | null = null
