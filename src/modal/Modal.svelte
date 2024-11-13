@@ -17,6 +17,7 @@
   import { extractConnector } from "../helpers/connector"
   import { StarknetkitCompoundConnector } from "../connectors"
   import { ArgentX } from "../connectors/injected/argentX"
+  import { Braavos } from "../connectors/injected/braavos"
   import { getModalWallet } from "../helpers/mapModalWallets"
   import { getStoreVersionFromBrowser } from "../helpers/getStoreVersionFromBrowser"
 
@@ -72,7 +73,7 @@
     if (isBraavosMobileApp) {
       try {
         void callback(getModalWallet(new Braavos()))
-      } catch {
+      } catch (e) {
         console.error(e)
       }
       return
