@@ -1,3 +1,4 @@
+import sn from "@starknet-io/get-starknet-core"
 import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
 import {
   Permission,
@@ -222,7 +223,7 @@ export class ArgentMobileBaseConnector extends Connector {
       url,
       icons,
       rpcUrl: providerRpcUrl,
-      modalWallet: getModalWallet(this),
+      modalWallet: getModalWallet(this, await sn.getDiscoveryWallets()),
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
