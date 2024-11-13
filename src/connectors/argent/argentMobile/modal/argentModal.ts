@@ -176,7 +176,7 @@ class ArgentModal {
     const modal = this.standaloneConnectorModal
     if (success) {
       modal?.$set({ layout: Layout.success })
-      setTimeout(() => modal?.$destroy(), 3000)
+      setTimeout(() => modal?.$destroy(), 500)
     } else {
       modal?.$set({ layout: Layout.failure })
     }

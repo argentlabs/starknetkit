@@ -202,7 +202,7 @@ export const connect = async ({
               })
 
               modal.$set({ layout: Layout.success })
-              setTimeout(() => modal.$destroy(), 3000)
+              setTimeout(() => modal.$destroy(), 500)
             } else {
               resolve({
                 connector: selectedConnector,
