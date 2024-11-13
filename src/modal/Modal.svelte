@@ -6,9 +6,10 @@
   import Header from "./components/Header.svelte"
   import WalletList from "./layouts/WalletList.svelte"
   import Connecting from "./layouts/Connecting.svelte"
+  import ArgentMobileApproval from "./layouts/argent/ArgentMobileApproval.svelte"
   import ArgentMobileQR from "./layouts/argent/ArgentMobileQR.svelte"
   import FailedLogin from "./layouts/FailedLogin.svelte"
-  import SuccessfulLogin from "./layouts/SuccessfulLogin.svelte"
+  import Success from "./layouts/Success.svelte"
   import DownloadWallet from "./layouts/DownloadWallet/DownloadWallet.svelte"
   import DynamicIcon from "./components/DynamicIcon.svelte"
 
@@ -16,6 +17,7 @@
   import { extractConnector } from "../helpers/connector"
   import { StarknetkitCompoundConnector } from "../connectors"
   import { ArgentX } from "../connectors/injected/argentX"
+  import { Braavos } from "../connectors/injected/braavos"
   import { getModalWallet } from "../helpers/mapModalWallets"
   import { getStoreVersionFromBrowser } from "../helpers/getStoreVersionFromBrowser"
 
@@ -71,7 +73,7 @@
     if (isBraavosMobileApp) {
       try {
         void callback(getModalWallet(new Braavos()))
-      } catch {
+      } catch (e) {
         console.error(e)
       }
       return
@@ -122,7 +124,7 @@
           {/if}
         </Connecting>
       {:else if layout === Layout.success}
-        <SuccessfulLogin />
+        <Success />
       {:else if layout === Layout.failure}
         <FailedLogin
           walletName={selectedConnector?.name}
@@ -132,6 +134,8 @@
         />
       {:else if layout === Layout.qrCode}
         <ArgentMobileQR handleInstallClick={() => setLayout(Layout.download)} />
+      {:else if layout === Layout.approval}
+        <ArgentMobileApproval />
       {:else if layout === Layout.download}
         <DownloadWallet
           store={getStoreVersionFromBrowser()}

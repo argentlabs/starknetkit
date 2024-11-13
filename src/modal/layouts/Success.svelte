@@ -8,5 +8,5 @@
     <SuccessCheckIcon />
   </div>
 
-  <h3 class="text-primary text-h4 font-bold">Successfully logged in!</h3>
+  <h3 class="text-primary text-h4 font-bold">Success!</h3>
 </section>

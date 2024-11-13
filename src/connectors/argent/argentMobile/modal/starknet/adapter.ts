@@ -186,10 +186,10 @@ export class StarknetAdapter
       const chainId = this.formatChainId(this.chainId)
       argentModal.showApprovalModal(request)
       const response = await this.client.request({ topic, chainId, request })
-      argentModal.closeModalOld(true)
+      argentModal.closeModal(true)
       return response
     } catch (error) {
-      argentModal.closeModalOld()
+      argentModal.closeModal()
       if (error instanceof Error) {
         throw new Error(error.message)
       }
