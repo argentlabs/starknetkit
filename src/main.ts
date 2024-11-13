@@ -170,7 +170,7 @@ export const connect = async ({
             modal.$set({ selectedWallet: modalWallet })
 
             if (!modalWallet.installed) {
-              modal.$set({ layout: Layout.extensionDownloadList })
+              modal.$set({ layout: Layout.download })
               return
             }
 
@@ -223,7 +223,7 @@ export const connect = async ({
         theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
       },
-    }) as ModalInstance // Prevents vite build errors
+    }) as unknown as ModalInstance // Prevents vite build errors
   })
 }
 

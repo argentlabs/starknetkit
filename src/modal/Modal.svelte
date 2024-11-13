@@ -9,8 +9,7 @@
   import ArgentMobileQR from "./layouts/argent/ArgentMobileQR.svelte"
   import FailedLogin from "./layouts/FailedLogin.svelte"
   import SuccessfulLogin from "./layouts/SuccessfulLogin.svelte"
-  import ArgentDownload from "./layouts/argent/ArgentDownload/ArgentDownload.svelte"
-  import ExtensionDownloadList from "./layouts/ExtensionDownloadList/ExtensionDownloadList.svelte"
+  import DownloadWallet from "./layouts/DownloadWallet/DownloadWallet.svelte"
   import DynamicIcon from "./components/DynamicIcon.svelte"
 
   import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
@@ -18,6 +17,7 @@
   import { StarknetkitCompoundConnector } from "../connectors"
   import { ArgentX } from "../connectors/injected/argentX"
   import { getModalWallet } from "../helpers/mapModalWallets"
+  import { getStoreVersionFromBrowser } from "../helpers/getStoreVersionFromBrowser"
 
   let nodeRef: HTMLElement | undefined
 
@@ -117,11 +117,14 @@
           handleFallback={() => callback(selectedWallet, true)}
         />
       {:else if layout === Layout.qrCode}
-        <ArgentMobileQR handleInstallClick={() => setLayout(Layout.argentDownload)} />
-      {:else if layout === Layout.extensionDownloadList}
-        <ExtensionDownloadList downloadLinks={selectedWallet?.downloads} extensionName={selectedWallet?.name} />
-      {:else if layout === Layout.argentDownload}
-        <ArgentDownload showInstallExtension={Boolean(selectedWallet?.downloads)} handleExtensionClick={() => setLayout(Layout.extensionDownloadList)} />
+        <ArgentMobileQR handleInstallClick={() => setLayout(Layout.download)} />
+      {:else if layout === Layout.download}
+        <DownloadWallet
+          store={getStoreVersionFromBrowser()}
+          isArgent={Boolean(selectedConnector && (selectedConnector?.id === "argentMobile" || selectedConnector?.id === "argentX"))}
+          storeLink={selectedWallet?.download}
+          extensionName={selectedWallet?.name === "Argent" ? "Argent X" : selectedConnector?.name}
+        />
       {/if}
 
     </main>
