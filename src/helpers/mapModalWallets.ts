@@ -9,6 +9,7 @@ import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
 import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
 import { extractConnector, findConnectorById } from "./connector"
+import { getStoreVersionFromBrowser } from "./getStoreVersionFromBrowser"
 
 interface SetConnectorsExpandedParams {
   availableConnectors: (StarknetkitConnector | StarknetkitCompoundConnector)[]
@@ -23,7 +24,13 @@ export function getModalWallet(
     | StarknetkitConnector
     | StarknetkitCompoundConnector,
   discoveryWallets?: WalletProvider[],
+  _storeVersion?: StoreVersion | null,
 ): ModalWallet {
+  let storeVersion = _storeVersion
+  if (!storeVersion) {
+    storeVersion = getStoreVersionFromBrowser()
+  }
+
   const connector = extractConnector(
     connectorOrCompoundConnector,
   ) as StarknetkitConnector
@@ -31,6 +38,11 @@ export function getModalWallet(
   const isCompoundConnector = (
     connectorOrCompoundConnector as StarknetkitCompoundConnector
   ).isCompoundConnector
+
+  const downloads = discoveryWallets?.find(
+    (d) =>
+      d.id === (connector.id === "argentMobile" ? "argentX" : connector.id),
+  )?.downloads
 
   return {
     name: isCompoundConnector
@@ -50,7 +62,8 @@ export function getModalWallet(
       "subtitle" in connector && isString(connector.subtitle)
         ? connector.subtitle
         : undefined,
-    downloads: discoveryWallets?.find((d) => d.id === connector.id)?.downloads,
+    download: downloads?.[storeVersion as keyof typeof downloads],
+    downloads: downloads,
   }
 }
 
@@ -92,6 +105,7 @@ export const mapModalWallets = ({
       if (installed) {
         let icon
         let name
+        let download
 
         if (isCompoundConnector) {
           icon = _c.icon
@@ -107,13 +121,18 @@ export const mapModalWallets = ({
           name = installed.name
         }
 
+        const downloads = discoveryWallets.find(
+          (d) => d.id === (installed.id === "argentMobile" ? "argentX" : c?.id),
+        )?.downloads
+
         return {
           name,
           id: installed.id,
           icon,
           connector: _c,
           installed: true,
-          downloads: discoveryWallets.find((d) => d.id === c?.id)?.downloads,
+          download: downloads?.[storeVersion as keyof typeof downloads],
+          downloads: downloads,
         }
       }
 
