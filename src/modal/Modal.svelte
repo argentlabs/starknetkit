@@ -6,6 +6,7 @@
   import Header from "./components/Header.svelte"
   import WalletList from "./layouts/WalletList.svelte"
   import Connecting from "./layouts/Connecting.svelte"
+  import ArgentMobileApproval from "./layouts/argent/ArgentMobileApproval.svelte"
   import ArgentMobileQR from "./layouts/argent/ArgentMobileQR.svelte"
   import FailedLogin from "./layouts/FailedLogin.svelte"
   import SuccessfulLogin from "./layouts/SuccessfulLogin.svelte"
@@ -132,6 +133,8 @@
         />
       {:else if layout === Layout.qrCode}
         <ArgentMobileQR handleInstallClick={() => setLayout(Layout.download)} />
+      {:else if layout === Layout.approval}
+        <ArgentMobileApproval />
       {:else if layout === Layout.download}
         <DownloadWallet
           store={getStoreVersionFromBrowser()}
