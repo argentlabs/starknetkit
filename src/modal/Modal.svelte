@@ -9,7 +9,7 @@
   import ArgentMobileApproval from "./layouts/argent/ArgentMobileApproval.svelte"
   import ArgentMobileQR from "./layouts/argent/ArgentMobileQR.svelte"
   import FailedLogin from "./layouts/FailedLogin.svelte"
-  import SuccessfulLogin from "./layouts/SuccessfulLogin.svelte"
+  import Success from "./layouts/Success.svelte"
   import DownloadWallet from "./layouts/DownloadWallet/DownloadWallet.svelte"
   import DynamicIcon from "./components/DynamicIcon.svelte"
 
@@ -123,7 +123,7 @@
           {/if}
         </Connecting>
       {:else if layout === Layout.success}
-        <SuccessfulLogin />
+        <Success />
       {:else if layout === Layout.failure}
         <FailedLogin
           walletName={selectedConnector?.name}
