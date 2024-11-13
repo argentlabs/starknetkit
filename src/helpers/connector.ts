@@ -1,10 +1,11 @@
 import {
+  Connector,
   StarknetkitCompoundConnector,
   StarknetkitConnector,
 } from "../connectors"
 
 export function extractConnector(
-  connector: StarknetkitConnector | StarknetkitCompoundConnector,
+  connector: Connector | StarknetkitConnector | StarknetkitCompoundConnector,
   useFallback: boolean = false,
 ) {
   if ((connector as StarknetkitCompoundConnector).isCompoundConnector) {
@@ -16,7 +17,11 @@ export function extractConnector(
 }
 
 export function findConnectorById(
-  connectors: (StarknetkitConnector | StarknetkitCompoundConnector)[],
+  connectors: (
+    | Connector
+    | StarknetkitConnector
+    | StarknetkitCompoundConnector
+  )[],
   id: string | null,
 ) {
   const connector = connectors.find((c) => {

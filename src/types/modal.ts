@@ -2,6 +2,7 @@ import type { GetWalletOptions } from "@starknet-io/get-starknet-core"
 import { StarknetWindowObject } from "@starknet-io/types-js"
 import type { ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
 import {
+  Connector,
   ConnectorData,
   ConnectorIcons,
   StarknetkitCompoundConnector,
@@ -19,6 +20,7 @@ export enum Layout {
   failure = "failure",
   qrCode = "qrCode",
   download = "download",
+  approval = "approval",
 }
 
 export interface ConnectOptions extends GetWalletOptions {
@@ -33,7 +35,11 @@ export interface ConnectOptions extends GetWalletOptions {
 
 export interface ConnectOptionsWithConnectors
   extends Omit<ConnectOptions, "webWalletUrl" | "argentMobileOptions"> {
-  connectors?: StarknetkitConnector[]
+  connectors?: (
+    | Connector
+    | StarknetkitConnector
+    | StarknetkitCompoundConnector
+  )[]
 }
 
 export type ModalWallet = {
@@ -45,7 +51,7 @@ export type ModalWallet = {
   downloads?: Record<string, string>
   subtitle?: string
   title?: string
-  connector: StarknetkitConnector | StarknetkitCompoundConnector
+  connector: Connector | StarknetkitConnector | StarknetkitCompoundConnector
 }
 
 export type Callback = (

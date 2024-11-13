@@ -8,6 +8,10 @@
     {
       "name": "beta",
       "prerelease": true
+    },
+    {
+      "name": "beta-braavos-mobile",
+      "prerelease": true
     }
   ],
   "plugins": [
