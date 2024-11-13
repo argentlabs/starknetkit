@@ -64,6 +64,20 @@
       return
     }
 
+    const isBraavosMobileApp =
+      navigator?.userAgent?.toLowerCase()?.includes("braavos")
+      && window?.starknet_braavos
+
+    if (isBraavosMobileApp) {
+      try {
+        void callback(getModalWallet(new Braavos()))
+      } catch {
+        console.error(e)
+      }
+      return
+    }
+
+
     if (modalWallets.length === 1) {
       try {
         await callback(modalWallets[0])

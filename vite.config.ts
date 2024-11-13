@@ -23,6 +23,10 @@ export default defineConfig({
           __dirname,
           "src/connectors/argent/argentMobile/index.ts",
         ),
+        braavosMobile: resolve(
+          __dirname,
+          "src/connectors/braavosMobile/index.ts",
+        ),
         injectedConnector: resolve(
           __dirname,
           "src/connectors/injected/index.ts",
