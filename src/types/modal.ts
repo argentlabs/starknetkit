@@ -20,6 +20,7 @@ export enum Layout {
   failure = "failure",
   qrCode = "qrCode",
   download = "download",
+  approval = "approval",
 }
 
 export interface ConnectOptions extends GetWalletOptions {
