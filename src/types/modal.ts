@@ -50,7 +50,7 @@ export type ModalWallet = {
   downloads?: Record<string, string>
   subtitle?: string
   title?: string
-  connector: StarknetkitConnector | StarknetkitCompoundConnector
+  connector: Connector | StarknetkitConnector | StarknetkitCompoundConnector
 }
 
 export type Callback = (

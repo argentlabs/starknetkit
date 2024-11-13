@@ -2,6 +2,7 @@ import { WalletProvider } from "@starknet-io/get-starknet-core"
 import { isString } from "lodash-es"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
 import {
+  Connector,
   StarknetkitCompoundConnector,
   StarknetkitConnector,
 } from "../connectors/connector"
@@ -12,7 +13,11 @@ import { extractConnector, findConnectorById } from "./connector"
 import { getStoreVersionFromBrowser } from "./getStoreVersionFromBrowser"
 
 interface SetConnectorsExpandedParams {
-  availableConnectors: (StarknetkitConnector | StarknetkitCompoundConnector)[]
+  availableConnectors: (
+    | Connector
+    | StarknetkitConnector
+    | StarknetkitCompoundConnector
+  )[]
   installedWallets: StarknetWindowObject[]
   discoveryWallets: WalletProvider[]
   storeVersion: StoreVersion | null
@@ -21,6 +26,7 @@ interface SetConnectorsExpandedParams {
 
 export function getModalWallet(
   connectorOrCompoundConnector:
+    | Connector
     | StarknetkitConnector
     | StarknetkitCompoundConnector,
   discoveryWallets?: WalletProvider[],
