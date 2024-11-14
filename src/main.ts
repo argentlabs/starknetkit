@@ -92,7 +92,6 @@ export const connect = async ({
 
       if (connector && resultType === "wallet") {
         connectorData = await connector.connect({
-          silent_mode: true,
           onlyQRCode: true,
         })
       }
@@ -129,7 +128,6 @@ export const connect = async ({
         connectorData =
           (await connector?.connect({
             onlyQRCode: true,
-            silent_mode: false,
           })) ?? null
       }
 
@@ -189,7 +187,6 @@ export const connect = async ({
               const connectorData =
                 (await selectedConnector?.connect({
                   onlyQRCode: true,
-                  silent_mode: false,
                 })) ?? null
               if (selectedConnector !== null) {
                 setStarknetLastConnectedWallet(selectedConnector.id)

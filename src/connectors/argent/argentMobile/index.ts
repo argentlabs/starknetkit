@@ -24,6 +24,7 @@ import { removeStarknetLastConnectedWallet } from "../../../helpers/lastConnecte
 import { getRandomPublicRPCNode } from "../../../helpers/publicRcpNodes"
 import { resetWalletConnect } from "../../../helpers/resetWalletConnect"
 import {
+  ConnectArgs,
   Connector,
   type ConnectorData,
   type ConnectorIcons,
@@ -97,14 +98,8 @@ export class ArgentMobileBaseConnector extends Connector {
     return this._wallet
   }
 
-  async connect(
-    props:
-      | {
-          onlyQRCode?: boolean
-        }
-      | undefined,
-  ): Promise<ConnectorData> {
-    await this.ensureWallet({ onlyQRCode: props?.onlyQRCode })
+  async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
+    await this.ensureWallet({ onlyQRCode: _args?.onlyQRCode })
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
@@ -112,7 +107,6 @@ export class ArgentMobileBaseConnector extends Connector {
 
     const accounts = await this._wallet.request({
       type: "wallet_requestAccounts",
-      params: { silent_mode: false }, // explicit to show the modal
     })
 
     const chainId = await this.chainId()
