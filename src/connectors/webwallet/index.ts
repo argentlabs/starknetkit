@@ -20,6 +20,7 @@ import {
 import { getStarknetChainId } from "../../helpers/getStarknetChainId"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
+  ConnectArgs,
   Connector,
   type ConnectorData,
   type ConnectorIcons,
@@ -100,7 +101,7 @@ export class WebWalletConnector extends Connector {
     return "Powered by Argent"
   }
 
-  async connect(): Promise<ConnectorData> {
+  async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
     await this.ensureWallet()
 
     if (!this._wallet) {
