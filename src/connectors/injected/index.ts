@@ -18,7 +18,7 @@ import {
 } from "../../errors"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
-  ConnectOptions,
+  ConnectArgs,
   Connector,
   type ConnectorData,
   type ConnectorIcons,
@@ -132,7 +132,7 @@ export class InjectedConnector extends Connector {
     return new Account(provider, accounts[0], "")
   }
 
-  async connect(params: ConnectOptions): Promise<ConnectorData> {
+  async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
     this.ensureWallet()
 
     if (!this._wallet) {
@@ -141,16 +141,9 @@ export class InjectedConnector extends Connector {
 
     let accounts: string[]
     try {
-      accounts = await this.request(
-        params
-          ? {
-              type: "wallet_requestAccounts",
-              params,
-            }
-          : {
-              type: "wallet_requestAccounts",
-            },
-      )
+      accounts = await this.request({
+        type: "wallet_requestAccounts",
+      })
     } catch {
       throw new UserRejectedRequestError()
     }

@@ -7,6 +7,7 @@ import {
 } from "@starknet-io/types-js"
 import { AccountInterface, ProviderInterface, ProviderOptions } from "starknet"
 import {
+  ConnectArgs,
   Connector,
   type ConnectorData,
   type ConnectorIcons,
@@ -51,7 +52,7 @@ export class BraavosMobileBaseConnector extends Connector {
     throw new Error("not implemented")
   }
 
-  async connect(): Promise<ConnectorData> {
+  async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
     await this.ensureWallet()
 
     // will return empty data, connect will only open braavos mobile app
