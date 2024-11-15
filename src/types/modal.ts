@@ -1,13 +1,27 @@
 import type { GetWalletOptions } from "@starknet-io/get-starknet-core"
 import { StarknetWindowObject } from "@starknet-io/types-js"
-import type { ArgentMobileConnectorOptions } from "../connectors/argentMobile"
-import type {
+import type { ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
+import {
+  Connector,
   ConnectorData,
   ConnectorIcons,
+  StarknetkitCompoundConnector,
   StarknetkitConnector,
-} from "../connectors/connector"
+} from "../connectors"
 
 export type StoreVersion = "chrome" | "firefox" | "edge"
+
+export type Theme = "dark" | "light" | null
+
+export enum Layout {
+  walletList = "walletList",
+  connecting = "connecting",
+  success = "success",
+  failure = "failure",
+  qrCode = "qrCode",
+  download = "download",
+  approval = "approval",
+}
 
 export interface ConnectOptions extends GetWalletOptions {
   dappName?: string
@@ -21,18 +35,29 @@ export interface ConnectOptions extends GetWalletOptions {
 
 export interface ConnectOptionsWithConnectors
   extends Omit<ConnectOptions, "webWalletUrl" | "argentMobileOptions"> {
-  connectors?: StarknetkitConnector[]
+  connectors?: (
+    | Connector
+    | StarknetkitConnector
+    | StarknetkitCompoundConnector
+  )[]
 }
 
 export type ModalWallet = {
   name: string
   id: string
   icon: ConnectorIcons
+  installed: boolean
   download?: string
+  downloads?: Record<string, string>
   subtitle?: string
   title?: string
-  connector: StarknetkitConnector
+  connector: Connector | StarknetkitConnector | StarknetkitCompoundConnector
 }
+
+export type Callback = (
+  value: ModalWallet | null,
+  useFallback?: boolean,
+) => Promise<void>
 
 export type ModalResult = {
   connector: StarknetkitConnector | null
