@@ -59,7 +59,9 @@
 
     if (isInAppBrowser) {
       try {
-        void callback(getModalWallet(new ArgentX()))
+        setTimeout(() => {
+          void callback(getModalWallet(new ArgentX()))
+        })
       } catch (e) {
         console.error(e)
       }
@@ -72,7 +74,9 @@
 
     if (isBraavosMobileApp) {
       try {
-        void callback(getModalWallet(new Braavos()))
+        setTimeout(() => {
+          void callback(getModalWallet(new Braavos()))
+        })
       } catch (e) {
         console.error(e)
       }
