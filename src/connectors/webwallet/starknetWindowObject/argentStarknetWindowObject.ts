@@ -39,6 +39,13 @@ export type WebWalletStarknetWindowObject = StarknetWindowObject & {
     account?: string[]
     chainId?: string
   }>
+  connectWebwalletSSO(
+    token: string,
+    authorizedPartyId?: string,
+  ): Promise<{
+    account?: string[]
+    chainId?: string
+  }>
 }
 
 export const getArgentStarknetWindowObject = (
@@ -52,6 +59,9 @@ export const getArgentStarknetWindowObject = (
     },
     connectWebwallet: () => {
       return proxyLink.connectWebwallet.mutate()
+    },
+    connectWebwalletSSO: (token, authorizedPartyId) => {
+      return proxyLink.connectWebwalletSSO.mutate({ token, authorizedPartyId })
     },
     async request(call) {
       switch (call.type) {

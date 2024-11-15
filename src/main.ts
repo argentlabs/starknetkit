@@ -21,7 +21,6 @@ import type {
 
 let selectedConnector: StarknetkitConnector | null = null
 
-
 /**
  *
  * @param [modalMode="canAsk"] - Choose connection behavior:
