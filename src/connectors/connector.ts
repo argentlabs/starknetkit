@@ -28,8 +28,8 @@ export interface ConnectorEvents {
   disconnect(): void
 }
 
-export type ConnectOptions = {
-  silent_mode: boolean
+export type ConnectArgs = {
+  chainIdHint?: bigint
   onlyQRCode?: boolean
 }
 
@@ -46,7 +46,7 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   /** Whether connector is already authorized */
   abstract ready(): Promise<boolean>
   /** Connect wallet. */
-  abstract connect(params?: ConnectOptions): Promise<ConnectorData>
+  abstract connect(params?: ConnectArgs): Promise<ConnectorData>
   /** Disconnect wallet. */
   abstract disconnect(): Promise<void>
   /** Get current account silently. Return null if the account is not authorized */
