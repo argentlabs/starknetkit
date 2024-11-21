@@ -61,7 +61,7 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
   targetUrl = url.toString()
 
   const iframe = document.createElement("iframe")
-  iframe.src = targetUrl
+  iframe.src = `${targetUrl}?origin=${encodeURIComponent(window.location.origin)}`
   ;(iframe as any).loading = "eager"
   iframe.sandbox.add(
     "allow-scripts",
