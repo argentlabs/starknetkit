@@ -33,9 +33,15 @@ export type LoginStatus = {
   isPreauthorized?: boolean
 }
 
+export type Theme = "light" | "dark"
+
+type ConnectWebwalletProps = {
+  theme?: Theme
+}
+
 export type WebWalletStarknetWindowObject = StarknetWindowObject & {
   getLoginStatus(): Promise<LoginStatus>
-  connectWebwallet(): Promise<{
+  connectWebwallet(props?: ConnectWebwalletProps): Promise<{
     account?: string[]
     chainId?: string
   }>
@@ -57,8 +63,9 @@ export const getArgentStarknetWindowObject = (
     getLoginStatus: () => {
       return proxyLink.getLoginStatus.mutate()
     },
-    connectWebwallet: () => {
-      return proxyLink.connectWebwallet.mutate()
+    connectWebwallet: (props = {}) => {
+      const { theme } = props
+      return proxyLink.connectWebwallet.mutate({ theme })
     },
     connectWebwalletSSO: (token, authorizedPartyId) => {
       return proxyLink.connectWebwalletSSO.mutate({ token, authorizedPartyId })
