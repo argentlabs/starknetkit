@@ -20,7 +20,6 @@ const applyModalStyle = (iframe: HTMLIFrameElement) => {
   background.style.left = "0"
   background.style.right = "0"
   background.style.bottom = "0"
-  background.style.backgroundColor = "rgba(0, 0, 0, 0.5)"
   background.style.zIndex = "99999"
   ;(background.style as any).backdropFilter = "blur(4px)"
 
