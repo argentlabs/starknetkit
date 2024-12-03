@@ -50,10 +50,10 @@ export const getWebWalletStarknetObject = async (
       onData(modalEvent: ModalEvents) {
         switch (modalEvent.action) {
           case "show":
-            showModal(modal)
+            showModal(modal, iframe)
             break
           case "hide":
-            hideModal(modal)
+            hideModal(modal, iframe)
             break
           case "updateHeight":
             setIframeHeight(iframe, modalEvent.height)
