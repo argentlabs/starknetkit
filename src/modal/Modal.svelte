@@ -21,6 +21,9 @@
     }
   let isInAppBrowser = starknetMobile?.isInAppBrowser
 
+  const userAgent = navigator.userAgent.toLowerCase()
+  const isBraavosMobileApp = userAgent.includes("braavos")
+
   const setLoadingItem = (item: string | false) => {
     loadingItem = item
   }
@@ -49,6 +52,13 @@
     if (isInAppBrowser && window?.starknet_argentX) {
       try {
         callback(new InjectedConnector({ options: { id: "argentX" } }))
+      } catch {}
+      return
+    }
+
+    if (isBraavosMobileApp && window?.starknet_braavos) {
+      try {
+        callback(new InjectedConnector({ options: { id: "braavos" } }))
       } catch {}
       return
     }

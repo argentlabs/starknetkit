@@ -21,7 +21,6 @@ import type {
 
 let selectedConnector: StarknetkitConnector | null = null
 
-
 /**
  *
  * @param [modalMode="canAsk"] - Choose connection behavior:
@@ -80,9 +79,7 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (connector && resultType === "wallet") {
-        connectorData = await connector.connect({
-          silent_mode: true,
-        })
+        connectorData = await connector.connect()
       }
 
       return {

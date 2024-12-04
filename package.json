@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.3.3",
+  "version": "2.6.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
@@ -37,6 +37,11 @@
       "import": "./dist/argentMobile.js",
       "require": "./dist/argentMobile.cjs"
     },
+    "./braavosMobile": {
+      "types": "./dist/braavosMobile.d.ts",
+      "import": "./dist/braavosMobile.js",
+      "require": "./dist/braavosMobile.cjs"
+    },
     "./injected": {
       "types": "./dist/injectedConnector.d.ts",
       "import": "./dist/injectedConnector.js",
@@ -60,8 +65,8 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@starknet-io/get-starknet": "^4.0.2",
-    "@starknet-io/get-starknet-core": "^4.0.2",
+    "@starknet-io/get-starknet": "^4.0.4",
+    "@starknet-io/get-starknet-core": "^4.0.4",
     "@starknet-io/types-js": "^0.7.7",
     "@trpc/client": "^10.38.1",
     "@trpc/server": "^10.38.1",
