@@ -12,7 +12,8 @@ import {
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
-import { InjectedConnector, InjectedConnectorOptions } from "../injected"
+import { InjectedConnectorOptions } from "../injected"
+import { Braavos } from "../injected/braavos"
 import { isInBraavosMobileAppBrowser } from "./helpers/inAppBrowser"
 import { BRAAVOS_MOBILE_APP_ICON } from "./constants"
 
@@ -106,9 +107,7 @@ export class BraavosMobileConnector {
   static init(params?: BraavosMobileConnectorInitParams): Connector {
     const { inAppBrowserOptions } = params || {}
     if (isInBraavosMobileAppBrowser()) {
-      return new InjectedConnector({
-        options: { id: "braavos", ...inAppBrowserOptions },
-      })
+      return new Braavos(inAppBrowserOptions)
     } else {
       return new BraavosMobileBaseConnector()
     }

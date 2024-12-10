@@ -21,7 +21,7 @@ export default defineConfig({
         ),
         argentMobile: resolve(
           __dirname,
-          "src/connectors/argentMobile/index.ts",
+          "src/connectors/argent/argentMobile/index.ts",
         ),
         braavosMobile: resolve(
           __dirname,
@@ -31,6 +31,11 @@ export default defineConfig({
           __dirname,
           "src/connectors/injected/index.ts",
         ),
+        argent: resolve(__dirname, "src/connectors/argent/index.ts"),
+        argentX: resolve(__dirname, "src/connectors/injected/argentX.ts"),
+        braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
+        metamask: resolve(__dirname, "src/connectors/injected/metamask.ts"),
+        keplr: resolve(__dirname, "src/connectors/injected/keplr.ts"),
       },
       formats: ["es", "cjs"],
     },
@@ -42,4 +47,20 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  css: {
+    postcss: "./postcss.config.cjs",
+    preprocessorOptions: {
+      css: {
+        additionalData: `@import "@argent/x-ui/styles/tailwind.css";`,
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      "@argent/x-ui/styles": resolve(
+        __dirname,
+        "node_modules/@argent/x-ui/dist/styles",
+      ),
+    },
+  },
 })

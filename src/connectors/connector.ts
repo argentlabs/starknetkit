@@ -30,6 +30,7 @@ export interface ConnectorEvents {
 
 export type ConnectArgs = {
   chainIdHint?: bigint
+  onlyQRCode?: boolean
 }
 
 export abstract class Connector extends EventEmitter<ConnectorEvents> {
@@ -63,4 +64,12 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
 export abstract class StarknetkitConnector extends Connector {
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
+}
+
+export abstract class StarknetkitCompoundConnector {
+  readonly isCompoundConnector = true
+  abstract connector: StarknetkitConnector
+  abstract fallbackConnector: StarknetkitConnector | null
+  abstract get name(): string
+  abstract get icon(): ConnectorIcons
 }
