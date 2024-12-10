@@ -189,7 +189,7 @@ export class StarknetAdapter
       if (error instanceof Error || (error && error.message !== undefined)) {
         throw new Error(error.message)
       }
-      throw new Error("Unknow error on requestWallet")
+      throw new Error("Unknown error on requestWallet")
     }
   }
 
