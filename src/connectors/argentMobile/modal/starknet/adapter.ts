@@ -184,12 +184,12 @@ export class StarknetAdapter
       const response = await this.client.request({ topic, chainId, request })
       argentModal.closeModal("animateSuccess")
       return response
-    } catch (error) {
+    } catch (error: any) {
       argentModal.closeModal()
-      if (error instanceof Error) {
+      if (error instanceof Error || (error && error.message !== undefined)) {
         throw new Error(error.message)
       }
-      throw new Error("Unknow error on requestWallet")
+      throw new Error("Unknown error on requestWallet")
     }
   }
 
