@@ -57,6 +57,16 @@
       "import": "./dist/braavos.js",
       "require": "./dist/braavos.cjs"
     },
+    "./metamask": {
+      "types": "./dist/metamask.d.ts",
+      "import": "./dist/metamask.js",
+      "require": "./dist/metamask.cjs"
+    },
+    "./keplr": {
+      "types": "./dist/keplr.d.ts",
+      "import": "./dist/keplr.js",
+      "require": "./dist/keplr.cjs"
+    },
     "./braavosMobile": {
       "types": "./dist/braavosMobile.d.ts",
       "import": "./dist/braavosMobile.js",

@@ -34,6 +34,8 @@ export default defineConfig({
         argent: resolve(__dirname, "src/connectors/argent/index.ts"),
         argentX: resolve(__dirname, "src/connectors/injected/argentX.ts"),
         braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
+        metamask: resolve(__dirname, "src/connectors/injected/metamask.ts"),
+        keplr: resolve(__dirname, "src/connectors/injected/keplr.ts"),
       },
       formats: ["es", "cjs"],
     },
