@@ -28,13 +28,19 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
-import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
+import type {
+  Theme,
+  WebWalletStarknetWindowObject,
+} from "./starknetWindowObject/argentStarknetWindowObject"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
+  theme?: Theme
+  ssoToken?: string
+  authorizedPartyId?: string
 }
 
 export class WebWalletConnector extends Connector {
@@ -109,9 +115,24 @@ export class WebWalletConnector extends Connector {
     }
 
     try {
-      const { account, chainId } = await (
-        this._wallet as WebWalletStarknetWindowObject
-      ).connectWebwallet()
+      let account, chainId
+
+      if (this._options.ssoToken) {
+        const ssoReponse = await (
+          this._wallet as WebWalletStarknetWindowObject
+        ).connectWebwalletSSO(
+          this._options.ssoToken,
+          this._options.authorizedPartyId,
+        )
+        account = ssoReponse.account
+        chainId = ssoReponse.chainId
+      } else {
+        const connectResponse = await (
+          this._wallet as WebWalletStarknetWindowObject
+        ).connectWebwallet({ theme: this._options.theme })
+        account = connectResponse.account
+        chainId = connectResponse.chainId
+      }
 
       if (!account || !chainId) {
         return {}
