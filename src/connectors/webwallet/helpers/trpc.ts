@@ -61,6 +61,22 @@ const appRouter = t.router({
   }),
   connect: t.procedure.mutation(async () => ""),
   connectWebwallet: t.procedure
+    .input(
+      z.object({
+        theme: z.enum(["light", "dark", "auto"]).optional(),
+      }),
+    )
+    .output(
+      z.object({
+        account: z.string().array().optional(),
+        chainId: z.string().optional(),
+      }),
+    )
+    .mutation(async () => ({})),
+  connectWebwalletSSO: t.procedure
+    .input(
+      z.object({ token: z.string(), authorizedPartyId: z.string().optional() }),
+    )
     .output(
       z.object({
         account: z.string().array().optional(),
