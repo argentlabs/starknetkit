@@ -1,61 +1,25 @@
-const applyModalStyle = (modal: HTMLDivElement, iframe: HTMLIFrameElement) => {
-  // middle of the screen
+const applyModalStyle = (iframe: HTMLIFrameElement) => {
   iframe.style.display = "none"
-  iframe.style.position = "fixed"
-  iframe.style.top = "50%"
-  iframe.style.left = "50%"
-  iframe.style.transform = "translate(-50%, -50%)"
-  iframe.style.width = "380px"
-  iframe.style.height = "420px"
   iframe.style.border = "none"
+  iframe.style.inset = "0"
+  iframe.style.position = "fixed"
+  iframe.style.width = "100%"
+  iframe.style.height = "100%"
+  iframe.style.backgroundColor = "rgba(0,0,0,0.5);"
   iframe.style.zIndex = "999999"
-
-  // round corners
-  iframe.style.borderRadius = "40px"
-  // box shadow
-  iframe.style.boxShadow = "0px 4px 20px rgba(0, 0, 0, 0.5)"
-
-  modal.style.display = "none"
-  modal.style.position = "fixed"
-  modal.style.top = "0"
-  modal.style.left = "0"
-  modal.style.right = "0"
-  modal.style.bottom = "0"
-  modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)"
-  modal.style.zIndex = "99999"
-  ;(modal.style as any).backdropFilter = "blur(4px)"
-  modal.id = "argent-webwallet-modal"
 }
 
-export const showModal = (modal: HTMLDivElement, iframe: HTMLIFrameElement) => {
-  modal.style.display = "block"
+export const showModal = (iframe: HTMLIFrameElement) => {
   iframe.style.display = "block"
 }
 
-export const hideModal = (modal: HTMLDivElement, iframe: HTMLIFrameElement) => {
-  modal.style.display = "none"
+export const hideModal = (iframe: HTMLIFrameElement) => {
   iframe.style.display = "none"
-}
-
-export const setIframeHeight = (iframe: HTMLIFrameElement, height: number) => {
-  iframe.style.height = `min(${height || 420}px, 100%)`
-}
-
-export const setIframeWidth = (iframe: HTMLIFrameElement, height: number) => {
-  iframe.style.width = `min(${height || 380}px, 100%)`
-}
-
-export const setIframeSize = (
-  modal: HTMLIFrameElement,
-  width: number,
-  height: number,
-) => {
-  modal.style.width = `min(${width || 380}px, 100%)`
-  modal.style.height = `min(${height || 420}px, 100%)`
 }
 
 export const createModal = async (targetUrl: string, shouldShow: boolean) => {
   // make sure target url has always /iframes/comms as the path
+  const iframeId = "argent-webwallet-iframe"
   const url = new URL(targetUrl)
   url.pathname = "/iframes/comms"
   targetUrl = url.toString()
@@ -70,17 +34,21 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
     "allow-top-navigation",
     "allow-popups",
   )
-  iframe.allow = "clipboard-write"
-  iframe.id = "argent-webwallet-iframe"
+  iframe.allow = "clipboard-write allowtransparency"
+  iframe.id = iframeId
+  iframe.setAttribute("allowtransparency", "true")
+  iframe.setAttribute("transparent", "true")
 
-  const modal = document.createElement("div")
-  applyModalStyle(modal, iframe)
-  modal.style.display = shouldShow ? "block" : "none"
+  applyModalStyle(/* modal, */ iframe)
   iframe.style.display = shouldShow ? "block" : "none"
-  modal.id = "argent-webwallet-modal"
 
-  // append the modal to the body
-  window.document.body.appendChild(modal)
+  const existingElement = document.getElementById(iframeId)
+
+  if (existingElement) {
+    // element exists but shadowRoot cannot be accessed
+    // delete the element and create new
+    existingElement.remove()
+  }
   window.document.body.appendChild(iframe)
 
   // wait for the iframe to load
@@ -96,5 +64,5 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
     })
   })
 
-  return { iframe, modal }
+  return { iframe }
 }
