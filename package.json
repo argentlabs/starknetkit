@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.6.2",
+  "version": "2.6.3-beta-trpc-link.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {

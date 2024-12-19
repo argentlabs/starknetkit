@@ -4,7 +4,7 @@ on:
     branches:
       - develop
       - main
-      - beta-braavos-mobile
+      - beta-trpc-link
       - hotfix\/v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
