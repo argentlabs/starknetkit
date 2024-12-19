@@ -53,6 +53,36 @@ export const setPopupOptions = ({
   popupParams = `width=${width},height=${height},top=${y},left=${x},toolbar=no,menubar=no,scrollbars=no,location=no,status=no,popup=1`
 }
 
+const PopupManager = {
+  currentPopup: null as Window | null,
+
+  createPopup(url: string, name: string, params: string): Window {
+    // Close any existing popup
+    if (this.currentPopup && !this.currentPopup.closed) {
+      this.currentPopup.close()
+    }
+
+    // Create popup immediately
+    const popup = window.open(url, name, params)
+
+    if (!popup) {
+      throw new Error("Popup blocked by browser")
+    }
+
+    this.currentPopup = popup
+
+    // Monitor popup state
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed)
+        this.currentPopup = null
+      }
+    }, 500)
+
+    return popup
+  },
+}
+
 // TODO: abstract AppRouter in order to have one single source of truth
 // At the moment, this is needed
 const appRouter = t.router({
@@ -195,29 +225,35 @@ export const trpcProxyClient = ({
         false: popupLink({
           listenWindow: window,
           createPopup: () => {
-            let popup: Window | null = null
-            const webwalletBtn = document.createElement("button")
-            webwalletBtn.style.display = "none"
-            webwalletBtn.addEventListener("click", () => {
-              popup = window.open(
-                `${popupOrigin}${popupLocation}`,
-                "popup",
-                popupParams,
-              )
-            })
-            webwalletBtn.click()
+            try {
+              let popup: Window | null = null
+              const button = document.createElement("button")
+              button.style.position = "fixed"
+              button.style.top = "-999px"
+              button.style.left = "-999px"
+              button.style.opacity = "0"
+              button.style.pointerEvents = "none" // prevent click event
 
-            // make sure popup is defined
-            ;(async () => {
-              while (!popup) {
-                await new Promise((resolve) => setTimeout(resolve, 100))
+              button.addEventListener("click", () => {
+                popup = PopupManager.createPopup(
+                  `${popupOrigin}${popupLocation}`,
+                  "popup",
+                  popupParams,
+                )
+              })
+
+              document.body.appendChild(button)
+              button.click()
+              button.remove()
+
+              if (!popup) {
+                throw new Error("Could not open popup")
               }
-            })()
-
-            if (!popup) {
-              throw new Error("Could not open popup")
+              return popup
+            } catch (error) {
+              console.error("Failed to create popup:", error)
+              throw error
             }
-            return popup
           },
           postOrigin: "*",
         }),
