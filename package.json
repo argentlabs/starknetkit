@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.5.0",
+  "version": "2.5.1-beta-argent-ww-iframe.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
