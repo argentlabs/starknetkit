@@ -97,7 +97,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.48.0",
     "eslint-config-next": "^13.4.19",
-    "husky": "^8.0.3",
+    "husky": "^9.0.0",
     "lint-staged": "^14.0.1",
     "postcss": "^8.4.21",
     "postcss-load-config": "^4.0.1",
