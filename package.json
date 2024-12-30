@@ -111,7 +111,7 @@
     "tslib": "^2.4.0",
     "typescript": "^5.1.6",
     "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.0.0",
+    "vite-plugin-dts": "^4.0.0",
     "vitest": "^1.6.0",
     "ws": "^8.8.1",
     "zod": "^3.20.6"
