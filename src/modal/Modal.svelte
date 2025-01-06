@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte"
   import type { StarknetWindowObject } from "@starknet-io/types-js"
-  import ConnectorButton from "./ConnectorButton.svelte"
+  import { onMount } from "svelte"
   import type { StarknetkitConnector } from "../connectors/connector"
   import { InjectedConnector } from "../connectors/injected"
-  import { ModalWallet } from "../types/modal"
+  import type { ModalWallet } from "../types/modal"
+  import ConnectorButton from "./ConnectorButton.svelte"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
