@@ -1,5 +1,5 @@
 import { connect } from "../main"
-import { ConnectOptionsWithConnectors, ModalResult } from "../types/modal"
+import type { ConnectOptionsWithConnectors, ModalResult } from "../types/modal"
 
 type UseStarknetkitConnectors = {
   starknetkitConnectModal: () => Promise<ModalResult>

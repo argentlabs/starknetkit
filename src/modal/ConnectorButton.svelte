@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ModalWallet } from "../types/modal"
+  import type { ModalWallet } from "../types/modal"
   import type { StarknetkitConnector } from "../connectors/connector"
 
   export let wallet: ModalWallet
