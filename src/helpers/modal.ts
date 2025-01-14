@@ -1,4 +1,4 @@
-import css from "../theme.css"
+import css from "../theme.css?inline"
 
 export const getModalTarget = (): ShadowRoot => {
   const modalId = "starknetkit-modal-container"

@@ -28,7 +28,7 @@ import {
   type ConnectArgs,
   type ConnectorData,
   type ConnectorIcons,
-} from "../connector"
+} from "../../connector"
 import { type InjectedConnectorOptions } from "../../injected"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import { isInArgentMobileAppBrowser } from "../helpers"

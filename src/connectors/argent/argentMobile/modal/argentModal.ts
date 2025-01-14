@@ -1,6 +1,6 @@
 import { getDevice } from "./getDevice"
 import Modal from "../../../../modal/Modal.svelte"
-import { Layout, ModalWallet } from "../../../../types/modal"
+import { Layout, type ModalWallet } from "../../../../types/modal"
 import { getModalTarget } from "../../../../helpers/modal"
 import { StarknetkitConnector } from "../../../connector"
 

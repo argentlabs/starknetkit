@@ -1,9 +1,9 @@
-import { InjectedConnectorOptions, injectedWalletIcons } from "../injected"
+import { type InjectedConnectorOptions, injectedWalletIcons } from "../injected"
 import { ArgentX } from "../injected/argentX"
 import { getInjectedArgentX } from "./helpers/getInjectedArgentX"
 import {
   ArgentMobileBaseConnector,
-  ArgentMobileConnectorOptions,
+  type ArgentMobileConnectorOptions,
   isInArgentMobileAppBrowser,
 } from "./argentMobile"
 import { StarknetkitCompoundConnector } from "../connector"

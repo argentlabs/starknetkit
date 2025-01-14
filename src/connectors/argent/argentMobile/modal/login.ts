@@ -4,7 +4,7 @@ import { RpcProvider, constants } from "starknet"
 import type { NamespaceAdapter, NamespaceAdapterOptions } from "./adapter"
 import { argentModal } from "./argentModal"
 import { resetWalletConnect } from "../../../../helpers/resetWalletConnect"
-import { ModalWallet } from "../../../../types/modal"
+import { type ModalWallet } from "../../../../types/modal"
 
 // Using NetworkName as a value.
 const Network: typeof constants.NetworkName = constants.NetworkName

@@ -3,11 +3,11 @@ import sn from "@starknet-io/get-starknet-core"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
 
 import {
-  ConnectOptions,
-  ConnectOptionsWithConnectors,
+  type ConnectOptions,
+  type ConnectOptionsWithConnectors,
   Layout,
-  ModalResult,
-  ModalWallet,
+  type ModalResult,
+  type ModalWallet,
 } from "./types/modal"
 import {
   Connector,
@@ -29,7 +29,7 @@ import { extractConnector, findConnectorById } from "./helpers/connector"
 import { getModalTarget } from "./helpers/modal"
 
 import Modal from "./modal/Modal.svelte"
-import { ModalInstance } from "./modal/Modal"
+import type { ModalInstance } from "./modal/Modal"
 
 let selectedConnector: StarknetkitConnector | null = null
 

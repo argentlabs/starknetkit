@@ -17,7 +17,6 @@ import {
   type ConnectorIcons,
 } from "../connector"
 import { Braavos } from "../injected/braavos"
-import { isInBraavosMobileAppBrowser } from "./helpers/inAppBrowser"
 import { type InjectedConnectorOptions } from "../injected"
 import { BRAAVOS_MOBILE_APP_ICON } from "./constants"
 import { isInBraavosMobileAppBrowser } from "./helpers/inAppBrowser"
