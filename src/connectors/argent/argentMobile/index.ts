@@ -2,17 +2,17 @@ import sn from "@starknet-io/get-starknet-core"
 import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
 import {
   Permission,
-  RequestFnCall,
-  RpcMessage,
-  RpcTypeToMessageMap,
+  type RequestFnCall,
+  type RpcMessage,
+  type RpcTypeToMessageMap,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
   Account,
   AccountInterface,
-  ProviderInterface,
-  ProviderOptions,
   constants,
+  ProviderInterface,
+  type ProviderOptions,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -24,12 +24,12 @@ import { removeStarknetLastConnectedWallet } from "../../../helpers/lastConnecte
 import { getRandomPublicRPCNode } from "../../../helpers/publicRcpNodes"
 import { resetWalletConnect } from "../../../helpers/resetWalletConnect"
 import {
-  ConnectArgs,
   Connector,
+  type ConnectArgs,
   type ConnectorData,
   type ConnectorIcons,
-} from "../../connector"
-import { InjectedConnectorOptions } from "../../injected"
+} from "../connector"
+import { type InjectedConnectorOptions } from "../../injected"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
 import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"

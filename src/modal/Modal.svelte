@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
-  import { Callback, Layout, ModalWallet, Theme } from "../types/modal"
+  import { type Callback, Layout, type ModalWallet, type Theme } from "../types/modal"
 
   import Header from "./components/Header.svelte"
   import WalletList from "./layouts/WalletList.svelte"

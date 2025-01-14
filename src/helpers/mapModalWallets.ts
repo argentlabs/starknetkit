@@ -1,4 +1,4 @@
-import { WalletProvider } from "@starknet-io/get-starknet-core"
+import type { WalletProvider } from "@starknet-io/get-starknet-core"
 import { isString } from "lodash-es"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
 import {

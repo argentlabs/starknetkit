@@ -1,20 +1,19 @@
-import { EventEmitter } from "events"
-
 import type { JsonRpcProvider } from "@walletconnect/jsonrpc-provider"
 import type SignClient from "@walletconnect/sign-client"
+import type { SignerConnectionClientOpts } from "@walletconnect/signer-connection"
 import {
   SIGNER_EVENTS,
   SignerConnection,
 } from "@walletconnect/signer-connection"
-import type { SignerConnectionClientOpts } from "@walletconnect/signer-connection"
 import type { ProposalTypes, SessionTypes } from "@walletconnect/types"
 import {
   getAccountsFromNamespaces,
   getChainsFromNamespaces,
 } from "@walletconnect/utils"
+import { EventEmitter } from "events"
 
-import type { EthereumRpcConfig } from "./starknet/adapter"
 import { ProviderInterface } from "starknet"
+import type { EthereumRpcConfig } from "./starknet/adapter"
 
 export interface NamespaceAdapterOptions {
   client: SignClient

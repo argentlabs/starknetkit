@@ -1,15 +1,15 @@
 import {
   Permission,
-  RequestFnCall,
-  RpcMessage,
-  RpcTypeToMessageMap,
+  type RequestFnCall,
+  type RpcMessage,
+  type RpcTypeToMessageMap,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
   Account,
   AccountInterface,
   ProviderInterface,
-  ProviderOptions,
+  type ProviderOptions,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -18,8 +18,8 @@ import {
 } from "../../errors"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
-  ConnectArgs,
   Connector,
+  type ConnectArgs,
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"

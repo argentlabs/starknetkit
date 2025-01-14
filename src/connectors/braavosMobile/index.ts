@@ -1,21 +1,26 @@
 import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
-import {
+import type {
   RequestFnCall,
   RpcMessage,
   RpcTypeToMessageMap,
-  type StarknetWindowObject,
+  StarknetWindowObject,
 } from "@starknet-io/types-js"
-import { AccountInterface, ProviderInterface, ProviderOptions } from "starknet"
 import {
-  ConnectArgs,
+  AccountInterface,
+  ProviderInterface,
+  type ProviderOptions,
+} from "starknet"
+import {
   Connector,
+  type ConnectArgs,
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
-import { InjectedConnectorOptions } from "../injected"
 import { Braavos } from "../injected/braavos"
 import { isInBraavosMobileAppBrowser } from "./helpers/inAppBrowser"
+import { type InjectedConnectorOptions } from "../injected"
 import { BRAAVOS_MOBILE_APP_ICON } from "./constants"
+import { isInBraavosMobileAppBrowser } from "./helpers/inAppBrowser"
 
 export class BraavosMobileBaseConnector extends Connector {
   private _wallet: StarknetWindowObject | null = null

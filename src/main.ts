@@ -9,14 +9,14 @@ import {
   ModalResult,
   ModalWallet,
 } from "./types/modal"
-import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
-
 import {
   Connector,
-  ConnectorData,
   StarknetkitConnector,
   StarknetkitCompoundConnector,
+  type ConnectorData,
 } from "./connectors"
+import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
+
 import { ArgentMobileBaseConnector } from "./connectors/argent/argentMobile"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
