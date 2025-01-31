@@ -35,6 +35,7 @@ import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { ArgentX } from "../../injected/argentX"
 import { getModalWallet } from "../../../helpers/mapModalWallets"
+import { isMobileDevice } from "../../../helpers/navigator"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -99,6 +100,9 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
+    if (isMobileDevice()) {
+      window.open("https://www.argent.xyz/app", "_blank")
+    }
     await this.ensureWallet({ onlyQRCode: _args?.onlyQRCode })
 
     if (!this._wallet) {
