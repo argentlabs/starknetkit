@@ -1,8 +1,8 @@
-import { getDevice } from "./getDevice"
+import { getDevice } from "../../../../helpers/getDevice"
 import Modal from "../../../../modal/Modal.svelte"
 import { Layout, type ModalWallet } from "../../../../types/modal"
 import { getModalTarget } from "../../../../helpers/modal"
-import { StarknetkitConnector } from "../../../connector"
+import type { StarknetkitConnector } from "../../../connector"
 
 const device = getDevice()
 
@@ -56,8 +56,8 @@ class ArgentModal {
     this.showModal(
       {
         desktop: `${this.bridgeUrl}?wc=${wcParam}&href=${href}&device=desktop&onlyQR=true`,
-        ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
-        android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+        ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile&onlyQR=true`,
+        android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile&onlyQR=true`,
       },
       modalWallet,
     )
@@ -69,14 +69,25 @@ class ArgentModal {
 
     this.getQR({
       desktop: `${this.bridgeUrl}?wc=${wcParam}&href=${href}&device=desktop&onlyQR=true`,
-      ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
-      android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile`,
+      ios: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile&onlyQR=true`,
+      android: `${this.mobileUrl}app/wc?uri=${wcParam}&href=${href}&device=mobile&onlyQR=true`,
     })
   }
 
   private getQR(urls: Urls) {
     const overlay = document.createElement("div")
     const shadow = document.querySelector("#starknetkit-modal-container")
+
+    if (["android", "ios"].includes(device)) {
+      const toMobileApp = document.createElement("button")
+      toMobileApp.style.display = "none"
+      toMobileApp.addEventListener("click", () => {
+        window.location.href = urls[device]
+      })
+      toMobileApp.click()
+
+      return
+    }
 
     if (shadow?.shadowRoot) {
       const slot = shadow.shadowRoot.querySelector(".qr-code-slot")
