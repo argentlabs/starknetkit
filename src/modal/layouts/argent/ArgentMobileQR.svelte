@@ -1,5 +1,10 @@
 <script lang="ts">
+  import { getDevice } from "../../../helpers/getDevice"
+
   import InstallWallet from "../../components/InstallWallet.svelte";
+
+  export const device = getDevice()
+  const isMobile = ["android", "ios"].includes(device)
 
   export let handleInstallClick: () => void = () => {}
 </script>
@@ -44,7 +49,11 @@
 
 <section class="flex flex-col gap-4">
   <div>
-    <h3 class="mb-4 text-h5 text-primary font-semibold">Connect Argent mobile by<br />scanning QR code:</h3>
+    {#if isMobile}
+      <h3 class="mb-4 text-h5 text-primary font-semibold">Connecting to Argent mobile...</h3>
+    {:else}
+      <h3 class="mb-4 text-h5 text-primary font-semibold">Connect Argent mobile by<br />scanning QR code:</h3>
+    {/if}
 
     <div class="w-full flex justify-center items-center qr-code-slot h-[245px]">
       <!--
