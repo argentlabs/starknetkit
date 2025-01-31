@@ -100,9 +100,6 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
-    if (isMobileDevice()) {
-      window.open("https://www.argent.xyz/app", "_blank")
-    }
     await this.ensureWallet({ onlyQRCode: _args?.onlyQRCode })
 
     if (!this._wallet) {
