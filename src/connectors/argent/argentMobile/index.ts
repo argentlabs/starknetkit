@@ -9,9 +9,9 @@ import {
 } from "@starknet-io/types-js"
 import {
   Account,
-  AccountInterface,
+  type AccountInterface,
   constants,
-  ProviderInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import {
