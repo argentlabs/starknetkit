@@ -28,9 +28,9 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
-import type {
-  Theme,
-  WebWalletStarknetWindowObject,
+import {
+  type Theme,
+  type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
 
 let _wallet: StarknetWindowObject | null = null
@@ -57,21 +57,25 @@ export class WebWalletConnector extends Connector {
   }
 
   async ready(): Promise<boolean> {
-    if (!_wallet) {
-      this._wallet = null
-      _address = null
-      return false
+    if (!this._wallet) {
+      await this.ensureWallet()
     }
 
-    this._wallet = _wallet
-    try {
-      const permissions = await this._wallet.request({
-        type: "wallet_getPermissions",
-      })
+    if (!this._wallet) {
+      this._wallet = null
+      _address = null
 
-      return (permissions as Permission[]).includes(Permission.ACCOUNTS)
-    } catch {
       return false
+    } else {
+      try {
+        const permissions = await this._wallet.request({
+          type: "wallet_getPermissions",
+        })
+
+        return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+      } catch {
+        return false
+      }
     }
   }
 
