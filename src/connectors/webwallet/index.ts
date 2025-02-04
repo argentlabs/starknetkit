@@ -5,11 +5,12 @@ import {
   type RpcTypeToMessageMap,
   type AccountChangeEventHandler,
   type StarknetWindowObject,
+  type TypedData,
 } from "@starknet-io/types-js"
 import {
   Account,
-  AccountInterface,
-  ProviderInterface,
+  type AccountInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import {
@@ -32,6 +33,7 @@ import {
   type Theme,
   type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
+import type { ApprovalRequest } from "webwallet-sdk"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
@@ -109,6 +111,38 @@ export class WebWalletConnector extends Connector {
 
   get subtitle(): string {
     return "Powered by Argent"
+  }
+
+  async connectAndSignSession({
+    callbackData,
+    approvalRequests,
+    sessionTypedData,
+  }: {
+    callbackData?: string
+    approvalRequests: ApprovalRequest[]
+    sessionTypedData: TypedData
+  }) /* 
+  Promise<{
+      account: [address],
+      chainId: await account.getChainId(),
+      signature,
+      approvalTransactionHash,
+      deploymentPayload,
+    }>
+  */ {
+    await this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotFoundError()
+    }
+
+    return await (
+      this._wallet as WebWalletStarknetWindowObject
+    ).connectAndSignSession({
+      callbackData,
+      approvalRequests,
+      sessionTypedData,
+    })
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {

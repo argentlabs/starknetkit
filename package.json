@@ -65,6 +65,7 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
+    "webwallet-sdk": "../webwallet-sdk",
     "@starknet-io/get-starknet": "^4.0.4",
     "@starknet-io/get-starknet-core": "^4.0.4",
     "@starknet-io/types-js": "^0.7.7",
@@ -117,7 +118,7 @@
     "zod": "^3.20.6"
   },
   "peerDependencies": {
-    "starknet": "^6.9.0"
+    "starknet": "^6.11.0"
   },
   "gitHead": "b16688a8638cc138938e74e1a39d004760165d75"
 }
