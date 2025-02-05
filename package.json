@@ -65,7 +65,6 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "webwallet-sdk": "../webwallet-sdk",
     "@starknet-io/get-starknet": "^4.0.4",
     "@starknet-io/get-starknet-core": "^4.0.4",
     "@starknet-io/types-js": "^0.7.7",

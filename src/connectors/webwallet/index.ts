@@ -33,7 +33,7 @@ import {
   type Theme,
   type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
-import type { ApprovalRequest } from "webwallet-sdk"
+import type { ApprovalRequest } from "./starknetWindowObject/types"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
@@ -121,15 +121,7 @@ export class WebWalletConnector extends Connector {
     callbackData?: string
     approvalRequests: ApprovalRequest[]
     sessionTypedData: TypedData
-  }) /* 
-  Promise<{
-      account: [address],
-      chainId: await account.getChainId(),
-      signature,
-      approvalTransactionHash,
-      deploymentPayload,
-    }>
-  */ {
+  }) {
     await this.ensureWallet()
 
     if (!this._wallet) {
@@ -278,4 +270,4 @@ export class WebWalletConnector extends Connector {
   }
 }
 
-export type { WebWalletStarknetWindowObject }
+export type { WebWalletStarknetWindowObject, ApprovalRequest }

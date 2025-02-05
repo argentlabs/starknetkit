@@ -15,7 +15,7 @@ import {
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
-import type { ApprovalRequest } from "webwallet-sdk"
+import type { ApprovalRequest } from "./types"
 
 export const userEventHandlers: WalletEvents[] = []
 
