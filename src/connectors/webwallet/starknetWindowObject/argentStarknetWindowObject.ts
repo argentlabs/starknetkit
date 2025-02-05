@@ -3,6 +3,7 @@ import type {
   NetworkChangeEventHandler,
   RpcTypeToMessageMap,
   StarknetWindowObject,
+  TypedData,
   WalletEvents,
 } from "@starknet-io/types-js"
 import type { CreateTRPCProxyClient } from "@trpc/client"
@@ -14,6 +15,7 @@ import {
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
+import type { ApprovalRequest } from "./types"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -52,6 +54,21 @@ export type WebWalletStarknetWindowObject = StarknetWindowObject & {
     account?: string[]
     chainId?: string
   }>
+  connectAndSignSession({
+    callbackData,
+    approvalRequests,
+    sessionTypedData,
+  }: {
+    callbackData?: string
+    approvalRequests: ApprovalRequest[]
+    sessionTypedData: TypedData
+  }): Promise<{
+    account?: string[]
+    chainId?: string
+    signature?: string[]
+    approvalTransactionHash?: string
+    deploymentPayload?: any
+  }>
 }
 
 export const getArgentStarknetWindowObject = (
@@ -66,6 +83,10 @@ export const getArgentStarknetWindowObject = (
     connectWebwallet: (props = {}) => {
       const { theme } = props
       return proxyLink.connectWebwallet.mutate({ theme })
+    },
+    connectAndSignSession: (props) => {
+      console.log("connectAndSignSession", props)
+      return proxyLink.connectAndSignSession.mutate(props)
     },
     connectWebwalletSSO: (token, authorizedPartyId) => {
       return proxyLink.connectWebwalletSSO.mutate({ token, authorizedPartyId })

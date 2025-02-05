@@ -9,6 +9,7 @@ import {
   RpcCallsArraySchema,
   StarknetMethodArgumentsSchemas,
   deployAccountContractSchema,
+  typedDataSchema,
 } from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
 
@@ -81,6 +82,31 @@ const appRouter = t.router({
       z.object({
         account: z.string().array().optional(),
         chainId: z.string().optional(),
+      }),
+    )
+    .mutation(async () => ({})),
+  connectAndSignSession: t.procedure
+    //.input(z.any())
+    .input(
+      z.object({
+        callbackData: z.string().optional(),
+        approvalRequests: z.array(
+          z.object({
+            tokenAddress: z.string(),
+            amount: z.string(),
+            spender: z.string(),
+          }),
+        ),
+        sessionTypedData: typedDataSchema,
+      }),
+    )
+    .output(
+      z.object({
+        account: z.string().array().optional(),
+        chainId: z.string().optional(),
+        signature: z.string().array().optional(),
+        approvalTransactionHash: z.string().optional(),
+        deploymentPayload: z.any().optional(),
       }),
     )
     .mutation(async () => ({})),
