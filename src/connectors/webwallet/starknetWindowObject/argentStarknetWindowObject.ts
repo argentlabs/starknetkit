@@ -14,6 +14,7 @@ import {
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
+import type { ConnectAndSignSessionOutput } from "../helpers/schema"
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 import type { ApprovalRequest } from "./types"
 
@@ -62,13 +63,7 @@ export type WebWalletStarknetWindowObject = StarknetWindowObject & {
     callbackData?: string
     approvalRequests: ApprovalRequest[]
     sessionTypedData: TypedData
-  }): Promise<{
-    account?: string[]
-    chainId?: string
-    signature?: string[]
-    approvalTransactionHash?: string
-    deploymentPayload?: any
-  }>
+  }): Promise<ConnectAndSignSessionOutput>
 }
 
 export const getArgentStarknetWindowObject = (

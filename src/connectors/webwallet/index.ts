@@ -34,6 +34,8 @@ import {
   type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
 import type { ApprovalRequest } from "./starknetWindowObject/types"
+import type { TRPCClientError } from "@trpc/client"
+import { ConnectAndSignSessionError } from "./errors"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
@@ -128,13 +130,28 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotFoundError()
     }
 
-    return await (
-      this._wallet as WebWalletStarknetWindowObject
-    ).connectAndSignSession({
-      callbackData,
-      approvalRequests,
-      sessionTypedData,
-    })
+    try {
+      return await (
+        this._wallet as WebWalletStarknetWindowObject
+      ).connectAndSignSession({
+        callbackData,
+        approvalRequests,
+        sessionTypedData,
+      })
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.constructor.name === "TRPCClientError" ||
+          error.name === "TRPCClientError")
+      ) {
+        const trpcError = error as TRPCClientError<any>
+        throw new ConnectAndSignSessionError(
+          trpcError.message,
+          trpcError.shape.message,
+        )
+      }
+      throw new Error(error instanceof Error ? error.message : String(error))
+    }
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
@@ -271,3 +288,4 @@ export class WebWalletConnector extends Connector {
 }
 
 export type { WebWalletStarknetWindowObject, ApprovalRequest }
+export { ConnectAndSignSessionError }
