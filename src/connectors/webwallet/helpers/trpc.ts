@@ -9,9 +9,12 @@ import {
   RpcCallsArraySchema,
   StarknetMethodArgumentsSchemas,
   deployAccountContractSchema,
-  typedDataSchema,
 } from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
+import {
+  connectAndSignSessionInputSchema,
+  connectAndSignSessionOutputSchema,
+} from "./schema"
 
 const t = initTRPC.create({
   isServer: false,
@@ -86,29 +89,8 @@ const appRouter = t.router({
     )
     .mutation(async () => ({})),
   connectAndSignSession: t.procedure
-    //.input(z.any())
-    .input(
-      z.object({
-        callbackData: z.string().optional(),
-        approvalRequests: z.array(
-          z.object({
-            tokenAddress: z.string(),
-            amount: z.string(),
-            spender: z.string(),
-          }),
-        ),
-        sessionTypedData: typedDataSchema,
-      }),
-    )
-    .output(
-      z.object({
-        account: z.string().array().optional(),
-        chainId: z.string().optional(),
-        signature: z.string().array().optional(),
-        approvalTransactionHash: z.string().optional(),
-        deploymentPayload: z.any().optional(),
-      }),
-    )
+    .input(connectAndSignSessionInputSchema)
+    .output(connectAndSignSessionOutputSchema)
     .mutation(async () => ({})),
   enable: t.procedure.output(z.string()).mutation(async () => ""),
   execute: t.procedure
