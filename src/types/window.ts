@@ -72,7 +72,7 @@ export const typedDataSchema = z.object({
   ),
   primaryType: z.string(),
   domain: z.record(z.unknown()),
-  message: z.record(z.unknown()),
+  message: z.record(z.unknown()).or(z.object({})),
 })
 
 export const AssetSchema = z.object({

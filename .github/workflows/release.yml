@@ -5,6 +5,7 @@ on:
       - develop
       - main
       - beta-braavos-mobile
+      - beta-ww-sdk
       - hotfix\/v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
