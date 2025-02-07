@@ -12,6 +12,10 @@
     {
       "name": "beta-braavos-mobile",
       "prerelease": true
+    },
+    {
+      "name": "beta-ww-sdk",
+      "prerelease": true
     }
   ],
   "plugins": [
