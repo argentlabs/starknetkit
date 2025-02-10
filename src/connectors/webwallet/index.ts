@@ -41,6 +41,12 @@ export class WebWalletConnector extends Connector {
   protected _wallet: StarknetWindowObject | null = null
   protected _options: WebWalletConnectorOptions
 
+  /**
+   * @param options.url - Webwallet URL
+   * @param options.theme - Theme
+   * @param options.ssoToken - SSO token - response from Google Auth
+   * @param options.authorizedPartyId - String identifying your project
+   */
   constructor(options: WebWalletConnectorOptions = {}) {
     super()
     this._options = options
@@ -239,6 +245,10 @@ export type { WebWalletStarknetWindowObject }
 export class WebwalletGoogleAuthConnector extends WebWalletConnector {
   private _clientId: string
 
+  /**
+   * @param options.clientId - Google client ID
+   * @param options.authorizedPartyId - String identifying your project
+   */
   constructor(
     options: WebwalletGoogleAuthOptions = {
       clientId: "",

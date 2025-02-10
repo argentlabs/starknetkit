@@ -57,16 +57,31 @@ By default, the list of connectors is:
 ## Connect with specific connectors
 
 ```js
-const webwallet = await connect([new WebWalletConnector()])
+const webwallet = await connect({
+  connectors: [new WebWalletConnector()]
+})
 
-const argentMobileWallet = await connect([
-  new ArgentMobileConnector()
-])
+const webwallet = await connect({
+  connectors: [new WebwalletGoogleAuthConnector({
+    clientId: "YOUR_GOOGLE_CLIENT_ID",
+    authorizedPartyId: "STRING_IDENTIFYING YOUR PROJECT"
+  })]
+})
 
-const wallet = await connect([
-  new InjectedConnector({ options: { id: "argentX" } }),
-  new InjectedConnector({ options: { id: "braavos" } })
-])
+const google
+
+const argentMobileWallet = await connect({
+  connectors: [
+    new ArgentMobileConnector()
+  ]
+})
+
+const wallet = await connect({
+  connectors: [
+    new InjectedConnector({ options: { id: "argentX" } }),
+    new InjectedConnector({ options: { id: "braavos" } })
+  ]
+})
 ```
 
 ## Reconnect to a previously connected wallet on load:
