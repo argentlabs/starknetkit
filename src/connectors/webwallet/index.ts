@@ -1,15 +1,15 @@
 import {
   Permission,
+  type AccountChangeEventHandler,
   type RequestFnCall,
   type RpcMessage,
   type RpcTypeToMessageMap,
-  type AccountChangeEventHandler,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
   Account,
-  AccountInterface,
-  ProviderInterface,
+  type AccountInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import {
@@ -28,24 +28,18 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
+import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
 import type {
-  Theme,
-  WebWalletStarknetWindowObject,
-} from "./starknetWindowObject/argentStarknetWindowObject"
+  WebWalletConnectorOptions,
+  WebwalletGoogleAuthOptions,
+} from "./types"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
 
-interface WebWalletConnectorOptions {
-  url?: string
-  theme?: Theme
-  ssoToken?: string
-  authorizedPartyId?: string
-}
-
 export class WebWalletConnector extends Connector {
-  private _wallet: StarknetWindowObject | null = null
-  private _options: WebWalletConnectorOptions
+  protected _wallet: StarknetWindowObject | null = null
+  protected _options: WebWalletConnectorOptions
 
   constructor(options: WebWalletConnectorOptions = {}) {
     super()
@@ -227,7 +221,7 @@ export class WebWalletConnector extends Connector {
     this._wallet = null
   }
 
-  private async ensureWallet(): Promise<void> {
+  protected async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
     setPopupOptions({
       origin,
@@ -241,3 +235,43 @@ export class WebWalletConnector extends Connector {
 }
 
 export type { WebWalletStarknetWindowObject }
+
+export class WebwalletGoogleAuthConnector extends WebWalletConnector {
+  private _clientId: string
+
+  constructor(
+    options: WebwalletGoogleAuthOptions = {
+      clientId: "",
+      authorizedPartyId: "",
+    },
+  ) {
+    if (!options.clientId || !options.authorizedPartyId) {
+      throw new Error("clientId and authorizedPartyId are required")
+    }
+
+    super(options)
+    this._clientId = options.clientId
+  }
+
+  get id(): string {
+    this._wallet = _wallet
+    return this._wallet?.id || "argentWebWalletGoogleAuth"
+  }
+
+  get title(): string {
+    return "Google"
+  }
+
+  get clientId(): string {
+    return this._clientId
+  }
+
+  public setSSOToken(response: { credential: string | null }) {
+    if (response.credential) {
+      // Send the token to your server for verification
+      this._options.ssoToken = response.credential
+    } else {
+      throw new Error("No credential received")
+    }
+  }
+}

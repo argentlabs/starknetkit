@@ -58,6 +58,7 @@ export const connect = async ({
   modalTheme,
   dappName,
   resultType = "wallet",
+  googleAuthOptions,
   ...restOptions
 }: ConnectOptionsWithConnectors | ConnectOptions): Promise<ModalResult> => {
   const { webWalletUrl = DEFAULT_WEBWALLET_URL, argentMobileOptions } =
@@ -72,6 +73,7 @@ export const connect = async ({
       ? defaultConnectors({
           argentMobileOptions,
           webWalletUrl,
+          googleAuthOptions,
         })
       : connectors
 

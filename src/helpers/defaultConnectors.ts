@@ -5,7 +5,10 @@ import {
 } from "../connectors/argentMobile"
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
 import { InjectedConnector } from "../connectors/injected"
-import { WebWalletConnector } from "../connectors/webwallet"
+import {
+  WebWalletConnector,
+  WebwalletGoogleAuthConnector,
+} from "../connectors/webwallet"
 
 const isMobileDevice = () => {
   // Primary method: User Agent + Touch support check
@@ -25,9 +28,14 @@ const isMobileDevice = () => {
 export const defaultConnectors = ({
   argentMobileOptions,
   webWalletUrl,
+  googleAuthOptions,
 }: {
   argentMobileOptions: ArgentMobileConnectorOptions
   webWalletUrl?: string
+  googleAuthOptions?: {
+    clientId: string
+    authorizedPartyId: string
+  }
 }): StarknetkitConnector[] => {
   const isSafari =
     typeof window !== "undefined"
@@ -50,6 +58,16 @@ export const defaultConnectors = ({
     defaultConnectors.push(new BraavosMobileBaseConnector())
   }
   defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
+
+  if (googleAuthOptions) {
+    defaultConnectors.push(
+      new WebwalletGoogleAuthConnector({
+        url: webWalletUrl,
+        clientId: googleAuthOptions.clientId,
+        authorizedPartyId: googleAuthOptions.authorizedPartyId,
+      }),
+    )
+  }
 
   return defaultConnectors
 }
