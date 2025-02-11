@@ -1,8 +1,8 @@
 import {
   Permission,
-  RequestFnCall,
-  RpcMessage,
-  RpcTypeToMessageMap,
+  type RequestFnCall,
+  type RpcMessage,
+  type RpcTypeToMessageMap,
   type AccountChangeEventHandler,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
@@ -10,7 +10,7 @@ import {
   Account,
   AccountInterface,
   ProviderInterface,
-  ProviderOptions,
+  type ProviderOptions,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -20,21 +20,25 @@ import {
 import { getStarknetChainId } from "../../helpers/getStarknetChainId"
 import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
 import {
-  ConnectArgs,
   Connector,
+  type ConnectArgs,
   type ConnectorData,
   type ConnectorIcons,
 } from "../connector"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
-import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
+import type {
+  Theme,
+  WebWalletStarknetWindowObject,
+} from "./starknetWindowObject/argentStarknetWindowObject"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
 
 interface WebWalletConnectorOptions {
   url?: string
+  theme?: Theme
   ssoToken?: string
   authorizedPartyId?: string
 }
@@ -125,7 +129,7 @@ export class WebWalletConnector extends Connector {
       } else {
         const connectResponse = await (
           this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwallet()
+        ).connectWebwallet({ theme: this._options.theme })
         account = connectResponse.account
         chainId = connectResponse.chainId
       }

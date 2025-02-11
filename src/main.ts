@@ -1,7 +1,11 @@
 import type { DisconnectOptions } from "@starknet-io/get-starknet"
 import sn from "@starknet-io/get-starknet-core"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
-import { Connector, ConnectorData, StarknetkitConnector } from "./connectors"
+import {
+  Connector,
+  StarknetkitConnector,
+  type ConnectorData,
+} from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
