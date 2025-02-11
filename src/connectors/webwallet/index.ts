@@ -115,24 +115,15 @@ export class WebWalletConnector extends Connector {
     }
 
     try {
-      let account, chainId
-
-      if (this._options.ssoToken) {
-        const ssoReponse = await (
-          this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwalletSSO(
-          this._options.ssoToken,
-          this._options.authorizedPartyId,
-        )
-        account = ssoReponse.account
-        chainId = ssoReponse.chainId
-      } else {
-        const connectResponse = await (
-          this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwallet({ theme: this._options.theme })
-        account = connectResponse.account
-        chainId = connectResponse.chainId
-      }
+      const connectResponse = await (
+        this._wallet as WebWalletStarknetWindowObject
+      ).connectWebwallet({
+        theme: this._options.theme,
+        token: this._options.ssoToken,
+        authorizedPartyId: this._options.authorizedPartyId,
+      })
+      const account = connectResponse.account
+      const chainId = connectResponse.chainId
 
       if (!account || !chainId) {
         return {}
@@ -252,11 +243,10 @@ export class WebwalletGoogleAuthConnector extends WebWalletConnector {
   constructor(
     options: WebwalletGoogleAuthOptions = {
       clientId: "",
-      authorizedPartyId: "",
     },
   ) {
-    if (!options.clientId || !options.authorizedPartyId) {
-      throw new Error("clientId and authorizedPartyId are required")
+    if (!options.clientId) {
+      throw new Error("clientId is required")
     }
 
     super(options)

@@ -15,5 +15,5 @@ export interface WebWalletConnectorOptions {
 
 export interface WebwalletGoogleAuthOptions extends WebWalletConnectorOptions {
   clientId: string
-  authorizedPartyId: string
+  authorizedPartyId?: string
 }
