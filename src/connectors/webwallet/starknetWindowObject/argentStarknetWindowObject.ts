@@ -37,6 +37,7 @@ export type Theme = "light" | "dark"
 
 type ConnectWebwalletProps = {
   theme?: Theme
+  featureFlagIframeProtection?: boolean
 }
 
 export type WebWalletStarknetWindowObject = StarknetWindowObject & {
@@ -64,8 +65,11 @@ export const getArgentStarknetWindowObject = (
       return proxyLink.getLoginStatus.mutate()
     },
     connectWebwallet: (props = {}) => {
-      const { theme } = props
-      return proxyLink.connectWebwallet.mutate({ theme })
+      const { theme, featureFlagIframeProtection } = props
+      return proxyLink.connectWebwallet.mutate({
+        theme,
+        featureFlagIframeProtection,
+      })
     },
     connectWebwalletSSO: (token, authorizedPartyId) => {
       return proxyLink.connectWebwalletSSO.mutate({ token, authorizedPartyId })

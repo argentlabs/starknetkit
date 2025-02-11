@@ -63,8 +63,8 @@ export const openWebwallet = async (
     const modalId = "argent-webwallet-modal"
     const iframeId = "argent-webwallet-iframe"
 
-    const existingIframe = document.getElementById(modalId)
-    const existingModal = document.getElementById(iframeId)
+    const existingModal = document.getElementById(modalId)
+    const existingIframe = document.getElementById(iframeId)
 
     // avoid duplicate iframes
     if (existingIframe && existingIframe && existingModal) {

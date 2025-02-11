@@ -8,8 +8,8 @@ import {
 } from "@starknet-io/types-js"
 import {
   Account,
-  AccountInterface,
-  ProviderInterface,
+  type AccountInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import {
@@ -41,6 +41,7 @@ interface WebWalletConnectorOptions {
   theme?: Theme
   ssoToken?: string
   authorizedPartyId?: string
+  featureFlagIframeProtection?: boolean
 }
 
 export class WebWalletConnector extends Connector {
@@ -129,7 +130,11 @@ export class WebWalletConnector extends Connector {
       } else {
         const connectResponse = await (
           this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwallet({ theme: this._options.theme })
+        ).connectWebwallet({
+          theme: this._options.theme,
+          featureFlagIframeProtection:
+            this._options.featureFlagIframeProtection,
+        })
         account = connectResponse.account
         chainId = connectResponse.chainId
       }

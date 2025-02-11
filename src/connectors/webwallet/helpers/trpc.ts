@@ -64,6 +64,7 @@ const appRouter = t.router({
     .input(
       z.object({
         theme: z.enum(["light", "dark", "auto"]).optional(),
+        featureFlagIframeProtection: z.boolean().optional(),
       }),
     )
     .output(

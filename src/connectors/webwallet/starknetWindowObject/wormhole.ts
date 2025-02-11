@@ -39,7 +39,7 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
   iframe.setAttribute("allowtransparency", "true")
   iframe.setAttribute("transparent", "true")
 
-  applyModalStyle(/* modal, */ iframe)
+  applyModalStyle(iframe)
   iframe.style.display = shouldShow ? "block" : "none"
 
   const existingElement = document.getElementById(iframeId)
