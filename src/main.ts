@@ -213,8 +213,9 @@ export const connect = async ({
               [Layout.connecting, Layout.qrCode].includes(modal.getLayout())
             ) {
               modal.$set({ layout: Layout.failure })
+            } else {
+              reject(error)
             }
-            reject(error)
           }
         },
         theme: modalTheme === "system" ? null : (modalTheme ?? null),
