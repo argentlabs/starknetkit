@@ -36,6 +36,7 @@ export default defineConfig({
         braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
         metamask: resolve(__dirname, "src/connectors/injected/metamask.ts"),
         keplr: resolve(__dirname, "src/connectors/injected/keplr.ts"),
+        fordefi: resolve(__dirname, "src/connectors/injected/fordefi.ts"),
       },
       formats: ["es", "cjs"],
     },

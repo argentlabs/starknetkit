@@ -67,6 +67,11 @@
       "import": "./dist/keplr.js",
       "require": "./dist/keplr.cjs"
     },
+    "./fordefi": {
+      "types": "./dist/fordefi.d.ts",
+      "import": "./dist/fordefi.js",
+      "require": "./dist/fordefi.cjs"
+    },
     "./braavosMobile": {
       "types": "./dist/braavosMobile.d.ts",
       "import": "./dist/braavosMobile.js",
