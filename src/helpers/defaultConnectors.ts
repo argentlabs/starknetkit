@@ -7,6 +7,10 @@ import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
 import { WebWalletConnector } from "../connectors/webwallet"
 import { Braavos } from "../connectors/injected/braavos"
 import { Argent } from "../connectors/argent"
+import { Fordefi } from "../connectors/injected/fordefi"
+import { Keplr } from "../connectors/injected/keplr"
+import { MetaMask } from "../connectors/injected/metamask"
+
 import { isMobileDevice, isSafari } from "./navigator"
 
 export const defaultConnectors = ({
@@ -25,6 +29,16 @@ export const defaultConnectors = ({
 
   if (!isSafari()) {
     defaultConnectors.push(new Braavos())
+
+    if (MetaMask.isWalletInjected()) {
+      defaultConnectors.push(new MetaMask())
+    }
+    if (Fordefi.isWalletInjected()) {
+      defaultConnectors.push(new Fordefi())
+    }
+    if (Keplr.isWalletInjected()) {
+      defaultConnectors.push(new Keplr())
+    }
   }
 
   if (isMobileDevice()) {
