@@ -61,6 +61,17 @@ export class InjectedConnector extends Connector {
     this._options = options
   }
 
+  static getInjectedWallet(id: string) {
+    // biome-ignore lint/suspicious/noExplicitAny: any
+    const global_object: Record<string, any> = globalThis
+
+    return global_object?.[`starknet_${id}`] as StarknetWindowObject
+  }
+
+  static isWalletInjected(id: string) {
+    return Boolean(InjectedConnector.getInjectedWallet(id))
+  }
+
   get id(): string {
     return this._options.id
   }
@@ -220,11 +231,7 @@ export class InjectedConnector extends Connector {
   }
 
   private ensureWallet() {
-    // biome-ignore lint/suspicious/noExplicitAny: any
-    const global_object: Record<string, any> = globalThis
-
-    const wallet: StarknetWindowObject =
-      global_object?.[`starknet_${this._options.id}`]
+    const wallet = InjectedConnector.getInjectedWallet(this._options.id)
 
     if (wallet) {
       this._wallet = wallet
