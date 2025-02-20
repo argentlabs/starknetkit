@@ -20,6 +20,7 @@
   import { Braavos } from "../connectors/injected/braavos"
   import { getModalWallet } from "../helpers/mapModalWallets"
   import { getStoreVersionFromBrowser } from "../helpers/getStoreVersionFromBrowser"
+  import FailedRequest from "./layouts/FailedRequest.svelte"
 
   let nodeRef: HTMLElement | undefined
 
@@ -129,13 +130,15 @@
         </Connecting>
       {:else if layout === Layout.success}
         <Success />
-      {:else if layout === Layout.failure}
+      {:else if layout === Layout.loginFailure}
         <FailedLogin
           walletName={selectedConnector?.name}
           handleCallback={() => callback(selectedWallet)}
           showFallback={showFallback}
           handleFallback={() => callback(selectedWallet, true)}
         />
+      {:else if layout === Layout.requestFailure}
+        <FailedRequest />
       {:else if layout === Layout.qrCode}
         <ArgentMobileQR handleInstallClick={() => setLayout(Layout.download)} />
       {:else if layout === Layout.approval}

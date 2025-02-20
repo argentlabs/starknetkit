@@ -212,7 +212,7 @@ export const connect = async ({
             if (
               [Layout.connecting, Layout.qrCode].includes(modal.getLayout())
             ) {
-              modal.$set({ layout: Layout.failure })
+              modal.$set({ layout: Layout.loginFailure })
             } else {
               reject(error)
             }

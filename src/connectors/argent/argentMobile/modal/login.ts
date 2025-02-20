@@ -117,7 +117,7 @@ export const login = async <TAdapter extends NamespaceAdapter>(
       // Await session approval from the wallet.
       const session = await approval()
       adapter.updateSession(session)
-      argentModal.closeModal(true)
+      argentModal.closeModal({ success: true })
     }
 
     return adapter

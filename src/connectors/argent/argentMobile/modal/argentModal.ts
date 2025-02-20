@@ -3,6 +3,7 @@ import Modal from "../../../../modal/Modal.svelte"
 import { Layout, type ModalWallet } from "../../../../types/modal"
 import { getModalTarget } from "../../../../helpers/modal"
 import type { StarknetkitConnector } from "../../../connector"
+import { isInArgentMobileAppBrowser } from "../../helpers"
 
 const device = getDevice()
 
@@ -74,20 +75,23 @@ class ArgentModal {
     })
   }
 
+  private openMobileApp(urls: Urls) {
+    const toMobileApp = document.createElement("button")
+    toMobileApp.style.display = "none"
+    toMobileApp.addEventListener("click", () => {
+      window.location.href = urls[device]
+    })
+    toMobileApp.click()
+  }
+
   private getQR(urls: Urls) {
-    const overlay = document.createElement("div")
-    const shadow = document.querySelector("#starknetkit-modal-container")
-
     if (["android", "ios"].includes(device)) {
-      const toMobileApp = document.createElement("button")
-      toMobileApp.style.display = "none"
-      toMobileApp.addEventListener("click", () => {
-        window.location.href = urls[device]
-      })
-      toMobileApp.click()
-
+      this.openMobileApp(urls)
       return
     }
+
+    const overlay = document.createElement("div")
+    const shadow = document.querySelector("#starknetkit-modal-container")
 
     if (shadow?.shadowRoot) {
       const slot = shadow.shadowRoot.querySelector(".qr-code-slot")
@@ -112,33 +116,51 @@ class ArgentModal {
   }
 
   public showApprovalModal(_: RequestArguments): void {
-    if (device === "desktop") {
+    const href = encodeURIComponent(window.location.href)
+
+    const urls = {
+      desktop: `${this.bridgeUrl}?action=sign&device=desktop&href=${href}`,
+      ios: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
+      android: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
+    }
+
+    if (!isInArgentMobileAppBrowser()) {
       this.getModal(undefined, Layout.approval)
+
+      if (["android", "ios"].includes(device)) {
+        this.openMobileApp(urls)
+        return
+      }
       return
     }
-    const href = encodeURIComponent(window.location.href)
     /*
     //https://docs.walletconnect.com/2.0/web3wallet/mobileLinking?platform=ios#ios-wallet-support
     Additionally when there is a signing request triggered by the dapp it will hit the deep link with an incomplete URI,
     this should be ignored and not considered valid as it's only used for automatically redirecting the users to approve or reject a signing request.
     */
-    this.showModal(
-      {
-        desktop: `${this.bridgeUrl}?action=sign&device=desktop&href=${href}`,
-        ios: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
-        android: `${this.mobileUrl}app/wc/request?href=${href}&device=mobile`,
-      },
-      undefined,
-    )
+    this.showModal(urls, undefined)
   }
 
-  public closeModal(success?: boolean) {
+  public closeModal(
+    {
+      success,
+      isRequest,
+    }: Partial<{ success: boolean; isRequest: boolean }> = {
+      success: false,
+      isRequest: false,
+    },
+  ) {
     const modal = this.standaloneConnectorModal
     if (success) {
       modal?.$set({ layout: Layout.success })
       setTimeout(() => modal?.$destroy(), 500)
     } else {
-      modal?.$set({ layout: Layout.failure })
+      if (!isRequest) {
+        modal?.$set({ layout: Layout.loginFailure })
+      } else {
+        modal?.$set({ layout: Layout.requestFailure })
+        setTimeout(() => modal?.$destroy(), 500)
+      }
     }
   }
 
@@ -160,7 +182,7 @@ class ArgentModal {
             this.standaloneConnectorModal?.$destroy()
             await connector?.connect()
           } catch (err) {
-            this.standaloneConnectorModal?.$set({ layout: Layout.failure })
+            this.standaloneConnectorModal?.$set({ layout: Layout.loginFailure })
           }
         },
       },
