@@ -17,6 +17,10 @@ export interface ConnectOptions extends GetWalletOptions {
   resultType?: "connector" | "wallet"
   webWalletUrl?: string
   argentMobileOptions: ArgentMobileConnectorOptions
+  googleAuthOptions?: {
+    clientId: string
+    authorizedPartyId: string
+  }
 }
 
 export interface ConnectOptionsWithConnectors
@@ -32,6 +36,7 @@ export type ModalWallet = {
   subtitle?: string
   title?: string
   connector: StarknetkitConnector
+  clientId?: string
 }
 
 export type ModalResult = {

@@ -1,15 +1,15 @@
 import {
   Permission,
+  type AccountChangeEventHandler,
   type RequestFnCall,
   type RpcMessage,
   type RpcTypeToMessageMap,
-  type AccountChangeEventHandler,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
   Account,
-  AccountInterface,
-  ProviderInterface,
+  type AccountInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import {
@@ -28,25 +28,25 @@ import {
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
+import type { WebWalletStarknetWindowObject } from "./starknetWindowObject/argentStarknetWindowObject"
 import type {
-  Theme,
-  WebWalletStarknetWindowObject,
-} from "./starknetWindowObject/argentStarknetWindowObject"
+  WebWalletConnectorOptions,
+  WebwalletGoogleAuthOptions,
+} from "./types"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
 
-interface WebWalletConnectorOptions {
-  url?: string
-  theme?: Theme
-  ssoToken?: string
-  authorizedPartyId?: string
-}
-
 export class WebWalletConnector extends Connector {
-  private _wallet: StarknetWindowObject | null = null
-  private _options: WebWalletConnectorOptions
+  protected _wallet: StarknetWindowObject | null = null
+  protected _options: WebWalletConnectorOptions
 
+  /**
+   * @param options.url - Webwallet URL
+   * @param options.theme - Theme
+   * @param options.ssoToken - SSO token - response from Google Auth
+   * @param options.authorizedPartyId - String identifying your project
+   */
   constructor(options: WebWalletConnectorOptions = {}) {
     super()
     this._options = options
@@ -115,24 +115,15 @@ export class WebWalletConnector extends Connector {
     }
 
     try {
-      let account, chainId
-
-      if (this._options.ssoToken) {
-        const ssoReponse = await (
-          this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwalletSSO(
-          this._options.ssoToken,
-          this._options.authorizedPartyId,
-        )
-        account = ssoReponse.account
-        chainId = ssoReponse.chainId
-      } else {
-        const connectResponse = await (
-          this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwallet({ theme: this._options.theme })
-        account = connectResponse.account
-        chainId = connectResponse.chainId
-      }
+      const connectResponse = await (
+        this._wallet as WebWalletStarknetWindowObject
+      ).connectWebwallet({
+        theme: this._options.theme,
+        token: this._options.ssoToken,
+        authorizedPartyId: this._options.authorizedPartyId,
+      })
+      const account = connectResponse.account
+      const chainId = connectResponse.chainId
 
       if (!account || !chainId) {
         return {}
@@ -227,7 +218,7 @@ export class WebWalletConnector extends Connector {
     this._wallet = null
   }
 
-  private async ensureWallet(): Promise<void> {
+  protected async ensureWallet(): Promise<void> {
     const origin = this._options.url || DEFAULT_WEBWALLET_URL
     setPopupOptions({
       origin,
@@ -241,3 +232,46 @@ export class WebWalletConnector extends Connector {
 }
 
 export type { WebWalletStarknetWindowObject }
+
+export class WebwalletGoogleAuthConnector extends WebWalletConnector {
+  private _clientId: string
+
+  /**
+   * @param options.clientId - Google client ID
+   * @param options.authorizedPartyId - String identifying your project
+   */
+  constructor(
+    options: WebwalletGoogleAuthOptions = {
+      clientId: "",
+    },
+  ) {
+    if (!options.clientId) {
+      throw new Error("clientId is required")
+    }
+
+    super(options)
+    this._clientId = options.clientId
+  }
+
+  get id(): string {
+    this._wallet = _wallet
+    return this._wallet?.id || "argentWebWalletGoogleAuth"
+  }
+
+  get title(): string {
+    return "Google"
+  }
+
+  get clientId(): string {
+    return this._clientId
+  }
+
+  public setSSOToken(response: { credential: string | null }) {
+    if (response.credential) {
+      // Send the token to your server for verification
+      this._options.ssoToken = response.credential
+    } else {
+      throw new Error("No credential received")
+    }
+  }
+}

@@ -5,6 +5,7 @@
   import { InjectedConnector } from "../connectors/injected"
   import type { ModalWallet } from "../types/modal"
   import ConnectorButton from "./ConnectorButton.svelte"
+  import WebwalletGoogleAuth from "./WebwalletGoogleAuth.svelte"
 
   export let dappName: string = window?.document.title ?? ""
   export let modalWallets: ModalWallet[]
@@ -144,7 +145,11 @@
 
       <ul class="flex flex-col gap-3">
         {#each modalWallets as wallet}
-          <ConnectorButton {wallet} {loadingItem} {cb} {theme} />
+          {#if wallet.connector.id === "argentWebWalletGoogleAuth"}
+            <WebwalletGoogleAuth {wallet} {cb} />
+          {:else}
+            <ConnectorButton {wallet} {loadingItem} {cb} {theme} />
+          {/if}
         {/each}
       </ul>
     </main>
