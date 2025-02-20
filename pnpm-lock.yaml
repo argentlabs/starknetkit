@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@starknet-io/get-starknet':
-        specifier: ^4.0.4
-        version: 4.0.4
+        specifier: ^4.0.6
+        version: 4.0.6
       '@starknet-io/get-starknet-core':
-        specifier: ^4.0.4
-        version: 4.0.5
+        specifier: ^4.0.6
+        version: 4.0.6
       '@starknet-io/types-js':
         specifier: ^0.7.7
         version: 0.7.7
@@ -1186,14 +1186,11 @@ packages:
   '@stablelib/x25519@1.0.3':
     resolution: {integrity: sha512-KnTbKmUhPhHavzobclVJQG5kuivH+qDLpe84iRqX3CLrKp881cF160JvXJ+hjn1aMyCwYOKeIZefIH/P5cJoRw==}
 
-  '@starknet-io/get-starknet-core@4.0.4':
-    resolution: {integrity: sha512-XSypDxLUE1WDDD/yh8ik+tEAqE+MZZMa4CJ/ocn7hbrKvHOF08/oT3npddObhuu4/IjklZaRzIvdfv0nT+QduA==}
+  '@starknet-io/get-starknet-core@4.0.6':
+    resolution: {integrity: sha512-Ka7d1+ZnpVcQObph4eQyQ/pz5vkZVTdtoFMotTarLXi5S4DvDAlCwnTC/LX3gSJK4UXBSxn9MPP1S+VPw3W/9Q==}
 
-  '@starknet-io/get-starknet-core@4.0.5':
-    resolution: {integrity: sha512-aMnDHhWO0IMdwusZcoyPPnvAxzREWv+XkPMAtB2O1h64x1QKvpR/oVoDl/ZY81JKS4YlUWqcuD+sMGGUVZAa7w==}
-
-  '@starknet-io/get-starknet@4.0.4':
-    resolution: {integrity: sha512-3qPn8l7khUef1710j/qp80T9iP+QKRYzaHAMae6ZJtGLKxDNqGdRMb6Efi0XARIHXG3xbg26Fh32FesEflV/Og==}
+  '@starknet-io/get-starknet@4.0.6':
+    resolution: {integrity: sha512-FhyYF90g1FQHRJudv1FOWtSRLSFoVAM4PTb14Pgy+5aeENubr5hekprqFhZWNk9c3msxK/Nxio+Xc+sgg9zvEg==}
 
   '@starknet-io/types-js@0.7.7':
     resolution: {integrity: sha512-WLrpK7LIaIb8Ymxu6KF/6JkGW1sso988DweWu7p5QY/3y7waBIiPvzh27D9bX5KIJNRDyOoOVoHVEKYUYWZ/RQ==}
@@ -6165,21 +6162,15 @@ snapshots:
       '@stablelib/random': 1.0.2
       '@stablelib/wipe': 1.0.1
 
-  '@starknet-io/get-starknet-core@4.0.4':
+  '@starknet-io/get-starknet-core@4.0.6':
     dependencies:
       '@module-federation/runtime': 0.1.21
       '@starknet-io/types-js': 0.7.7
       async-mutex: 0.5.0
 
-  '@starknet-io/get-starknet-core@4.0.5':
+  '@starknet-io/get-starknet@4.0.6':
     dependencies:
-      '@module-federation/runtime': 0.1.21
-      '@starknet-io/types-js': 0.7.7
-      async-mutex: 0.5.0
-
-  '@starknet-io/get-starknet@4.0.4':
-    dependencies:
-      '@starknet-io/get-starknet-core': 4.0.4
+      '@starknet-io/get-starknet-core': 4.0.6
       bowser: 2.11.0
 
   '@starknet-io/types-js@0.7.7': {}
@@ -7720,7 +7711,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -7742,7 +7733,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
