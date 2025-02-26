@@ -145,10 +145,13 @@ export class WebWalletConnector extends Connector {
           error.name === "TRPCClientError")
       ) {
         const trpcError = error as TRPCClientError<any>
-        throw new ConnectAndSignSessionError(
-          trpcError.message,
-          trpcError.shape.message,
-        )
+
+        const message =
+          trpcError.shape.data.webwalletErrorMessage || trpcError.message
+        const code =
+          trpcError.shape.data.webwalletErrorCode || trpcError.shape.message
+
+        throw new ConnectAndSignSessionError(message, code)
       }
       throw new Error(error instanceof Error ? error.message : String(error))
     }
