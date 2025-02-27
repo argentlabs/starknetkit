@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.7.0-beta-ww-sdk.2",
+  "version": "2.7.0-beta-ww-sdk.3",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
