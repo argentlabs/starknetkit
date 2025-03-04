@@ -14,10 +14,16 @@ export function mapTargetUrlToNetworkId(target: string): constants.NetworkName {
     if (origin.includes("hydrogen")) {
       return Network.SN_SEPOLIA
     }
+    if (origin.includes("sepolia-web.staging")) {
+      return Network.SN_SEPOLIA
+    }
     if (origin.includes("staging")) {
       return Network.SN_MAIN
     }
     if (origin.includes("dev")) {
+      return Network.SN_SEPOLIA
+    }
+    if (origin.includes("sepolia-web.argent.xyz")) {
       return Network.SN_SEPOLIA
     }
     if (origin.includes("argent.xyz")) {

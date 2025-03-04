@@ -11,6 +11,10 @@ import {
   deployAccountContractSchema,
 } from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
+import {
+  connectAndSignSessionInputSchema,
+  connectAndSignSessionOutputSchema,
+} from "./schema"
 
 const t = initTRPC.create({
   isServer: false,
@@ -83,6 +87,10 @@ const appRouter = t.router({
         chainId: z.string().optional(),
       }),
     )
+    .mutation(async () => ({})),
+  connectAndSignSession: t.procedure
+    .input(connectAndSignSessionInputSchema)
+    .output(connectAndSignSessionOutputSchema)
     .mutation(async () => ({})),
   enable: t.procedure.output(z.string()).mutation(async () => ""),
   execute: t.procedure
