@@ -81,6 +81,11 @@
       "types": "./dist/window.d.ts",
       "import": "./dist/window.js",
       "require": "./dist/window.cjs"
+    },
+    "./starknet-react": {
+      "types": "./dist/starknet-react.d.ts",
+      "import": "./dist/starknet-react.js",
+      "require": "./dist/starknet-react.cjs"
     }
   },
   "main": "./dist/starknetkit.cjs",
@@ -107,6 +112,8 @@
     "eventemitter3": "^5.0.1",
     "events": "^3.3.0",
     "lodash-es": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "svelte-forms": "^2.3.1",
     "trpc-browser": "^1.3.2"
   },
@@ -119,8 +126,11 @@
     "@types/async-retry": "^1.4.5",
     "@types/lodash-es": "^4.17.8",
     "@types/node": "^20.5.7",
-    "@typescript-eslint/parser": "^8.8.1",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.8.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "@walletconnect/ethereum-provider": "^2.11.0",
     "@walletconnect/jsonrpc-provider": "^1.0.13",
     "@walletconnect/signer-connection": "^2.11.0",
