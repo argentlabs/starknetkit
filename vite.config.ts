@@ -1,5 +1,6 @@
 import { resolve } from "path"
 
+import react from "@vitejs/plugin-react"
 import { svelte } from "@sveltejs/vite-plugin-svelte"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
@@ -21,6 +22,7 @@ export default defineConfig({
     lib: {
       entry: {
         starknetkit: resolve(__dirname, "src/main.ts"),
+        "starknet-react": resolve(__dirname, "src/starknet-react/index.tsx"),
         webwalletConnector: resolve(
           __dirname,
           "src/connectors/webwallet/index.ts",
