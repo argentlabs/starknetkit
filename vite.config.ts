@@ -8,7 +8,13 @@ import dts from "vite-plugin-dts"
 export default defineConfig({
   build: {
     rollupOptions: {
-      external: ["starknet"],
+      external: ["starknet", "react", "react-dom"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
     },
     emptyOutDir: false,
     target: "es2020",
@@ -42,7 +48,10 @@ export default defineConfig({
     },
   },
   plugins: [
-    svelte({ emitCss: false }),
+    react({}),
+    svelte({
+      emitCss: false,
+    }),
     dts({
       entryRoot: resolve(__dirname, "src"),
       insertTypesEntry: true,
