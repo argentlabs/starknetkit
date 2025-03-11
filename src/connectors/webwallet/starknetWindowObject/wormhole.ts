@@ -69,7 +69,9 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
     "allow-top-navigation",
     "allow-popups",
   )
-  iframe.allow = "clipboard-write"
+  iframe.allow =
+    "clipboard-write; publickey-credentials-create *; publickey-credentials-get *"
+
   iframe.id = "argent-webwallet-iframe"
 
   const modal = applyModalStyle(iframe)
