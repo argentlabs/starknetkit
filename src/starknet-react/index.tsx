@@ -29,8 +29,6 @@ type StarknetReactWrapperProps = {
     name: string
     icon: ConnectorIcons
     connectAsyncWrapped: () => Promise<void>
-    mainConnector: Connector
-    fallbackConnector: Connector
   }) => ReactNode
   connector: Connector | StarknetkitConnector | StarknetkitCompoundConnector
   connectAsyncFunction: ({
@@ -178,8 +176,6 @@ export function StarknetReactWrapper({
       )}
       {children({
         connectAsyncWrapped,
-        mainConnector,
-        fallbackConnector,
         ...connectorMeta,
       })}
     </>
