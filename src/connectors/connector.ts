@@ -30,6 +30,8 @@ export interface ConnectorEvents {
   connect(data: ConnectorData): void
   /** Emitted when connection is lost. */
   disconnect(): void
+  /** Emitted when `shouldEmit` is true, used for StarknetReactWrapper */
+  connectionStatus(s: "init" | "success" | "fail" | "fallback"): void
 }
 
 export type ConnectArgs = {

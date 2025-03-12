@@ -46,6 +46,7 @@ export class Argent
     this.argentX = new ArgentX({
       icon: injectedWalletIcons.argentX,
       ...settings?.extension,
+      shouldEmit: true,
     })
     this.argentMobile = new ArgentMobileBaseConnector({
       ...settings.mobile,

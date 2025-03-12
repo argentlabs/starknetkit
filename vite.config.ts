@@ -1,5 +1,6 @@
 import { resolve } from "path"
 
+import react from "@vitejs/plugin-react"
 import { svelte } from "@sveltejs/vite-plugin-svelte"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
@@ -8,13 +9,20 @@ import dts from "vite-plugin-dts"
 export default defineConfig({
   build: {
     rollupOptions: {
-      external: ["starknet"],
+      external: ["starknet", "react", "react-dom"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
     },
     emptyOutDir: false,
     target: "es2020",
     lib: {
       entry: {
         starknetkit: resolve(__dirname, "src/main.ts"),
+        "starknet-react": resolve(__dirname, "src/starknet-react/index.tsx"),
         webwalletConnector: resolve(
           __dirname,
           "src/connectors/webwallet/index.ts",
@@ -42,7 +50,10 @@ export default defineConfig({
     },
   },
   plugins: [
-    svelte({ emitCss: false }),
+    react({}),
+    svelte({
+      emitCss: false,
+    }),
     dts({
       entryRoot: resolve(__dirname, "src"),
       insertTypesEntry: true,

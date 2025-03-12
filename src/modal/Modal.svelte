@@ -15,7 +15,7 @@
 
   import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
   import { extractConnector } from "../helpers/connector"
-  import { StarknetkitCompoundConnector } from "../connectors"
+  import type { StarknetkitCompoundConnector } from "../connectors"
   import { ArgentX } from "../connectors/injected/argentX"
   import { Braavos } from "../connectors/injected/braavos"
   import { getModalWallet } from "../helpers/mapModalWallets"
