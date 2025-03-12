@@ -1,14 +1,15 @@
 import {
   Permission,
+  type AccountChangeEventHandler,
   type RequestFnCall,
   type RpcMessage,
   type RpcTypeToMessageMap,
-  type AccountChangeEventHandler,
   type StarknetWindowObject,
   type TypedData,
 } from "@starknet-io/types-js"
+import type { TRPCClientError } from "@trpc/client"
 import {
-  Account,
+  WalletAccount,
   type AccountInterface,
   type ProviderInterface,
   type ProviderOptions,
@@ -27,6 +28,7 @@ import {
   type ConnectorIcons,
 } from "../connector"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
+import { ConnectAndSignSessionError } from "./errors"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
 import {
@@ -34,8 +36,6 @@ import {
   type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
 import type { ApprovalRequest } from "./starknetWindowObject/types"
-import type { TRPCClientError } from "@trpc/client"
-import { ConnectAndSignSessionError } from "./errors"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
@@ -239,7 +239,7 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
 
-    return new Account(provider, _address, "")
+    return new WalletAccount(provider, this._wallet, undefined, _address)
   }
 
   async chainId(): Promise<bigint> {
@@ -290,5 +290,5 @@ export class WebWalletConnector extends Connector {
   }
 }
 
-export type { WebWalletStarknetWindowObject, ApprovalRequest }
 export { ConnectAndSignSessionError }
+export type { ApprovalRequest, WebWalletStarknetWindowObject }
