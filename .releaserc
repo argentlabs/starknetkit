@@ -10,11 +10,7 @@
       "prerelease": true
     },
     {
-      "name": "beta-braavos-mobile",
-      "prerelease": true
-    },
-    {
-      "name": "beta-ww-sdk",
+      "name": "beta-wallet-account",
       "prerelease": true
     }
   ],
