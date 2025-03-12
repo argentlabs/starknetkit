@@ -107,7 +107,7 @@ export function StarknetReactWrapper({
         resolve(true)
       })
     }).catch(async (error) => {
-      if (error.message === ERROR_MAPPING["0001"]) {
+      if (status !== "fail" && error.message === ERROR_MAPPING["0001"]) {
         await connectAsyncFunction({ connector: fallbackConnector })
       } else {
         reject(error)
