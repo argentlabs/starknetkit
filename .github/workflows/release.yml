@@ -6,6 +6,7 @@ on:
       - main
       - beta-braavos-mobile
       - beta-argent-ww-iframe
+      - beta-wallet-account
       - hotfix\/v[0-9]+.[0-9]+.[0-9]+
 
 jobs:

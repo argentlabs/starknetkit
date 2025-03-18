@@ -1,13 +1,15 @@
 import {
   Permission,
+  type AccountChangeEventHandler,
   type RequestFnCall,
   type RpcMessage,
   type RpcTypeToMessageMap,
-  type AccountChangeEventHandler,
   type StarknetWindowObject,
+  type TypedData,
 } from "@starknet-io/types-js"
+import type { TRPCClientError } from "@trpc/client"
 import {
-  Account,
+  WalletAccount,
   type AccountInterface,
   type ProviderInterface,
   type ProviderOptions,
@@ -26,12 +28,16 @@ import {
   type ConnectorIcons,
 } from "../connector"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
+import { ConnectAndSignSessionError, WebwalletError } from "./errors"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
-import type {
-  Theme,
-  WebWalletStarknetWindowObject,
+import {
+  type Theme,
+  type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
+import type { ApprovalRequest } from "./starknetWindowObject/types"
+
+const WEBWALLET_LOGOUT_EVENT = "webwallet_logout"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
@@ -57,21 +63,25 @@ export class WebWalletConnector extends Connector {
   }
 
   async ready(): Promise<boolean> {
-    if (!_wallet) {
-      this._wallet = null
-      _address = null
-      return false
+    if (!this._wallet) {
+      await this.ensureWallet()
     }
 
-    this._wallet = _wallet
-    try {
-      const permissions = await this._wallet.request({
-        type: "wallet_getPermissions",
-      })
+    if (!this._wallet) {
+      this._wallet = null
+      _address = null
 
-      return (permissions as Permission[]).includes(Permission.ACCOUNTS)
-    } catch {
       return false
+    } else {
+      try {
+        const permissions = await this._wallet.request({
+          type: "wallet_getPermissions",
+        })
+
+        return (permissions as Permission[]).includes(Permission.ACCOUNTS)
+      } catch {
+        return false
+      }
     }
   }
 
@@ -105,6 +115,48 @@ export class WebWalletConnector extends Connector {
 
   get subtitle(): string {
     return "Powered by Argent"
+  }
+
+  async connectAndSignSession({
+    callbackData,
+    approvalRequests,
+    sessionTypedData,
+  }: {
+    callbackData?: string
+    approvalRequests: ApprovalRequest[]
+    sessionTypedData: TypedData
+  }) {
+    await this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotFoundError()
+    }
+
+    try {
+      return await (
+        this._wallet as WebWalletStarknetWindowObject
+      ).connectAndSignSession({
+        callbackData,
+        approvalRequests,
+        sessionTypedData,
+      })
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.constructor.name === "TRPCClientError" ||
+          error.name === "TRPCClientError")
+      ) {
+        const trpcError = error as TRPCClientError<any>
+
+        const message =
+          trpcError.shape.data.webwalletErrorMessage || trpcError.message
+        const code =
+          trpcError.shape.data.webwalletErrorCode || trpcError.shape.message
+
+        throw new ConnectAndSignSessionError(message, code)
+      }
+      throw new Error(error instanceof Error ? error.message : String(error))
+    }
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
@@ -161,8 +213,29 @@ export class WebWalletConnector extends Connector {
     }
     try {
       return await this._wallet.request(call)
-    } catch (e) {
-      console.error(e)
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.constructor.name === "TRPCClientError" ||
+          error.name === "TRPCClientError")
+      ) {
+        const trpcError = error as TRPCClientError<any>
+
+        const message =
+          trpcError.shape.data.webwalletErrorMessage || trpcError.message
+        const code =
+          trpcError.shape.data.webwalletErrorCode || trpcError.shape.message
+
+        if (code === "USER_LOGGED_OUT") {
+          _wallet = null
+          _address = null
+          this._wallet = null
+          document.dispatchEvent(new Event(WEBWALLET_LOGOUT_EVENT))
+        }
+
+        throw new WebwalletError(message, code)
+      }
+
       throw new UserRejectedRequestError()
     }
   }
@@ -191,7 +264,7 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
 
-    return new Account(provider, _address, "")
+    return new WalletAccount(provider, this._wallet, undefined, _address)
   }
 
   async chainId(): Promise<bigint> {
@@ -242,4 +315,16 @@ export class WebWalletConnector extends Connector {
   }
 }
 
-export type { WebWalletStarknetWindowObject }
+const handleWebwalletLogoutEvent = (callback: () => void) => {
+  document.addEventListener(WEBWALLET_LOGOUT_EVENT, () => {
+    callback()
+  })
+}
+
+export {
+  ConnectAndSignSessionError,
+  handleWebwalletLogoutEvent,
+  WEBWALLET_LOGOUT_EVENT,
+  WebwalletError,
+}
+export type { ApprovalRequest, WebWalletStarknetWindowObject }
