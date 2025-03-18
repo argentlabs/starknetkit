@@ -81,6 +81,18 @@ const wallet = await connect({ modalMode: "neverAsk" })
 await disconnect({ clearLastWallet: true })
 ```
 
+## Handle webwallet logout
+
+In your application, import `handleWebwalletLogoutEvent` and pass a callback to manage the state of your dapp
+
+```js
+useEffect(() => {
+  handleWebwalletLogoutEvent(() => {
+    // clear state
+  })
+}, [])
+```
+
 ## Listen to account change
 
 ```js
