@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.8.1-beta-wallet-account.1",
+  "version": "2.9.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
