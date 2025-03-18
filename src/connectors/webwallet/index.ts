@@ -28,7 +28,7 @@ import {
   type ConnectorIcons,
 } from "../connector"
 import { DEFAULT_WEBWALLET_ICON, DEFAULT_WEBWALLET_URL } from "./constants"
-import { ConnectAndSignSessionError } from "./errors"
+import { ConnectAndSignSessionError, WebwalletError } from "./errors"
 import { openWebwallet } from "./helpers/openWebwallet"
 import { setPopupOptions } from "./helpers/trpc"
 import {
@@ -36,6 +36,8 @@ import {
   type WebWalletStarknetWindowObject,
 } from "./starknetWindowObject/argentStarknetWindowObject"
 import type { ApprovalRequest } from "./starknetWindowObject/types"
+
+const WEBWALLET_LOGOUT_EVENT = "webwallet_logout"
 
 let _wallet: StarknetWindowObject | null = null
 let _address: string | null = null
@@ -209,8 +211,29 @@ export class WebWalletConnector extends Connector {
     }
     try {
       return await this._wallet.request(call)
-    } catch (e) {
-      console.error(e)
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.constructor.name === "TRPCClientError" ||
+          error.name === "TRPCClientError")
+      ) {
+        const trpcError = error as TRPCClientError<any>
+
+        const message =
+          trpcError.shape.data.webwalletErrorMessage || trpcError.message
+        const code =
+          trpcError.shape.data.webwalletErrorCode || trpcError.shape.message
+
+        if (code === "USER_LOGGED_OUT") {
+          _wallet = null
+          _address = null
+          this._wallet = null
+          document.dispatchEvent(new Event(WEBWALLET_LOGOUT_EVENT))
+        }
+
+        throw new WebwalletError(message, code)
+      }
+
       throw new UserRejectedRequestError()
     }
   }
@@ -290,5 +313,16 @@ export class WebWalletConnector extends Connector {
   }
 }
 
-export { ConnectAndSignSessionError }
+const handleWebwalletLogoutEvent = (callback: () => void) => {
+  document.addEventListener(WEBWALLET_LOGOUT_EVENT, () => {
+    callback()
+  })
+}
+
+export {
+  ConnectAndSignSessionError,
+  handleWebwalletLogoutEvent,
+  WEBWALLET_LOGOUT_EVENT,
+  WebwalletError,
+}
 export type { ApprovalRequest, WebWalletStarknetWindowObject }
