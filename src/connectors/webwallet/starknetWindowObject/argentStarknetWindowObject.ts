@@ -14,7 +14,7 @@ import {
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
-import { setIframeSize, setPopupOptions, type AppRouter } from "../helpers/trpc"
+import { setPopupOptions, type AppRouter } from "../helpers/trpc"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -66,7 +66,6 @@ export const getArgentStarknetWindowObject = (
     },
     connectWebwallet: (props = {}) => {
       const { theme } = props
-      setIframeSize(ENABLE_POPUP_WIDTH, ENABLE_POPUP_WIDTH)
       return proxyLink.connectWebwallet.mutate({
         theme,
       })
@@ -94,8 +93,6 @@ export const getArgentStarknetWindowObject = (
             location: isSession ? "/signSessionKeys" : "/signMessage",
           })
 
-          setIframeSize(SIGN_MESSAGE_POPUP_WIDTH, SIGN_MESSAGE_POPUP_HEIGHT)
-
           const data = Array.isArray(call.params) ? call.params : [call.params]
           return proxyLink.signTypedData.mutate(data as any)
         }
@@ -112,8 +109,6 @@ export const getArgentStarknetWindowObject = (
             height: EXECUTE_POPUP_HEIGHT,
             location: "/review",
           })
-
-          setIframeSize(EXECUTE_POPUP_WIDTH, EXECUTE_POPUP_HEIGHT)
 
           const hash = await proxyLink.addInvokeTransaction.mutate(calls)
 

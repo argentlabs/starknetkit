@@ -26,6 +26,14 @@ export const hideModal = (
   backdrop.style.display = "none"
 }
 
+export const updateSize = (
+  iframe: HTMLIFrameElement,
+  width: number,
+  height: number,
+) => {
+  iframe.style.width = `${width}px`
+  iframe.style.height = `${height}px`
+}
 export const iframeId = "argent-webwallet-iframe"
 
 export const createModal = async (targetUrl: string, shouldShow: boolean) => {
