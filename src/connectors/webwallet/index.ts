@@ -9,7 +9,7 @@ import {
 } from "@starknet-io/types-js"
 import type { TRPCClientError } from "@trpc/client"
 import {
-  Account,
+  WalletAccount,
   type AccountInterface,
   type ProviderInterface,
   type ProviderOptions,
@@ -262,7 +262,7 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
 
-    return new Account(provider, _address, "")
+    return new WalletAccount(provider, this._wallet, undefined, _address)
   }
 
   async chainId(): Promise<bigint> {
