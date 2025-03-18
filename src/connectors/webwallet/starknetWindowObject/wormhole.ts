@@ -1,25 +1,36 @@
 const applyModalStyle = (iframe: HTMLIFrameElement) => {
   iframe.style.display = "none"
-  iframe.style.border = "none"
+  iframe.style.borderRadius = "40px"
   iframe.style.inset = "0"
   iframe.style.position = "fixed"
-  iframe.style.width = "100%"
-  iframe.style.height = "100%"
-  iframe.style.backgroundColor = "rgba(0,0,0,0.5);"
+  iframe.style.top = "50%"
+  iframe.style.left = "50%"
+  iframe.style.transform = "translate(-50%, -50%)"
+  iframe.style.backgroundColor = "transparent"
   iframe.style.zIndex = "999999"
 }
 
-export const showModal = (iframe: HTMLIFrameElement) => {
+export const showModal = (
+  iframe: HTMLIFrameElement,
+  backdrop: HTMLDivElement,
+) => {
   iframe.style.display = "block"
+  backdrop.style.display = "block"
 }
 
-export const hideModal = (iframe: HTMLIFrameElement) => {
+export const hideModal = (
+  iframe: HTMLIFrameElement,
+  backdrop: HTMLDivElement,
+) => {
   iframe.style.display = "none"
+  backdrop.style.display = "none"
 }
+
+export const iframeId = "argent-webwallet-iframe"
 
 export const createModal = async (targetUrl: string, shouldShow: boolean) => {
   // make sure target url has always /iframes/comms as the path
-  const iframeId = "argent-webwallet-iframe"
+  const backdropId = "argent-webwallet-backdrop"
   const url = new URL(targetUrl)
   url.pathname = "/iframes/comms"
   targetUrl = url.toString()
@@ -34,7 +45,7 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
     "allow-top-navigation",
     "allow-popups",
   )
-  iframe.allow = "clipboard-write allowtransparency"
+  iframe.allow = "clipboard-write"
   iframe.id = iframeId
   iframe.setAttribute("allowtransparency", "true")
   iframe.setAttribute("transparent", "true")
@@ -42,12 +53,22 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
   applyModalStyle(iframe)
   iframe.style.display = shouldShow ? "block" : "none"
 
-  const existingElement = document.getElementById(iframeId)
+  const backdrop = document.createElement("div")
+  backdrop.id = backdropId
+  backdrop.style.position = "fixed"
+  backdrop.style.inset = "0"
+  backdrop.style.backgroundColor = "rgba(0,0,0,0.5)"
+  backdrop.style.zIndex = "999998"
+  backdrop.style.width = "100dvw"
+  backdrop.style.height = "100dvh"
+  backdrop.style.backdropFilter = "blur(4px)"
 
+  const existingElement = document.getElementById(iframeId)
   if (existingElement) {
     // element exists but shadowRoot cannot be accessed
     // delete the element and create new
     existingElement.remove()
+    document.getElementById(backdropId)?.remove()
   }
   window.document.body.appendChild(iframe)
 
@@ -64,5 +85,7 @@ export const createModal = async (targetUrl: string, shouldShow: boolean) => {
     })
   })
 
-  return { iframe }
+  window.document.body.appendChild(backdrop)
+
+  return { iframe, backdrop }
 }

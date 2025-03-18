@@ -11,6 +11,7 @@ import {
   deployAccountContractSchema,
 } from "../../../types/window"
 import { DEFAULT_WEBWALLET_URL } from "../constants"
+import { iframeId } from "../starknetWindowObject/wormhole"
 
 const t = initTRPC.create({
   isServer: false,
@@ -53,6 +54,14 @@ export const setPopupOptions = ({
   popupParams = `width=${width},height=${height},top=${y},left=${x},toolbar=no,menubar=no,scrollbars=no,location=no,status=no,popup=1`
 }
 
+export const setIframeSize = (width: number, height: number) => {
+  const iframe = document.getElementById(iframeId) as HTMLIFrameElement
+  if (iframe) {
+    iframe.style.minWidth = `${width}px`
+    iframe.style.minHeight = `${height}px`
+  }
+}
+
 // TODO: abstract AppRouter in order to have one single source of truth
 // At the moment, this is needed
 const appRouter = t.router({
@@ -64,7 +73,6 @@ const appRouter = t.router({
     .input(
       z.object({
         theme: z.enum(["light", "dark", "auto"]).optional(),
-        featureFlagIframeProtection: z.boolean().optional(),
       }),
     )
     .output(

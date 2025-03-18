@@ -71,7 +71,7 @@ export const openWebwallet = async (
       existingIframe.remove()
       existingModal.remove()
     }
-    const { iframe } = await createModal(origin, false)
+    const { iframe, backdrop } = await createModal(origin, false)
 
     const iframeTrpcProxyClient = trpcProxyClient({
       iframe: iframe.contentWindow ?? undefined,
@@ -80,7 +80,7 @@ export const openWebwallet = async (
     const starknetWindowObject = await getWebWalletStarknetObject(
       origin,
       iframeTrpcProxyClient,
-      { iframe },
+      { iframe, backdrop },
     )
     return starknetWindowObject
   } else {

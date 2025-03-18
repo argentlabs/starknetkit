@@ -6,6 +6,7 @@ import { hideModal, showModal } from "./wormhole"
 
 type IframeProps = {
   iframe: HTMLIFrameElement
+  backdrop: HTMLDivElement
 }
 
 export type ModalEvents =
@@ -38,15 +39,15 @@ export const getWebWalletStarknetObject = async (
   )
 
   if (iframeProps) {
-    const { iframe } = iframeProps
+    const { iframe, backdrop } = iframeProps
     proxyLink.updateModal.subscribe(undefined, {
       onData(modalEvent: ModalEvents) {
         switch (modalEvent.action) {
           case "show":
-            showModal(iframe)
+            showModal(iframe, backdrop)
             break
           case "hide":
-            hideModal(iframe)
+            hideModal(iframe, backdrop)
             break
         }
       },

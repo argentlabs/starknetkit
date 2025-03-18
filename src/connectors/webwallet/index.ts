@@ -41,7 +41,6 @@ interface WebWalletConnectorOptions {
   theme?: Theme
   ssoToken?: string
   authorizedPartyId?: string
-  featureFlagIframeProtection?: boolean
 }
 
 export class WebWalletConnector extends Connector {
@@ -132,8 +131,6 @@ export class WebWalletConnector extends Connector {
           this._wallet as WebWalletStarknetWindowObject
         ).connectWebwallet({
           theme: this._options.theme,
-          featureFlagIframeProtection:
-            this._options.featureFlagIframeProtection,
         })
         account = connectResponse.account
         chainId = connectResponse.chainId
