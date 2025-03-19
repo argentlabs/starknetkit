@@ -77,7 +77,9 @@ export const getArgentStarknetWindowObject = (
     },
     connectWebwallet: (props = {}) => {
       const { theme } = props
-      return proxyLink.connectWebwallet.mutate({ theme })
+      return proxyLink.connectWebwallet.mutate({
+        theme,
+      })
     },
     connectAndSignSession: (props) => {
       console.log("connectAndSignSession", props)
@@ -105,6 +107,7 @@ export const getArgentStarknetWindowObject = (
             height: SIGN_MESSAGE_POPUP_HEIGHT,
             location: isSession ? "/signSessionKeys" : "/signMessage",
           })
+
           const data = Array.isArray(call.params) ? call.params : [call.params]
           return proxyLink.signTypedData.mutate(data as any)
         }

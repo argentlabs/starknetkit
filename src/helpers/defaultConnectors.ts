@@ -1,4 +1,4 @@
-import { StarknetkitConnector } from "../connectors"
+import type { StarknetkitConnector } from "../connectors"
 import {
   ArgentMobileBaseConnector,
   type ArgentMobileConnectorOptions,

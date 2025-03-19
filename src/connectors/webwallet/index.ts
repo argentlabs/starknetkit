@@ -181,7 +181,9 @@ export class WebWalletConnector extends Connector {
       } else {
         const connectResponse = await (
           this._wallet as WebWalletStarknetWindowObject
-        ).connectWebwallet({ theme: this._options.theme })
+        ).connectWebwallet({
+          theme: this._options.theme,
+        })
         account = connectResponse.account
         chainId = connectResponse.chainId
       }
