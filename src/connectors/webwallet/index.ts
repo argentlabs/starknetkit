@@ -139,6 +139,7 @@ export class WebWalletConnector extends Connector {
         callbackData,
         approvalRequests,
         sessionTypedData,
+        theme: this._options.theme,
       })
     } catch (error) {
       if (
