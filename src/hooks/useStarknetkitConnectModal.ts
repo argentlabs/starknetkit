@@ -26,7 +26,8 @@ const useStarknetkitConnectModal = (
   const starknetkitConnectModal = async (): Promise<ModalResult> => {
     return await connect({
       ...options,
-      resultType: options?.resultType ?? "connector",
+      skipEmit: true,
+      resultType: undefined,
     })
   }
 
