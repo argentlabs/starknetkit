@@ -9,11 +9,11 @@ import {
   type ModalResult,
   type ModalWallet,
 } from "./types/modal"
-import {
+import type {
   Connector,
   StarknetkitConnector,
   StarknetkitCompoundConnector,
-  type ConnectorData,
+  ConnectorData,
 } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 
@@ -25,7 +25,11 @@ import {
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
-import { extractConnector, findConnectorById } from "./helpers/connector"
+import {
+  extractConnector,
+  findConnectorById,
+  isCompoundConnector,
+} from "./helpers/connector"
 import { getModalTarget } from "./helpers/modal"
 
 import Modal from "./modal/Modal.svelte"
@@ -44,6 +48,7 @@ let selectedConnector: StarknetkitConnector | null = null
  * @param [dappName] - Name of your dapp, displayed in the modal
  * @param [resultType="wallet"] - It will by default return selected wallet's connector by default, otherwise null
  * @param [connectors] - Array of wallet connectors to show in the modal
+ * @param [skipEmit] - Needed for internal handling of useStarknetkitConnectModal hook
  * @param [webWalletUrl="https://web.argent.xyz"] - Link to Argent's web wallet - Mainnet env by default, if as a dApp for integration and testing purposes, you need access to an internal testnet environment, please contact Argent
  * @param [argentMobileOptions] - Argent Mobile connector options - used only when `connectors` is not explicitly passed
  * @param [argentMobileOptions.dappName] - Name of the dapp
@@ -66,6 +71,7 @@ export const connect = async ({
   modalTheme,
   dappName,
   resultType = "wallet",
+  skipEmit = false,
   ...restOptions
 }: ConnectOptionsWithConnectors | ConnectOptions): Promise<ModalResult> => {
   const { webWalletUrl = DEFAULT_WEBWALLET_URL, argentMobileOptions } =
@@ -82,6 +88,19 @@ export const connect = async ({
           webWalletUrl,
         })
       : connectors
+
+  if (skipEmit) {
+    // This is ugly but needed fix for useStarknetkitConnectModal
+    availableConnectors?.map((connector) => {
+      if (isCompoundConnector(connector)) {
+        if ("connector" in connector && "_options" in connector.connector) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          connector.connector._options.shouldEmit = false
+        }
+      }
+    })
+  }
 
   const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {

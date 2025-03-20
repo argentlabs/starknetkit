@@ -32,6 +32,7 @@ export interface ConnectOptions extends GetWalletOptions {
   resultType?: "connector" | "wallet"
   webWalletUrl?: string
   argentMobileOptions: ArgentMobileConnectorOptions
+  skipEmit?: boolean
 }
 
 export interface ConnectOptionsWithConnectors
