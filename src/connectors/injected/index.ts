@@ -5,12 +5,12 @@ import {
   type RpcTypeToMessageMap,
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
-import type {
-  AccountInterface,
-  ProviderInterface,
-  ProviderOptions,
+import {
+  WalletAccount,
+  type AccountInterface,
+  type ProviderInterface,
+  type ProviderOptions,
 } from "starknet"
-import { Account } from "starknet"
 import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
@@ -162,7 +162,7 @@ export class InjectedConnector extends Connector {
       params: { silent_mode: true },
     })
 
-    return new Account(provider, accounts[0], "")
+    return new WalletAccount(provider, this._wallet, undefined, accounts[0])
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {

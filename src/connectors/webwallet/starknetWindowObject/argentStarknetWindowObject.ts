@@ -42,6 +42,12 @@ type ConnectWebwalletProps = {
   theme?: Theme
 }
 
+type ConnectAndSignSessionProps = ConnectWebwalletProps & {
+  callbackData?: string
+  approvalRequests: ApprovalRequest[]
+  sessionTypedData: TypedData
+}
+
 export type WebWalletStarknetWindowObject = StarknetWindowObject & {
   getLoginStatus(): Promise<LoginStatus>
   connectWebwallet(props?: ConnectWebwalletProps): Promise<{
@@ -59,11 +65,8 @@ export type WebWalletStarknetWindowObject = StarknetWindowObject & {
     callbackData,
     approvalRequests,
     sessionTypedData,
-  }: {
-    callbackData?: string
-    approvalRequests: ApprovalRequest[]
-    sessionTypedData: TypedData
-  }): Promise<ConnectAndSignSessionOutput>
+    theme,
+  }: ConnectAndSignSessionProps): Promise<ConnectAndSignSessionOutput>
 }
 
 export const getArgentStarknetWindowObject = (
@@ -77,10 +80,11 @@ export const getArgentStarknetWindowObject = (
     },
     connectWebwallet: (props = {}) => {
       const { theme } = props
-      return proxyLink.connectWebwallet.mutate({ theme })
+      return proxyLink.connectWebwallet.mutate({
+        theme,
+      })
     },
     connectAndSignSession: (props) => {
-      console.log("connectAndSignSession", props)
       return proxyLink.connectAndSignSession.mutate(props)
     },
     connectWebwalletSSO: (token, authorizedPartyId) => {
@@ -105,6 +109,7 @@ export const getArgentStarknetWindowObject = (
             height: SIGN_MESSAGE_POPUP_HEIGHT,
             location: isSession ? "/signSessionKeys" : "/signMessage",
           })
+
           const data = Array.isArray(call.params) ? call.params : [call.params]
           return proxyLink.signTypedData.mutate(data as any)
         }

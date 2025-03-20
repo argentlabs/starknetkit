@@ -1,4 +1,4 @@
-import {
+import type {
   StarknetkitCompoundConnector,
   StarknetkitConnector,
 } from "../connectors"

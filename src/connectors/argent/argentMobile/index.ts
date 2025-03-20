@@ -8,9 +8,9 @@ import {
   type StarknetWindowObject,
 } from "@starknet-io/types-js"
 import {
-  Account,
-  type AccountInterface,
   constants,
+  WalletAccount,
+  type AccountInterface,
   type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
@@ -141,7 +141,7 @@ export class ArgentMobileBaseConnector extends Connector {
       params: { silent_mode: true },
     })
 
-    return new Account(provider, accounts[0], "")
+    return new WalletAccount(provider, this._wallet, undefined, accounts[0])
   }
 
   async chainId(): Promise<bigint> {
