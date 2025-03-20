@@ -1,3 +1,5 @@
+import { ENABLE_POPUP_HEIGHT, ENABLE_POPUP_WIDTH } from "../helpers/popupSizes"
+
 const applyModalStyle = (iframe: HTMLIFrameElement) => {
   iframe.style.display = "none"
   iframe.style.borderRadius = "40px"
@@ -8,6 +10,8 @@ const applyModalStyle = (iframe: HTMLIFrameElement) => {
   iframe.style.transform = "translate(-50%, -50%)"
   iframe.style.backgroundColor = "transparent"
   iframe.style.zIndex = "999999"
+  iframe.style.height = `${ENABLE_POPUP_HEIGHT}px`
+  iframe.style.width = `${ENABLE_POPUP_WIDTH}px`
 }
 
 export const showModal = (
