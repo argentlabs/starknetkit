@@ -18,7 +18,7 @@
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]

@@ -60,18 +60,18 @@ export const openWebwallet = async (
   const { allowedDapps } = await fetchAllowedDapps(network)
 
   if (allowedDapps.includes(window.location.hostname)) {
-    const modalId = "argent-webwallet-modal"
+    const backdropId = "argent-webwallet-backdrop"
     const iframeId = "argent-webwallet-iframe"
 
-    const existingIframe = document.getElementById(modalId)
-    const existingModal = document.getElementById(iframeId)
+    const existingBackdrop = document.getElementById(backdropId)
+    const existingIframe = document.getElementById(iframeId)
 
     // avoid duplicate iframes
-    if (existingIframe && existingIframe && existingModal) {
+    if (existingIframe && existingIframe && existingBackdrop) {
       existingIframe.remove()
-      existingModal.remove()
+      existingBackdrop.remove()
     }
-    const { iframe, modal } = await createModal(origin, false)
+    const { iframe, backdrop } = await createModal(origin, false)
 
     const iframeTrpcProxyClient = trpcProxyClient({
       iframe: iframe.contentWindow ?? undefined,
@@ -80,7 +80,7 @@ export const openWebwallet = async (
     const starknetWindowObject = await getWebWalletStarknetObject(
       origin,
       iframeTrpcProxyClient,
-      { modal, iframe },
+      { iframe, backdrop },
     )
     return starknetWindowObject
   } else {

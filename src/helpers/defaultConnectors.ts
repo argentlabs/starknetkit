@@ -1,4 +1,4 @@
-import { StarknetkitConnector } from "../connectors"
+import type { StarknetkitConnector } from "../connectors"
 import {
   ArgentMobileBaseConnector,
   type ArgentMobileConnectorOptions,
@@ -43,6 +43,22 @@ export const defaultConnectors = ({
     defaultConnectors.push(
       new InjectedConnector({ options: { id: "braavos" } }),
     )
+
+    if (InjectedConnector.isWalletInjected("metamask")) {
+      defaultConnectors.push(
+        new InjectedConnector({ options: { id: "metamask" } }),
+      )
+    }
+    if (InjectedConnector.isWalletInjected("fordefi")) {
+      defaultConnectors.push(
+        new InjectedConnector({ options: { id: "fordefi" } }),
+      )
+    }
+    if (InjectedConnector.isWalletInjected("keplr")) {
+      defaultConnectors.push(
+        new InjectedConnector({ options: { id: "keplr" } }),
+      )
+    }
   }
 
   defaultConnectors.push(new ArgentMobileBaseConnector(argentMobileOptions))

@@ -3,6 +3,7 @@ import type {
   NetworkChangeEventHandler,
   RpcTypeToMessageMap,
   StarknetWindowObject,
+  TypedData,
   WalletEvents,
 } from "@starknet-io/types-js"
 import type { CreateTRPCProxyClient } from "@trpc/client"
@@ -13,7 +14,9 @@ import {
   SIGN_MESSAGE_POPUP_HEIGHT,
   SIGN_MESSAGE_POPUP_WIDTH,
 } from "../helpers/popupSizes"
+import type { ConnectAndSignSessionOutput } from "../helpers/schema"
 import { setPopupOptions, type AppRouter } from "../helpers/trpc"
+import type { ApprovalRequest } from "./types"
 
 export const userEventHandlers: WalletEvents[] = []
 
@@ -39,6 +42,12 @@ type ConnectWebwalletProps = {
   theme?: Theme
 }
 
+type ConnectAndSignSessionProps = ConnectWebwalletProps & {
+  callbackData?: string
+  approvalRequests: ApprovalRequest[]
+  sessionTypedData: TypedData
+}
+
 export type WebWalletStarknetWindowObject = StarknetWindowObject & {
   getLoginStatus(): Promise<LoginStatus>
   connectWebwallet(props?: ConnectWebwalletProps): Promise<{
@@ -52,6 +61,12 @@ export type WebWalletStarknetWindowObject = StarknetWindowObject & {
     account?: string[]
     chainId?: string
   }>
+  connectAndSignSession({
+    callbackData,
+    approvalRequests,
+    sessionTypedData,
+    theme,
+  }: ConnectAndSignSessionProps): Promise<ConnectAndSignSessionOutput>
 }
 
 export const getArgentStarknetWindowObject = (
@@ -65,7 +80,12 @@ export const getArgentStarknetWindowObject = (
     },
     connectWebwallet: (props = {}) => {
       const { theme } = props
-      return proxyLink.connectWebwallet.mutate({ theme })
+      return proxyLink.connectWebwallet.mutate({
+        theme,
+      })
+    },
+    connectAndSignSession: (props) => {
+      return proxyLink.connectAndSignSession.mutate(props)
     },
     connectWebwalletSSO: (token, authorizedPartyId) => {
       return proxyLink.connectWebwalletSSO.mutate({ token, authorizedPartyId })
@@ -89,6 +109,7 @@ export const getArgentStarknetWindowObject = (
             height: SIGN_MESSAGE_POPUP_HEIGHT,
             location: isSession ? "/signSessionKeys" : "/signMessage",
           })
+
           const data = Array.isArray(call.params) ? call.params : [call.params]
           return proxyLink.signTypedData.mutate(data as any)
         }
