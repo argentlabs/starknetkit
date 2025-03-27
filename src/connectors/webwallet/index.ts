@@ -126,7 +126,9 @@ export class WebWalletConnector extends Connector {
     approvalRequests: ApprovalRequest[]
     sessionTypedData: TypedData
   }) {
-    await this.ensureWallet()
+    if (!this._wallet) {
+      await this.ensureWallet()
+    }
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
@@ -161,7 +163,9 @@ export class WebWalletConnector extends Connector {
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
-    await this.ensureWallet()
+    if (!this._wallet) {
+      await this.ensureWallet()
+    }
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
@@ -209,6 +213,10 @@ export class WebWalletConnector extends Connector {
   async request<T extends RpcMessage["type"]>(
     call: RequestFnCall<T>,
   ): Promise<RpcTypeToMessageMap[T]["result"]> {
+    if (!this._wallet) {
+      await this.ensureWallet()
+    }
+
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()
     }

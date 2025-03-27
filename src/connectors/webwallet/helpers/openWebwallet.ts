@@ -60,16 +60,16 @@ export const openWebwallet = async (
   const { allowedDapps } = await fetchAllowedDapps(network)
 
   if (allowedDapps.includes(window.location.hostname)) {
-    const modalId = "argent-webwallet-modal"
+    const backdropId = "argent-webwallet-backdrop"
     const iframeId = "argent-webwallet-iframe"
 
-    const existingModal = document.getElementById(modalId)
+    const existingBackdrop = document.getElementById(backdropId)
     const existingIframe = document.getElementById(iframeId)
 
     // avoid duplicate iframes
-    if (existingIframe && existingIframe && existingModal) {
+    if (existingIframe && existingIframe && existingBackdrop) {
       existingIframe.remove()
-      existingModal.remove()
+      existingBackdrop.remove()
     }
     const { iframe, backdrop } = await createModal(origin, false)
 
