@@ -1,6 +1,6 @@
 import { resolve } from "path"
 
-import react from "@vitejs/plugin-react"
+// import react from "@vitejs/plugin-react"
 import { svelte } from "@sveltejs/vite-plugin-svelte"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
@@ -22,7 +22,7 @@ export default defineConfig({
     lib: {
       entry: {
         starknetkit: resolve(__dirname, "src/main.ts"),
-        "starknet-react": resolve(__dirname, "src/starknet-react/index.tsx"),
+        // "starknet-react": resolve(__dirname, "src/starknet-react/index.tsx"),
         webwalletConnector: resolve(
           __dirname,
           "src/connectors/webwallet/index.ts",
@@ -39,7 +39,7 @@ export default defineConfig({
           __dirname,
           "src/connectors/injected/index.ts",
         ),
-        argent: resolve(__dirname, "src/connectors/argent/index.ts"),
+        // argent: resolve(__dirname, "src/connectors/argent/index.ts"),
         argentX: resolve(__dirname, "src/connectors/injected/argentX.ts"),
         braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
         metamask: resolve(__dirname, "src/connectors/injected/metamask.ts"),
@@ -50,7 +50,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    react({}),
+    // react({}),
     svelte({
       emitCss: false,
     }),

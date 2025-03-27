@@ -37,11 +37,8 @@ export interface ConnectOptions extends GetWalletOptions {
 
 export interface ConnectOptionsWithConnectors
   extends Omit<ConnectOptions, "webWalletUrl" | "argentMobileOptions"> {
-  connectors?: (
-    | Connector
-    | StarknetkitConnector
-    | StarknetkitCompoundConnector
-  )[]
+  connectors?: (Connector | StarknetkitConnector)[]
+  // | StarknetkitCompoundConnector
 }
 
 export type ModalWallet = {

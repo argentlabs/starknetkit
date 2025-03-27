@@ -40,7 +40,7 @@ type StarknetReactWrapperProps = {
   theme?: "dark" | "light"
 }
 
-export function StarknetReactWrapper({
+function StarknetReactWrapper({
   children,
   connector,
   connectAsyncFunction,

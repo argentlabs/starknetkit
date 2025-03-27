@@ -12,7 +12,6 @@ import {
 import type {
   Connector,
   StarknetkitConnector,
-  StarknetkitCompoundConnector,
   ConnectorData,
 } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
@@ -93,6 +92,8 @@ export const connect = async ({
     // This is ugly but needed fix for useStarknetkitConnectModal
     availableConnectors?.map((connector) => {
       if (isCompoundConnector(connector)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         if ("connector" in connector && "_options" in connector.connector) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error
@@ -271,7 +272,7 @@ export type {
   DisconnectOptions,
   StarknetWindowObject,
   StarknetkitConnector,
-  StarknetkitCompoundConnector,
+  // StarknetkitCompoundConnector,
   defaultConnectors as starknetkitDefaultConnectors,
   ConnectOptions,
   ConnectOptionsWithConnectors,
