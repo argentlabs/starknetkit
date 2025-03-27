@@ -40,7 +40,8 @@
 
   export let showBackButton: boolean = true
   $: showFallback = Boolean(
-    isCompoundConnector(selectedWallet?.connector)
+    selectedWallet
+    && isCompoundConnector(selectedWallet?.connector)
     && (selectedWallet?.connector as StarknetkitCompoundConnector)?.fallbackConnector
   );
 
