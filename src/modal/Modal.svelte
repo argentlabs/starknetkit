@@ -14,7 +14,7 @@
   import DynamicIcon from "./components/DynamicIcon.svelte"
 
   import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
-  import { extractConnector } from "../helpers/connector"
+  import { extractConnector, isCompoundConnector } from "../helpers/connector"
   import type { StarknetkitCompoundConnector } from "../connectors"
   import { ArgentX } from "../connectors/injected/argentX"
   import { Braavos } from "../connectors/injected/braavos"
@@ -40,7 +40,7 @@
 
   export let showBackButton: boolean = true
   $: showFallback = Boolean(
-    (selectedWallet?.connector as StarknetkitCompoundConnector).isCompoundConnector
+    isCompoundConnector(selectedWallet?.connector)
     && (selectedWallet?.connector as StarknetkitCompoundConnector)?.fallbackConnector
   );
 

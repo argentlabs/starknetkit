@@ -9,15 +9,16 @@ import {
 import { ARGENT_X_ICON } from "../connectors/injected/constants"
 import type { ModalWallet, StoreVersion } from "../types/modal"
 import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
-import { extractConnector, findConnectorById } from "./connector"
+import {
+  extractConnector,
+  findConnectorById,
+  isCompoundConnector,
+} from "./connector"
 import { getStoreVersionFromBrowser } from "./getStoreVersionFromBrowser"
 
 interface SetConnectorsExpandedParams {
-  availableConnectors: (
-    | Connector
-    | StarknetkitConnector
-    | StarknetkitCompoundConnector
-  )[]
+  availableConnectors: (Connector | StarknetkitConnector)[]
+  // | StarknetkitCompoundConnector
   installedWallets: StarknetWindowObject[]
   discoveryWallets: WalletProvider[]
   storeVersion: StoreVersion | null
@@ -41,9 +42,7 @@ export function getModalWallet(
     connectorOrCompoundConnector,
   ) as StarknetkitConnector
 
-  const isCompoundConnector = (
-    connectorOrCompoundConnector as StarknetkitCompoundConnector
-  ).isCompoundConnector
+  const isCompound = isCompoundConnector(connectorOrCompoundConnector)
 
   const downloads = discoveryWallets?.find(
     (d) =>
@@ -51,13 +50,9 @@ export function getModalWallet(
   )?.downloads
 
   return {
-    name: isCompoundConnector
-      ? connectorOrCompoundConnector.name
-      : connector.name,
+    name: isCompound ? connectorOrCompoundConnector.name : connector.name,
     id: connector.id,
-    icon: isCompoundConnector
-      ? connectorOrCompoundConnector.icon
-      : connector.icon,
+    icon: isCompound ? connectorOrCompoundConnector.icon : connector.icon,
     connector: connectorOrCompoundConnector,
     installed: true,
     title:
@@ -103,8 +98,7 @@ export const mapModalWallets = ({
 
   const connectors = orderedByInstall
     .map<ModalWallet | null>((_c) => {
-      const isCompoundConnector = (_c as StarknetkitCompoundConnector)
-        .isCompoundConnector
+      const isCompound = isCompoundConnector(_c)
       const c = extractConnector(_c)
 
       const installed = installedWallets.find((w) => w.id === c?.id)
@@ -113,7 +107,7 @@ export const mapModalWallets = ({
         let name
         let download
 
-        if (isCompoundConnector) {
+        if (isCompound) {
           icon = _c.icon
           name = _c.name
         } else {
