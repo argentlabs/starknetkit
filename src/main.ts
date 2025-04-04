@@ -2,8 +2,8 @@ import type { DisconnectOptions } from "@starknet-io/get-starknet"
 import sn from "@starknet-io/get-starknet-core"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
 import {
-  Connector,
-  StarknetkitConnector,
+  type Connector,
+  type StarknetkitConnector,
   type ConnectorData,
 } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
@@ -83,7 +83,10 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (connector && resultType === "wallet") {
-        connectorData = await connector.connect()
+        // Only ArgentX connector will use silent_mode param to avoid breaking changes on other wallets
+        connectorData = await connector.connect({
+          silent_mode: connector.id === "argentX",
+        })
       }
 
       return {
@@ -115,7 +118,11 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (resultType === "wallet") {
-        connectorData = (await connector?.connect()) ?? null
+        // Only ArgentX connector will use silent_mode param to avoid breaking changes on other wallets
+        connectorData =
+          (await connector?.connect({
+            silent_mode: connector.id === "argentX",
+          })) ?? null
       }
 
       if (connector) {

@@ -158,6 +158,7 @@ export class InjectedConnector extends Connector {
     try {
       accounts = await this.request({
         type: "wallet_requestAccounts",
+        params: { silent_mode: _args.silent_mode },
       })
     } catch {
       throw new UserRejectedRequestError()
