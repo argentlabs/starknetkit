@@ -34,6 +34,7 @@ export interface ConnectorEvents {
 
 export type ConnectArgs = {
   chainIdHint?: bigint
+  silent_mode?: boolean
 }
 
 export abstract class Connector extends EventEmitter<ConnectorEvents> {
@@ -67,5 +68,4 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
 export abstract class StarknetkitConnector extends Connector {
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
-  abstract connectSilent?(): Promise<ConnectorData>
 }

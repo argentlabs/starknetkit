@@ -84,11 +84,9 @@ export const connect = async ({
 
       if (connector && resultType === "wallet") {
         // Only ArgentX connector has connectSilent method due to avoid breaking changes on other wallets
-        if (connector.id === "argentX" && connector.connectSilent) {
-          connectorData = await connector.connectSilent()
-        } else {
-          connectorData = await connector.connect()
-        }
+        connectorData = await connector.connect({
+          silent_mode: connector.id === "argentX",
+        })
       }
 
       return {
@@ -121,11 +119,11 @@ export const connect = async ({
 
       if (resultType === "wallet") {
         // Only ArgentX connector has connectSilent method due to avoid breaking changes on other wallets
-        if (connector?.id === "argentX" && connector?.connectSilent) {
-          connectorData = await connector.connectSilent()
-        } else {
-          connectorData = (await connector?.connect()) ?? null
-        }
+
+        connectorData =
+          (await connector?.connect({
+            silent_mode: connector.id === "argentX",
+          })) ?? null
       }
 
       if (connector) {
