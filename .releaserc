@@ -16,6 +16,10 @@
     {
       "name": "beta-argent-ww-iframe",
       "prerelease": true
+    },
+    {
+      "name": "beta-connect-silent",
+      "prerelease": true
     }
   ],
   "plugins": [

@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "2.10.4",
+  "version": "2.10.5-beta-connect-silent.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {

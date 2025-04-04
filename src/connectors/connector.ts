@@ -1,7 +1,7 @@
 import EventEmitter from "eventemitter3"
 import {
-  AccountInterface,
-  ProviderInterface,
+  type AccountInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import type {
@@ -34,6 +34,7 @@ export interface ConnectorEvents {
 
 export type ConnectArgs = {
   chainIdHint?: bigint
+  silent_mode?: boolean
 }
 
 export abstract class Connector extends EventEmitter<ConnectorEvents> {
