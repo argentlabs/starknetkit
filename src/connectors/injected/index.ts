@@ -191,6 +191,54 @@ export class InjectedConnector extends Connector {
     }
   }
 
+  // TODO: Temp method to connect silently, only available with StarknetkitConnector
+  // it's a copy of the connect method with the silent_mode set to true
+  // this is done to keep compatibility with starknet-react and solve an issue with a locked ArgentX wallet
+  async connectSilent(): Promise<ConnectorData> {
+    this.ensureWallet()
+
+    if (!this._wallet) {
+      throw new ConnectorNotFoundError()
+    }
+
+    let accounts: string[]
+    try {
+      accounts = await this.request({
+        type: "wallet_requestAccounts",
+        params: { silent_mode: true },
+      })
+    } catch {
+      throw new UserRejectedRequestError()
+    }
+
+    if (!accounts) {
+      throw new UserRejectedRequestError()
+    }
+
+    this._wallet.on("accountsChanged", async (accounts) => {
+      await this.onAccountsChanged(accounts)
+    })
+
+    this._wallet.on("networkChanged", (chainId, accounts) => {
+      this.onNetworkChanged(chainId, accounts)
+    })
+
+    await this.onAccountsChanged(accounts)
+
+    const [account] = accounts
+
+    const chainId = await this.chainId()
+    /**
+     * @dev This emit ensures compatibility with starknet-react
+     */
+    this.emit("connect", { account, chainId })
+
+    return {
+      account,
+      chainId,
+    }
+  }
+
   async disconnect(): Promise<void> {
     this.ensureWallet()
     removeStarknetLastConnectedWallet()

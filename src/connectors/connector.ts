@@ -1,7 +1,7 @@
 import EventEmitter from "eventemitter3"
 import {
-  AccountInterface,
-  ProviderInterface,
+  type AccountInterface,
+  type ProviderInterface,
   type ProviderOptions,
 } from "starknet"
 import type {
@@ -67,4 +67,5 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
 export abstract class StarknetkitConnector extends Connector {
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
+  abstract connectSilent?(): Promise<ConnectorData>
 }
