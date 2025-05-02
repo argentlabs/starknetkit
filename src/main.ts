@@ -118,11 +118,7 @@ export const connect = async ({
       let connectorData: ConnectorData | null = null
 
       if (resultType === "wallet") {
-        // Only ArgentX connector will use silent_mode param to avoid breaking changes on other wallets
-        connectorData =
-          (await connector?.connect({
-            silent_mode: connector.id === "argentX",
-          })) ?? null
+        connectorData = (await connector?.connect()) ?? null
       }
 
       if (connector) {
