@@ -5,28 +5,23 @@ import type { RequestFnCall, RpcMessage, RpcTypeToMessageMap, StarknetWindowObje
 
 import Controller, { type ControllerOptions } from "@cartridge/controller";
 import { Connector, type ConnectArgs, type ConnectorData } from "../connector"
-import { ConnectorNotConnectedError } from "../../errors"
+import { ConnectorNotConnectedError, UserNotConnectedError } from "../../errors"
 
 import { CONTROLLER_ICON, RPC_URLS } from "./constants";
 
 export class ControllerConnector extends Connector {
-  private controller: Controller;
+  private controller: Controller | null;
 
-  static init(options: Partial<ControllerOptions>): ControllerConnector | null {
-    if (typeof window === "undefined") {
-      return null;
-    }
+  constructor(options: Partial<ControllerOptions> = {}) {
+    super();
 
-    options = options || {};
+    // Can pass in defaultChainId = SN_SEPOLIA to connect to Sepolia testnet
     options.defaultChainId = options.defaultChainId || constants.StarknetChainId.SN_MAIN;
     options.chains = options.chains || [{ rpcUrl: RPC_URLS[options.defaultChainId as keyof typeof RPC_URLS] }];
 
-    return new ControllerConnector(options as ControllerOptions);
-  }
-
-  constructor(options: ControllerOptions) {
-    super();
-    this.controller = new Controller(options);
+    this.controller = this.available()
+      ? new Controller(options as ControllerOptions)
+      : null;
   }
 
   get id() { return "cartridgeController" }
@@ -41,16 +36,17 @@ export class ControllerConnector extends Connector {
     if (!this.controller) {
       return false;
     }
+
     const account = await this.controller.probe();
     return account !== null;
   }
 
   async connect(_args?: ConnectArgs): Promise<ConnectorData> {
+    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
     const account = await this.controller.connect();
 
-    if (!account) {
-      throw new ConnectorNotConnectedError();
-    }
+    if (!account) { throw new UserNotConnectedError(); }
 
     return {
       account: account.address,
@@ -59,34 +55,40 @@ export class ControllerConnector extends Connector {
   }
 
   async disconnect(): Promise<void> {
+    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
     return this.controller.disconnect();
   }
 
   async account(_provider: ProviderOptions | ProviderInterface): Promise<AccountInterface> {
+    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
     const account = await this.controller.probe();
 
-    if (!account) {
-      throw new ConnectorNotConnectedError();
-    }
+    if (!account) { throw new UserNotConnectedError(); }
 
     return account;
   }
 
   async chainId(): Promise<bigint> {
+    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
     const account = await this.controller.probe();
 
-    if (!account) {
-      throw new ConnectorNotConnectedError();
-    }
+    if (!account) { throw new UserNotConnectedError(); }
 
     return BigInt(await account.getChainId());
   }
 
   async request<T extends RpcMessage["type"]>(call: RequestFnCall<T>): Promise<RpcTypeToMessageMap[T]["result"]> {
+    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
     return this.controller.request(call);
   }
 
   get wallet(): StarknetWindowObject {
+    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
     return this.controller;
   }
 }
