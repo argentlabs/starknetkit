@@ -40,10 +40,7 @@ export const defaultConnectors = ({
     }
   }
 
-  const controllerConnector = ControllerConnector.init({});
-  if (controllerConnector) {
-    defaultConnectors.push(controllerConnector);
-  }
+  defaultConnectors.push(new ControllerConnector())
 
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())
