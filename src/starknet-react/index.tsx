@@ -62,7 +62,13 @@ function StarknetReactWrapper({
 
   useEffect(() => {
     if (mainConnector && isCompound) {
-      mainConnector.on("connectionStatus", function (newStatus) {
+      const onConnectionStatus = (
+        cb: (status: "init" | "success" | "fail" | "fallback") => void,
+      ) => {
+        mainConnector?.on("connectionStatus", cb as any)
+      }
+
+      onConnectionStatus(function (newStatus) {
         if (newStatus !== "fallback") {
           setStatus((prevStatus) => {
             if (prevStatus === "none" && newStatus === "fail") {
@@ -97,7 +103,13 @@ function StarknetReactWrapper({
       resolve = res
       reject = rej
 
-      mainConnector?.on("connectionStatus", async (status) => {
+      const onConnectionStatus = (
+        cb: (status: "init" | "success" | "fail" | "fallback") => void,
+      ) => {
+        mainConnector?.on("connectionStatus", cb as any)
+      }
+
+      onConnectionStatus((status) => {
         if (status === "fallback") {
           reject({ message: ERROR_MAPPING["0001"] })
         }
