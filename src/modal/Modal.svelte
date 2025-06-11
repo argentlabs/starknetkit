@@ -1,72 +1,94 @@
 <script lang="ts">
-  import type { StarknetWindowObject } from "@starknet-io/types-js"
   import { onMount } from "svelte"
-  import type { StarknetkitConnector } from "../connectors/connector"
-  import { InjectedConnector } from "../connectors/injected"
-  import type { ModalWallet } from "../types/modal"
-  import ConnectorButton from "./ConnectorButton.svelte"
+
+  import { type Callback, Layout, type ModalWallet, type Theme } from "../types/modal"
+
+  import Header from "./components/Header.svelte"
+  import WalletList from "./layouts/WalletList.svelte"
+  import Connecting from "./layouts/Connecting.svelte"
+  import ArgentMobileApproval from "./layouts/argent/ArgentMobileApproval.svelte"
+  import ArgentMobileQR from "./layouts/argent/ArgentMobileQR.svelte"
+  import FailedLogin from "./layouts/FailedLogin.svelte"
+  import Success from "./layouts/Success.svelte"
+  import DownloadWallet from "./layouts/DownloadWallet/DownloadWallet.svelte"
+  import DynamicIcon from "./components/DynamicIcon.svelte"
+
+  import { isInArgentMobileAppBrowser } from "../connectors/argent/helpers"
+  import { extractConnector, isCompoundConnector } from "../helpers/connector"
+  import type { StarknetkitCompoundConnector } from "../connectors"
+  import { ArgentX } from "../connectors/injected/argentX"
+  import { Braavos } from "../connectors/injected/braavos"
+  import { getModalWallet } from "../helpers/mapModalWallets"
+  import { getStoreVersionFromBrowser } from "../helpers/getStoreVersionFromBrowser"
+  import FailedRequest from "./layouts/FailedRequest.svelte"
+
+  let nodeRef: HTMLElement | undefined
 
   export let dappName: string = window?.document.title ?? ""
-  export let modalWallets: ModalWallet[]
-  export let callback: (
-    value: StarknetkitConnector | null,
-  ) => Promise<void> = async () => {}
-  export let theme: "light" | "dark" | null = null
 
-  let loadingItem: string | false = false
-
-  let starknetMobile =
-    window?.starknet_argentX as unknown as StarknetWindowObject & {
-      isInAppBrowser: boolean
-    }
-  let isInAppBrowser = starknetMobile?.isInAppBrowser
-
-  const userAgent = navigator.userAgent.toLowerCase()
-  const isBraavosMobileApp = userAgent.includes("braavos")
-
-  const setLoadingItem = (item: string | false) => {
-    loadingItem = item
+  export let layout: Layout = Layout.walletList
+  function setLayout(newLayout: Layout): void {
+    layout = newLayout
+  }
+  export function getLayout() {
+    return layout
   }
 
-  let cb = async (connector: StarknetkitConnector | null) => {
-    setLoadingItem(connector?.id ?? false)
-    try {
-      await callback(connector ?? null)
-    } finally {
-      setLoadingItem(false)
-    }
-  }
+  export let modalWallets: ModalWallet[] = []
+  export let selectedWallet: ModalWallet | null = null
+  $: selectedConnector = selectedWallet?.connector && extractConnector(selectedWallet.connector)
 
-  let darkModeControlClass = theme === "dark" ? "dark" : ""
+  export let showBackButton: boolean = true
+  $: showFallback = Boolean(
+    selectedWallet
+    && isCompoundConnector(selectedWallet?.connector)
+    && (selectedWallet?.connector as StarknetkitCompoundConnector)?.fallbackConnector
+  );
+
+  export let callback: Callback = async () => {}
+
+  let isInAppBrowser = isInArgentMobileAppBrowser()
+
+  export let theme: Theme = "dark"
+  export let darkModeControlClass =  (theme === "dark" ? "dark" : "") as Theme
+
   onMount(async () => {
-    if (
-      theme === "dark" ||
-      (theme === null &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
+    if (theme === "dark" || (theme == undefined && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
       darkModeControlClass = "dark"
     } else {
-      darkModeControlClass = ""
+      darkModeControlClass = "light"
     }
 
-    if (isInAppBrowser && window?.starknet_argentX) {
+    if (isInAppBrowser) {
       try {
-        callback(new InjectedConnector({ options: { id: "argentX" } }))
-      } catch {}
+        setTimeout(() => {
+          void callback(getModalWallet(new ArgentX()))
+        })
+      } catch (e) {
+        console.error(e)
+      }
       return
     }
 
-    if (isBraavosMobileApp && window?.starknet_braavos) {
+    const isBraavosMobileApp =
+      navigator?.userAgent?.toLowerCase()?.includes("braavos")
+      && window?.starknet_braavos
+
+    if (isBraavosMobileApp) {
       try {
-        callback(new InjectedConnector({ options: { id: "braavos" } }))
-      } catch {}
+        setTimeout(() => {
+          void callback(getModalWallet(new Braavos()))
+        })
+      } catch (e) {
+        console.error(e)
+      }
       return
     }
+
 
     if (modalWallets.length === 1) {
       try {
-        const [wallet] = modalWallets
-        await callback(wallet.connector)
+        await callback(modalWallets[0])
       } catch (e) {
         console.error(e)
       }
@@ -74,79 +96,63 @@
   })
 </script>
 
-{#if !isInAppBrowser && modalWallets.length > 1}
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
+{#if !isInAppBrowser && (layout === Layout.walletList ? modalWallets.length > 1 : true)}
   <div
+    bind:this={nodeRef}
     part="starknetkit-modal"
-    class={`modal-font backdrop-blur-sm fixed inset-0 flex items-center 
-            justify-center bg-black/25 z-[9999] ${darkModeControlClass}`}
-    on:click={() => cb(null)}
-    on:keyup={(e) => {
-      if (e.key === "Escape") {
-        cb(null)
-      }
-    }}
+    class={`${darkModeControlClass} modal-font fixed inset-0 z-[9998] flex items-center justify-center backdrop-blur-sm bg-black/25`}
   >
-    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <main
       role="dialog"
-      class={`rounded-3xl shadow-modal dark:shadow-none 
-              w-full max-w-[380px] z-50 
-              mx-6 p-6 pb-8 text-center 
-              bg-slate-50 dark:bg-neutral-900 
-            text-neutral-900 dark:text-white`}
-      on:click={(e) => e.stopPropagation()}
-      on:keyup={(e) => {
-        e.stopPropagation()
-      }}
+      class={`
+        rounded-3xl bg-surface-default shadow-modal dark:shadow-none flex flex-col
+        z-[9999] w-full max-w-[380px] mx-6 p-6 text-center gap-8
+        ${layout !== Layout.walletList ? "min-h-[570px]" : ""}
+      `}
     >
-      <header class={`flex items-center justify-center flex-col mb-2 relative`}>
-        <h2 class="text-sm text-gray-400 font-semibold">Connect to</h2>
-        <h1
-          class={`text-xl font-semibold mb-6 
-                  max-w-[240px] overflow-hidden 
-                  whitespace-nowrap text-ellipsis`}
-        >
-          {dappName}
-        </h1>
-        <span
-          class={`absolute top-0 right-0 p-2 cursor-pointer
-                  rounded-full bg-neutral-100 dark:bg-neutral-800
-                  text-neutral-400 dark:text-white
-                  hover:bg-neutral-100 dark:hover:bg-neutral-700
-                  focus:outline-none focus:ring-2
-                focus:ring-neutral-200 dark:focus:ring-neutral-700
-                  transition-colors`}
-          role="button"
-          tabindex="0"
-          aria-label="Close"
-          on:click={() => cb(null)}
-          on:keyup={(e) => {
-            if (e.key === "Enter") {
-              cb(null)
-            }
-          }}
-        >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9.77275 3.02275C9.99242 2.80308 9.99242 2.44692 9.77275 2.22725C9.55308 2.00758 9.19692 2.00758 8.97725 2.22725L6 5.20451L3.02275 2.22725C2.80308 2.00758 2.44692 2.00758 2.22725 2.22725C2.00758 2.44692 2.00758 2.80308 2.22725 3.02275L5.20451 6L2.22725 8.97725C2.00758 9.19692 2.00758 9.55308 2.22725 9.77275C2.44692 9.99242 2.80308 9.99242 3.02275 9.77275L6 6.79549L8.97725 9.77275C9.19692 9.99242 9.55308 9.99242 9.77275 9.77275C9.99242 9.55308 9.99242 9.19692 9.77275 8.97725L6.79549 6L9.77275 3.02275Z"
-              fill="currentColor"
-            />
-          </svg>
-        </span>
-      </header>
+      <Header
+        handleBack={() => setLayout(Layout.walletList)}
+        handleClose={() => nodeRef?.parentNode?.removeChild(nodeRef) }
+        title={dappName}
+        showBackButton={showBackButton && ![Layout.walletList, Layout.success].includes(layout)}
+      />
 
-      <ul class="flex flex-col gap-3">
-        {#each modalWallets as wallet}
-          <ConnectorButton {wallet} {loadingItem} {cb} {theme} />
-        {/each}
-      </ul>
+      {#if layout === Layout.walletList}
+        <WalletList walletList={modalWallets} theme={darkModeControlClass} {callback} />
+      {:else if layout === Layout.connecting}
+        <Connecting
+          walletName={selectedConnector?.name}
+          showFallback={showFallback}
+          handleFallback={() => callback(selectedWallet, true)}
+        >
+          {#if selectedConnector?.icon}
+            <DynamicIcon icon={selectedConnector.icon} theme={darkModeControlClass} />
+          {/if}
+        </Connecting>
+      {:else if layout === Layout.success}
+        <Success />
+      {:else if layout === Layout.loginFailure}
+        <FailedLogin
+          walletName={selectedConnector?.name}
+          handleCallback={() => callback(selectedWallet)}
+          showFallback={showFallback}
+          handleFallback={() => callback(selectedWallet, true)}
+        />
+      {:else if layout === Layout.requestFailure}
+        <FailedRequest />
+      {:else if layout === Layout.qrCode}
+        <ArgentMobileQR handleInstallClick={() => setLayout(Layout.download)} />
+      {:else if layout === Layout.approval}
+        <ArgentMobileApproval />
+      {:else if layout === Layout.download}
+        <DownloadWallet
+          store={getStoreVersionFromBrowser()}
+          isArgent={Boolean(selectedConnector && (selectedConnector?.id === "argentMobile" || selectedConnector?.id === "argentX"))}
+          storeLink={selectedWallet?.download}
+          extensionName={selectedWallet?.name === "Argent" ? "Argent X" : selectedConnector?.name}
+        />
+      {/if}
+
     </main>
   </div>
 {/if}

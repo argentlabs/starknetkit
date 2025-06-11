@@ -1,5 +1,6 @@
 import { resolve } from "path"
 
+// import react from "@vitejs/plugin-react"
 import { svelte } from "@sveltejs/vite-plugin-svelte"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
@@ -8,20 +9,27 @@ import dts from "vite-plugin-dts"
 export default defineConfig({
   build: {
     rollupOptions: {
-      external: ["starknet"],
+      external: ["starknet", "react", "react-dom"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
     },
     emptyOutDir: false,
     target: "es2020",
     lib: {
       entry: {
         starknetkit: resolve(__dirname, "src/main.ts"),
+        // "starknet-react": resolve(__dirname, "src/starknet-react/index.tsx"),
         webwalletConnector: resolve(
           __dirname,
           "src/connectors/webwallet/index.ts",
         ),
         argentMobile: resolve(
           __dirname,
-          "src/connectors/argentMobile/index.ts",
+          "src/connectors/argent/argentMobile/index.ts",
         ),
         braavosMobile: resolve(
           __dirname,
@@ -31,15 +39,40 @@ export default defineConfig({
           __dirname,
           "src/connectors/injected/index.ts",
         ),
+        // argent: resolve(__dirname, "src/connectors/argent/index.ts"),
+        argentX: resolve(__dirname, "src/connectors/injected/argentX.ts"),
+        braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
+        metamask: resolve(__dirname, "src/connectors/injected/metamask.ts"),
+        keplr: resolve(__dirname, "src/connectors/injected/keplr.ts"),
+        fordefi: resolve(__dirname, "src/connectors/injected/fordefi.ts"),
       },
       formats: ["es", "cjs"],
     },
   },
   plugins: [
-    svelte({ emitCss: false }),
+    // react({}),
+    svelte({
+      emitCss: false,
+    }),
     dts({
       entryRoot: resolve(__dirname, "src"),
       insertTypesEntry: true,
     }),
   ],
+  css: {
+    postcss: "./postcss.config.cjs",
+    preprocessorOptions: {
+      css: {
+        additionalData: `@import "@argent/x-ui/styles/tailwind.css";`,
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      "@argent/x-ui/styles": resolve(
+        __dirname,
+        "node_modules/@argent/x-ui/dist/styles",
+      ),
+    },
+  },
 })

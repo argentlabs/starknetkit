@@ -1,3 +1,4 @@
+import sn from "@starknet-io/get-starknet-core"
 import { type AccountChangeEventHandler } from "@starknet-io/get-starknet-core"
 import {
   Permission,
@@ -17,21 +18,24 @@ import {
   ConnectorNotConnectedError,
   ConnectorNotFoundError,
   UserRejectedRequestError,
-} from "../../errors"
-import { getStarknetChainId } from "../../helpers/getStarknetChainId"
-import { removeStarknetLastConnectedWallet } from "../../helpers/lastConnected"
-import { getRandomPublicRPCNode } from "../../helpers/publicRcpNodes"
-import { resetWalletConnect } from "../../helpers/resetWalletConnect"
+} from "../../../errors"
+import { getStarknetChainId } from "../../../helpers/getStarknetChainId"
+import { removeStarknetLastConnectedWallet } from "../../../helpers/lastConnected"
+import { getRandomPublicRPCNode } from "../../../helpers/publicRcpNodes"
+import { resetWalletConnect } from "../../../helpers/resetWalletConnect"
 import {
   Connector,
   type ConnectArgs,
   type ConnectorData,
   type ConnectorIcons,
-} from "../connector"
-import { InjectedConnector, type InjectedConnectorOptions } from "../injected"
+} from "../../connector"
+import { type InjectedConnectorOptions } from "../../injected"
 import { DEFAULT_ARGENT_MOBILE_ICON, DEFAULT_PROJECT_ID } from "./constants"
-import { isInArgentMobileAppBrowser } from "./helpers"
+import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
+import { ArgentX } from "../../injected/argentX"
+import { getModalWallet } from "../../../helpers/mapModalWallets"
+import { isMobileDevice } from "../../../helpers/navigator"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -41,11 +45,12 @@ export interface ArgentMobileConnectorOptions {
   url: string
   icons?: string[]
   rpcUrl?: string
+  onlyQR?: boolean
 }
 
 export class ArgentMobileBaseConnector extends Connector {
   private _wallet: StarknetWindowObject | null = null
-  private _options: ArgentMobileConnectorOptions
+  private readonly _options: ArgentMobileConnectorOptions
 
   constructor(options: ArgentMobileConnectorOptions) {
     super()
@@ -95,7 +100,7 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
-    await this.ensureWallet()
+    await this.ensureWallet({ onlyQRCode: _args?.onlyQRCode })
 
     if (!this._wallet) {
       throw new ConnectorNotFoundError()
@@ -186,7 +191,13 @@ export class ArgentMobileBaseConnector extends Connector {
     this._wallet = null
   }
 
-  private async ensureWallet(): Promise<void> {
+  private async ensureWallet(
+    props:
+      | {
+          onlyQRCode?: boolean
+        }
+      | undefined,
+  ): Promise<void> {
     const { getStarknetWindowObject } = await import("./modal")
     const { chainId, projectId, dappName, description, url, icons, rpcUrl } =
       this._options
@@ -199,6 +210,7 @@ export class ArgentMobileBaseConnector extends Connector {
         : publicRPCNode.testnet)
 
     const options = {
+      onlyQRCode: props?.onlyQRCode,
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
       name: dappName,
       projectId: projectId ?? DEFAULT_PROJECT_ID,
@@ -206,6 +218,7 @@ export class ArgentMobileBaseConnector extends Connector {
       url,
       icons,
       rpcUrl: providerRpcUrl,
+      modalWallet: getModalWallet(this, await sn.getDiscoveryWallets()),
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
@@ -258,9 +271,7 @@ export class ArgentMobileConnector {
     inAppBrowserOptions,
   }: ArgentMobileConnectorInitParams): Connector {
     if (isInArgentMobileAppBrowser()) {
-      return new InjectedConnector({
-        options: { id: "argentX", ...inAppBrowserOptions },
-      })
+      return new ArgentX(inAppBrowserOptions)
     } else {
       return new ArgentMobileBaseConnector(options)
     }

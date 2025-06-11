@@ -166,10 +166,14 @@ export class StarknetAdapter
   }
 
   on: StarknetWindowObject["on"] = (event, handleEvent) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.eventEmitter.on(event, handleEvent)
   }
 
   off: StarknetWindowObject["off"] = (event, handleEvent) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.eventEmitter.off(event, handleEvent)
   }
 
@@ -182,10 +186,10 @@ export class StarknetAdapter
       const chainId = this.formatChainId(this.chainId)
       argentModal.showApprovalModal(request)
       const response = await this.client.request({ topic, chainId, request })
-      argentModal.closeModal("animateSuccess")
+      argentModal.closeModal({ success: true })
       return response
     } catch (error: any) {
-      argentModal.closeModal()
+      argentModal.closeModal({ isRequest: true })
       if (error instanceof Error || (error && error.message !== undefined)) {
         throw new Error(error.message)
       }
