@@ -5,7 +5,7 @@ import type { RequestFnCall, RpcMessage, RpcTypeToMessageMap, StarknetWindowObje
 
 import Controller, { type ControllerOptions } from "@cartridge/controller";
 import { Connector, type ConnectArgs, type ConnectorData } from "../connector"
-import { ConnectorNotConnectedError, UserNotConnectedError } from "../../errors"
+import { ConnectorNotConnectedError, UserNotConnectedError, UserRejectedRequestError } from "../../errors"
 
 import { CONTROLLER_ICON, RPC_URLS } from "./constants";
 
@@ -48,9 +48,17 @@ export class ControllerConnector extends Connector {
 
     if (!account) { throw new UserNotConnectedError(); }
 
+    const chainId = await this.chainId();
+
+    /**
+     * Taken from src/connectors/injected/index.ts
+     * @dev This emit ensures compatibility with starknet-react
+     */
+    this.emit("connect", { account: account.address, chainId })
+
     return {
       account: account.address,
-      chainId: BigInt(await account.getChainId())
+      chainId: chainId
     };
   }
 
@@ -80,10 +88,16 @@ export class ControllerConnector extends Connector {
     return BigInt(await account.getChainId());
   }
 
-  async request<T extends RpcMessage["type"]>(call: RequestFnCall<T>): Promise<RpcTypeToMessageMap[T]["result"]> {
+  async request<T extends RpcMessage["type"]>(
+    call: RequestFnCall<T>
+  ): Promise<RpcTypeToMessageMap[T]["result"]> {
     if (!this.controller) { throw new ConnectorNotConnectedError(); }
 
-    return this.controller.request(call);
+    try {
+      return await this.controller.request(call);
+    } catch {
+      throw new UserRejectedRequestError()
+    }
   }
 
   get wallet(): StarknetWindowObject {
