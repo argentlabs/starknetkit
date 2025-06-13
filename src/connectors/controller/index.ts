@@ -1,7 +1,7 @@
 import type { ProviderOptions, ProviderInterface, AccountInterface } from "starknet"
 import { constants } from "starknet";
 
-import type { RequestFnCall, RpcMessage, RpcTypeToMessageMap, StarknetWindowObject } from "@starknet-io/types-js"
+import type { RequestFnCall, RpcMessage, RpcTypeToMessageMap, StarknetWindowObject, TypedData } from "@starknet-io/types-js"
 
 import Controller, { type ControllerOptions } from "@cartridge/controller";
 import { Connector, type ConnectArgs, type ConnectorData } from "../connector"
@@ -51,7 +51,6 @@ export class ControllerConnector extends Connector {
     const chainId = await this.chainId();
 
     /**
-     * Taken from src/connectors/injected/index.ts
      * @dev This emit ensures compatibility with starknet-react
      */
     this.emit("connect", { account: account.address, chainId })
@@ -64,6 +63,11 @@ export class ControllerConnector extends Connector {
 
   async disconnect(): Promise<void> {
     if (!this.controller) { throw new ConnectorNotConnectedError(); }
+
+    /**
+     * @dev This emit ensures compatibility with starknet-react
+     */
+    this.emit("disconnect")
 
     return this.controller.disconnect();
   }
@@ -93,10 +97,21 @@ export class ControllerConnector extends Connector {
   ): Promise<RpcTypeToMessageMap[T]["result"]> {
     if (!this.controller) { throw new ConnectorNotConnectedError(); }
 
+    // Handle SNIP-12 compliance for signTypedData requests
+    if (call.type === "wallet_signTypedData") {
+      const params = call.params as TypedData;
+      if (!params.types.StarknetDomain) {
+          throw new Error(
+            `Controller requires a SNIP-12 version 1 domain separator. ` +
+            `See: https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md#domain-separator`
+          );
+        }
+    }
+
     try {
       return await this.controller.request(call);
     } catch {
-      throw new UserRejectedRequestError()
+      throw new UserRejectedRequestError();
     }
   }
 
