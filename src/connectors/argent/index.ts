@@ -34,7 +34,7 @@ class Argent
   readonly fallbackConnector: ArgentMobileBaseConnector | null
 
   get name() {
-    return "Argent"
+    return "Ready Wallet"
   }
   get icon() {
     return ArgentIcon

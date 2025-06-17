@@ -42,7 +42,7 @@ export const defaultConnectors = ({
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())
   }
-  defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
+  /* defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl })) */
 
   return defaultConnectors
 }

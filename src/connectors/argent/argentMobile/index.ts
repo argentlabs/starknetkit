@@ -35,7 +35,6 @@ import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { ArgentX } from "../../injected/argentX"
 import { getModalWallet } from "../../../helpers/mapModalWallets"
-import { isMobileDevice } from "../../../helpers/navigator"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -82,7 +81,7 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   get name(): string {
-    return "Argent (mobile)"
+    return "Ready (prev. Argent)"
   }
 
   get icon(): ConnectorIcons {

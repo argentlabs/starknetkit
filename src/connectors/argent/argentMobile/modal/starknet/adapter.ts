@@ -38,7 +38,7 @@ export class StarknetAdapter
   implements StarknetWindowObject
 {
   id = "argentMobile"
-  name = "Argent Mobile"
+  name = "Ready (prev. Argent)"
   version = "0.1.0"
   icon = ""
   provider: ProviderInterface
