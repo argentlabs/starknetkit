@@ -1,7 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte"
 
-  import { type Callback, Layout, type ModalWallet, type Theme } from "../types/modal"
+  import {
+    type Callback,
+    Layout,
+    type ModalWallet,
+    type Theme,
+  } from "../types/modal"
 
   import Header from "./components/Header.svelte"
   import WalletList from "./layouts/WalletList.svelte"
@@ -36,24 +41,30 @@
 
   export let modalWallets: ModalWallet[] = []
   export let selectedWallet: ModalWallet | null = null
-  $: selectedConnector = selectedWallet?.connector && extractConnector(selectedWallet.connector)
+  $: selectedConnector =
+    selectedWallet?.connector && extractConnector(selectedWallet.connector)
 
   export let showBackButton: boolean = true
   $: showFallback = Boolean(
-    selectedWallet
-    && isCompoundConnector(selectedWallet?.connector)
-    && (selectedWallet?.connector as StarknetkitCompoundConnector)?.fallbackConnector
-  );
+    selectedWallet &&
+      isCompoundConnector(selectedWallet?.connector) &&
+      (selectedWallet?.connector as StarknetkitCompoundConnector)
+        ?.fallbackConnector,
+  )
 
   export let callback: Callback = async () => {}
 
   let isInAppBrowser = isInArgentMobileAppBrowser()
 
   export let theme: Theme = "dark"
-  export let darkModeControlClass =  (theme === "dark" ? "dark" : "") as Theme
+  export let darkModeControlClass = (theme === "dark" ? "dark" : "") as Theme
 
   onMount(async () => {
-    if (theme === "dark" || (theme == undefined && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    if (
+      theme === "dark" ||
+      (theme == undefined &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
       darkModeControlClass = "dark"
     } else {
       darkModeControlClass = "light"
@@ -71,8 +82,8 @@
     }
 
     const isBraavosMobileApp =
-      navigator?.userAgent?.toLowerCase()?.includes("braavos")
-      && window?.starknet_braavos
+      navigator?.userAgent?.toLowerCase()?.includes("braavos") &&
+      window?.starknet_braavos
 
     if (isBraavosMobileApp) {
       try {
@@ -84,7 +95,6 @@
       }
       return
     }
-
 
     if (modalWallets.length === 1) {
       try {
@@ -112,21 +122,29 @@
     >
       <Header
         handleBack={() => setLayout(Layout.walletList)}
-        handleClose={() => nodeRef?.parentNode?.removeChild(nodeRef) }
+        handleClose={() => nodeRef?.parentNode?.removeChild(nodeRef)}
         title={dappName}
-        showBackButton={showBackButton && ![Layout.walletList, Layout.success].includes(layout)}
+        showBackButton={showBackButton &&
+          ![Layout.walletList, Layout.success].includes(layout)}
       />
 
       {#if layout === Layout.walletList}
-        <WalletList walletList={modalWallets} theme={darkModeControlClass} {callback} />
+        <WalletList
+          walletList={modalWallets}
+          theme={darkModeControlClass}
+          {callback}
+        />
       {:else if layout === Layout.connecting}
         <Connecting
           walletName={selectedConnector?.name}
-          showFallback={showFallback}
+          {showFallback}
           handleFallback={() => callback(selectedWallet, true)}
         >
           {#if selectedConnector?.icon}
-            <DynamicIcon icon={selectedConnector.icon} theme={darkModeControlClass} />
+            <DynamicIcon
+              icon={selectedConnector.icon}
+              theme={darkModeControlClass}
+            />
           {/if}
         </Connecting>
       {:else if layout === Layout.success}
@@ -135,7 +153,7 @@
         <FailedLogin
           walletName={selectedConnector?.name}
           handleCallback={() => callback(selectedWallet)}
-          showFallback={showFallback}
+          {showFallback}
           handleFallback={() => callback(selectedWallet, true)}
         />
       {:else if layout === Layout.requestFailure}
@@ -147,12 +165,17 @@
       {:else if layout === Layout.download}
         <DownloadWallet
           store={getStoreVersionFromBrowser()}
-          isArgent={Boolean(selectedConnector && (selectedConnector?.id === "argentMobile" || selectedConnector?.id === "argentX"))}
+          isArgent={Boolean(
+            selectedConnector &&
+              (selectedConnector?.id === "argentMobile" ||
+                selectedConnector?.id === "argentX"),
+          )}
           storeLink={selectedWallet?.download}
-          extensionName={selectedWallet?.name === "Argent" ? "Argent X" : selectedConnector?.name}
+          extensionName={selectedWallet?.name === "Argent"
+            ? "Ready Wallet"
+            : selectedConnector?.name}
         />
       {/if}
-
     </main>
   </div>
 {/if}
