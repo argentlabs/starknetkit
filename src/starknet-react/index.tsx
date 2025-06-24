@@ -160,7 +160,7 @@ function StarknetReactWrapper({
               {status === "init" && (
                 <Connecting
                   theme={themeMode}
-                  walletName="Argent X"
+                  walletName="Ready Wallet (formerly Argent)"
                   showFallback={Boolean(fallbackConnector)}
                   handleFallback={async () => {
                     setStatus("none")
@@ -171,7 +171,7 @@ function StarknetReactWrapper({
 
               {status === "fail" && (
                 <FailedLogin
-                  walletName="Argent X"
+                  walletName="Ready Wallet (formerly Argent)"
                   handleRetry={connectAsyncWrapped}
                   showFallback={Boolean(fallbackConnector)}
                   handleFallback={async () => {

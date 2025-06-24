@@ -14,7 +14,7 @@ export class StarknetRemoteSigner implements SignerInterface {
   constructor(private wallet: IStarknetRpc) {}
 
   public async getPubKey(): Promise<string> {
-    throw new Error("Not supported via Argent Login")
+    throw new Error("Not supported via Ready Login")
   }
 
   public async signMessage(
@@ -33,18 +33,18 @@ export class StarknetRemoteSigner implements SignerInterface {
     _transactionsDetail: InvocationsSignerDetails,
     _abis?: Abi[],
   ): Promise<Signature> {
-    throw new Error("Not supported via Argent Login")
+    throw new Error("Not supported via Ready Login")
   }
 
   public async signDeployAccountTransaction(
     _transaction: DeployAccountSignerDetails,
   ): Promise<Signature> {
-    throw new Error("Not supported via Argent Login")
+    throw new Error("Not supported via Ready Login")
   }
 
   public async signDeclareTransaction(
     _transaction: DeclareSignerDetails,
   ): Promise<Signature> {
-    throw new Error("Not supported via Argent Login")
+    throw new Error("Not supported via Ready Login")
   }
 }

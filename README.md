@@ -49,10 +49,10 @@ const wallet = await connect()
 
 By default, the list of connectors is:
 
-- Argent X
+- Ready Wallet
 - Braavos
-- Argent mobile
-- Argent webwallet
+- Ready (formerly Argent)
+- Web Wallet
 
 ## Connect with specific connectors
 

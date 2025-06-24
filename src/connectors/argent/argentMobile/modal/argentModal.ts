@@ -37,7 +37,7 @@ interface Urls {
 type ModalWalletExtended = ModalWallet & { dappName: string }
 
 class ArgentModal {
-  public bridgeUrl = "https://login.argent.xyz"
+  public bridgeUrl = "https://login.ready.co"
   public mobileUrl = "argent://"
   public type: "overlay" | "window" = "overlay"
   public wcUri?: string

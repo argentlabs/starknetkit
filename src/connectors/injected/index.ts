@@ -35,7 +35,7 @@ export interface InjectedConnectorOptions {
   name?: string
   /** Wallet icons. */
   icon?: ConnectorIcons
-  /** Used for StarknetReactWrapper/Argent connector + sn-react */
+  /** Used for StarknetReactWrapper/Ready connector + sn-react */
   shouldEmit?: boolean
 }
 
@@ -95,6 +95,12 @@ export class InjectedConnector extends Connector {
 
   get name(): string {
     this.ensureWallet()
+
+    // TODO: remove when get-starknet is updated
+    if (this._options.id.toLowerCase() === "argentx") {
+      return "Ready Wallet (formerly Argent)"
+    }
+
     return this._options.name ?? this._wallet?.name ?? this._options.id
   }
 
@@ -173,7 +179,7 @@ export class InjectedConnector extends Connector {
     }
 
     /**
-     * @dev This emit ensures compatibility of Argent connector with starknet-react
+     * @dev This emit ensures compatibility of Ready connector with starknet-react
      */
     if (this._options.shouldEmit) {
       this.emit("connectionStatus", "init")
@@ -216,7 +222,7 @@ export class InjectedConnector extends Connector {
      */
     this.emit("connect", { account, chainId })
     /**
-     *  @dev This emit ensures compatibility of Argent connector with starknet-react
+     *  @dev This emit ensures compatibility of Ready connector with starknet-react
      */
     if (this._options.shouldEmit) {
       this.emit("connectionStatus", "success")

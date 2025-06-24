@@ -23,10 +23,10 @@ export function mapTargetUrlToNetworkId(target: string): constants.NetworkName {
     if (origin.includes("dev")) {
       return Network.SN_SEPOLIA
     }
-    if (origin.includes("sepolia-web.argent.xyz")) {
+    if (origin.includes("sepolia-web.ready.co")) {
       return Network.SN_SEPOLIA
     }
-    if (origin.includes("argent.xyz")) {
+    if (origin.includes("ready.co")) {
       return Network.SN_MAIN
     }
   } catch (e) {

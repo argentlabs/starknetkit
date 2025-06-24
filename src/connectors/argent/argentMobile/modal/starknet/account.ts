@@ -47,13 +47,13 @@ export class StarknetRemoteAccount extends Account implements AccountInterface {
     _contractPayload: DeclareContractPayload,
     _transactionsDetail?: InvocationsDetails | undefined,
   ): Promise<DeclareContractResponse> {
-    throw new Error("Not supported via Argent Login")
+    throw new Error("Not supported via Ready Login")
   }
 
   public async deployAccount(
     _contractPayload: any,
     _transactionsDetail?: InvocationsDetails | undefined,
   ): Promise<DeployContractResponse> {
-    throw new Error("Not supported via Argent Login")
+    throw new Error("Not supported via Ready Login")
   }
 }

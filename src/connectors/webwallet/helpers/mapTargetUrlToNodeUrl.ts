@@ -13,7 +13,7 @@ export function mapTargetUrlToNodeUrl(target: string): string {
     if (origin.includes("staging")) {
       return publicRPCNode.mainnet
     }
-    if (origin.includes("argent.xyz")) {
+    if (origin.includes("ready.co")) {
       return publicRPCNode.mainnet
     }
   } catch (e) {

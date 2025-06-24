@@ -50,9 +50,9 @@
 <section class="flex flex-col gap-4">
   <div>
     {#if isMobile}
-      <h3 class="mb-4 text-h5 text-primary font-semibold">Connecting to Argent mobile...</h3>
+      <h3 class="mb-4 text-h5 text-primary font-semibold">Connecting to Ready mobile...</h3>
     {:else}
-      <h3 class="mb-4 text-h5 text-primary font-semibold">Connect Argent mobile by<br />scanning QR code:</h3>
+      <h3 class="mb-4 text-h5 text-primary font-semibold">Connect Ready mobile by<br />scanning QR code:</h3>
     {/if}
 
     <div class="w-full flex justify-center items-center qr-code-slot h-[245px]">
@@ -67,5 +67,5 @@
     </div>
   </div>
 
-  <InstallWallet walletName="Argent" handleClick={handleInstallClick} />
+  <InstallWallet walletName="Ready" handleClick={handleInstallClick} />
 </section>

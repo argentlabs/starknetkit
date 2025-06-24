@@ -23,7 +23,6 @@ export const defaultConnectors = ({
     []
 
   defaultConnectors.push(new ArgentX())
-  //  defaultConnectors.push(new Argent({ mobile: argentMobileOptions }))
 
   if (!isSafari()) {
     defaultConnectors.push(new Braavos())
@@ -42,7 +41,6 @@ export const defaultConnectors = ({
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())
   }
-  defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
 
   return defaultConnectors
 }

@@ -35,7 +35,6 @@ import { isInArgentMobileAppBrowser } from "../helpers"
 import type { StarknetAdapter } from "./modal/starknet/adapter"
 import { ArgentX } from "../../injected/argentX"
 import { getModalWallet } from "../../../helpers/mapModalWallets"
-import { isMobileDevice } from "../../../helpers/navigator"
 
 export interface ArgentMobileConnectorOptions {
   dappName: string
@@ -82,7 +81,7 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   get name(): string {
-    return "Argent (mobile)"
+    return "Ready (formerly Argent)"
   }
 
   get icon(): ConnectorIcons {
@@ -209,6 +208,17 @@ export class ArgentMobileBaseConnector extends Connector {
         ? publicRPCNode.mainnet
         : publicRPCNode.testnet)
 
+    // TODO: remove this when get-starknet will be updated
+    const discoveryWallets = (await sn.getDiscoveryWallets()).map((wallet) => {
+      if (wallet.id.toLowerCase() === "argentx") {
+        return {
+          ...wallet,
+          name: "Ready Wallet (formerly Argent)",
+        }
+      }
+      return wallet
+    })
+
     const options = {
       onlyQRCode: props?.onlyQRCode,
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
@@ -218,7 +228,7 @@ export class ArgentMobileBaseConnector extends Connector {
       url,
       icons,
       rpcUrl: providerRpcUrl,
-      modalWallet: getModalWallet(this, await sn.getDiscoveryWallets()),
+      modalWallet: getModalWallet(this, discoveryWallets),
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
