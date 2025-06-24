@@ -208,6 +208,17 @@ export class ArgentMobileBaseConnector extends Connector {
         ? publicRPCNode.mainnet
         : publicRPCNode.testnet)
 
+    // TODO: remove this when get-starknet will be updated
+    const discoveryWallets = (await sn.getDiscoveryWallets()).map((wallet) => {
+      if (wallet.id.toLowerCase() === "argentx") {
+        return {
+          ...wallet,
+          name: "Ready Wallet",
+        }
+      }
+      return wallet
+    })
+
     const options = {
       onlyQRCode: props?.onlyQRCode,
       chainId: chainId ?? constants.NetworkName.SN_MAIN,
@@ -217,7 +228,7 @@ export class ArgentMobileBaseConnector extends Connector {
       url,
       icons,
       rpcUrl: providerRpcUrl,
-      modalWallet: getModalWallet(this, await sn.getDiscoveryWallets()),
+      modalWallet: getModalWallet(this, discoveryWallets),
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {

@@ -163,10 +163,23 @@ export const connect = async ({
     } // otherwise fallback to modal
   }
 
+  // TODO: remove this when get-starknet will be updated
+  const discoveryWallets = (await sn.getDiscoveryWallets(restOptions)).map(
+    (wallet) => {
+      if (wallet.id.toLowerCase() === "argentx") {
+        return {
+          ...wallet,
+          name: "Ready Wallet",
+        }
+      }
+      return wallet
+    },
+  )
+
   const modalWallets: ModalWallet[] = mapModalWallets({
     availableConnectors,
     installedWallets,
-    discoveryWallets: await sn.getDiscoveryWallets(restOptions),
+    discoveryWallets,
     storeVersion,
     customOrder: connectors ? connectors?.length > 0 : false,
   })
