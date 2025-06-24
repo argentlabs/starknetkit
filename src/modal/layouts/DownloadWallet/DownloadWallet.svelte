@@ -87,9 +87,9 @@
     {#if isArgent}
       <HorizontalLine />
       <p class="text-[13px] text-secondary">
-        If you want to learn more about argent visit our site:
-        <Link as="a" className="text-brand" href="https://www.argent.xyz/"
-          >www.argent.xyz</Link
+        If you want to learn more about Ready visit our site:
+        <Link as="a" className="text-brand" href="https://www.ready.co/"
+          >www.ready.co</Link
         >
       </p>
     {/if}
