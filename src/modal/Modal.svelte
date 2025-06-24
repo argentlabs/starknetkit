@@ -171,7 +171,7 @@
                 selectedConnector?.id === "argentX"),
           )}
           storeLink={selectedWallet?.download}
-          extensionName={selectedWallet?.name === "Argent"
+          extensionName={selectedWallet?.name.includes("Ready")
             ? "Ready Wallet (formerly Argent)"
             : selectedConnector?.name}
         />
