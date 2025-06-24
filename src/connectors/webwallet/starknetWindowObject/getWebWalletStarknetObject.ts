@@ -31,8 +31,8 @@ export const getWebWalletStarknetObject = async (
     {
       host: globalWindow.location.origin,
       id: "argentWebWallet",
-      icon: "https://www.argent.xyz/favicon.ico",
-      name: "Argent Web Wallet",
+      icon: "https://www.ready.co/favicon.ico",
+      name: "Web Wallet",
       version: "1.0.0",
     },
     proxyLink,

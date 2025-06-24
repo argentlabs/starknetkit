@@ -18,7 +18,9 @@
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
   },
   "include": ["src"],
   "exclude": ["node_modules"]

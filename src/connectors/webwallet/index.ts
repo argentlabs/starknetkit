@@ -92,7 +92,7 @@ export class WebWalletConnector extends Connector {
 
   get name(): string {
     this._wallet = _wallet
-    return this._wallet?.name || "Argent Web Wallet"
+    return this._wallet?.name || "Web Wallet"
   }
 
   get icon(): ConnectorIcons {
@@ -114,7 +114,7 @@ export class WebWalletConnector extends Connector {
   }
 
   get subtitle(): string {
-    return "Powered by Argent"
+    return "Powered by Ready"
   }
 
   async connectAndSignSession({

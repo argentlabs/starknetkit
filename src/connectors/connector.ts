@@ -23,7 +23,7 @@ export type ConnectorData = {
 }
 
 /** Connector events. */
-export interface ConnectorEvents {
+export interface BaseConnectorEvents {
   /** Emitted when account or network changes. */
   change(data: ConnectorData): void
   /** Emitted when connection is established. */
@@ -32,8 +32,14 @@ export interface ConnectorEvents {
   disconnect(): void
 }
 
+interface ConnectorEvents extends BaseConnectorEvents {
+  /** Emitted when `shouldEmit` is true, used for StarknetReactWrapper */
+  connectionStatus?(s: "init" | "success" | "fail" | "fallback"): void
+}
+
 export type ConnectArgs = {
   chainIdHint?: bigint
+  onlyQRCode?: boolean
 }
 
 export abstract class Connector extends EventEmitter<ConnectorEvents> {
@@ -62,9 +68,21 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   abstract request<T extends RpcMessage["type"]>(
     call: RequestFnCall<T>,
   ): Promise<RpcTypeToMessageMap[T]["result"]>
+  /** Handle starknet-react type compatibility */
+  eventNames(): (keyof BaseConnectorEvents)[] {
+    return ["change", "connect", "disconnect"]
+  }
 }
 
 export abstract class StarknetkitConnector extends Connector {
   /**  Connector StarknetWindowObject */
   abstract get wallet(): StarknetWindowObject
+}
+
+export abstract class StarknetkitCompoundConnector {
+  readonly isCompoundConnector = true
+  abstract connector: StarknetkitConnector
+  abstract fallbackConnector: StarknetkitConnector | null
+  abstract get name(): string
+  abstract get icon(): ConnectorIcons
 }

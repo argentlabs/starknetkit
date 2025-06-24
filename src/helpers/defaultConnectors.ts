@@ -1,26 +1,14 @@
 import type { StarknetkitConnector } from "../connectors"
-import {
-  ArgentMobileBaseConnector,
-  type ArgentMobileConnectorOptions,
-} from "../connectors/argentMobile"
+import { type ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
-import { InjectedConnector } from "../connectors/injected"
 import { WebWalletConnector } from "../connectors/webwallet"
+import { Braavos } from "../connectors/injected/braavos"
+import { Fordefi } from "../connectors/injected/fordefi"
+import { Keplr } from "../connectors/injected/keplr"
+import { MetaMask } from "../connectors/injected/metamask"
 
-const isMobileDevice = () => {
-  // Primary method: User Agent + Touch support check
-  const userAgent = navigator.userAgent.toLowerCase()
-  const isMobileUA =
-    /android|webos|iphone|ipad|ipod|blackberry|windows phone/.test(userAgent)
-  const hasTouchSupport =
-    "ontouchstart" in window || navigator.maxTouchPoints > 0
-
-  // Backup method: Screen size
-  const isSmallScreen = window.innerWidth <= 768
-
-  // Combine checks: Must match user agent AND (touch support OR small screen)
-  return isMobileUA && (hasTouchSupport || isSmallScreen)
-}
+import { isMobileDevice, isSafari } from "./navigator"
+import { ArgentX } from "../connectors/injected/argentX"
 
 export const defaultConnectors = ({
   argentMobileOptions,
@@ -29,43 +17,30 @@ export const defaultConnectors = ({
   argentMobileOptions: ArgentMobileConnectorOptions
   webWalletUrl?: string
 }): StarknetkitConnector[] => {
-  const isSafari =
-    typeof window !== "undefined"
-      ? /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-      : false
+  // | StarknetkitCompoundConnector
+  const defaultConnectors: StarknetkitConnector[] =
+    // | StarknetkitCompoundConnector
+    []
 
-  const defaultConnectors: StarknetkitConnector[] = []
+  defaultConnectors.push(new ArgentX())
 
-  if (!isSafari) {
-    defaultConnectors.push(
-      new InjectedConnector({ options: { id: "argentX" } }),
-    )
-    defaultConnectors.push(
-      new InjectedConnector({ options: { id: "braavos" } }),
-    )
+  if (!isSafari()) {
+    defaultConnectors.push(new Braavos())
 
-    if (InjectedConnector.isWalletInjected("metamask")) {
-      defaultConnectors.push(
-        new InjectedConnector({ options: { id: "metamask" } }),
-      )
+    if (MetaMask.isWalletInjected()) {
+      defaultConnectors.push(new MetaMask())
     }
-    if (InjectedConnector.isWalletInjected("fordefi")) {
-      defaultConnectors.push(
-        new InjectedConnector({ options: { id: "fordefi" } }),
-      )
+    if (Fordefi.isWalletInjected()) {
+      defaultConnectors.push(new Fordefi())
     }
-    if (InjectedConnector.isWalletInjected("keplr")) {
-      defaultConnectors.push(
-        new InjectedConnector({ options: { id: "keplr" } }),
-      )
+    if (Keplr.isWalletInjected()) {
+      defaultConnectors.push(new Keplr())
     }
   }
 
-  defaultConnectors.push(new ArgentMobileBaseConnector(argentMobileOptions))
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())
   }
-  defaultConnectors.push(new WebWalletConnector({ url: webWalletUrl }))
 
   return defaultConnectors
 }

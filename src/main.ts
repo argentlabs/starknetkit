@@ -1,12 +1,22 @@
 import type { DisconnectOptions } from "@starknet-io/get-starknet"
 import sn from "@starknet-io/get-starknet-core"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
+
 import {
+  type ConnectOptions,
+  type ConnectOptionsWithConnectors,
+  Layout,
+  type ModalResult,
+  type ModalWallet,
+} from "./types/modal"
+import type {
   Connector,
   StarknetkitConnector,
-  type ConnectorData,
+  ConnectorData,
 } from "./connectors"
 import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
+
+import { ArgentMobileBaseConnector } from "./connectors/argent/argentMobile"
 import { defaultConnectors } from "./helpers/defaultConnectors"
 import { getStoreVersionFromBrowser } from "./helpers/getStoreVersionFromBrowser"
 import {
@@ -14,14 +24,15 @@ import {
   setStarknetLastConnectedWallet,
 } from "./helpers/lastConnected"
 import { mapModalWallets } from "./helpers/mapModalWallets"
+import {
+  extractConnector,
+  findConnectorById,
+  isCompoundConnector,
+} from "./helpers/connector"
+import { getModalTarget } from "./helpers/modal"
+
 import Modal from "./modal/Modal.svelte"
-import css from "./theme.css?inline"
-import type {
-  ConnectOptions,
-  ConnectOptionsWithConnectors,
-  ModalResult,
-  ModalWallet,
-} from "./types/modal"
+import type { ModalInstance } from "./modal/Modal"
 
 let selectedConnector: StarknetkitConnector | null = null
 
@@ -36,8 +47,9 @@ let selectedConnector: StarknetkitConnector | null = null
  * @param [dappName] - Name of your dapp, displayed in the modal
  * @param [resultType="wallet"] - It will by default return selected wallet's connector by default, otherwise null
  * @param [connectors] - Array of wallet connectors to show in the modal
- * @param [webWalletUrl="https://web.argent.xyz"] - Link to Argent's web wallet - Mainnet env by default, if as a dApp for integration and testing purposes, you need access to an internal testnet environment, please contact Argent
- * @param [argentMobileOptions] - Argent Mobile connector options - used only when `connectors` is not explicitly passed
+ * @param [skipEmit] - Needed for internal handling of useStarknetkitConnectModal hook
+ * @param [webWalletUrl="https://web.ready.co"] - Link to Ready's web wallet - Mainnet env by default, if as a dApp for integration and testing purposes, you need access to an internal testnet environment, please contact Ready
+ * @param [argentMobileOptions] - Ready Mobile connector options - used only when `connectors` is not explicitly passed
  * @param [argentMobileOptions.dappName] - Name of the dapp
  * @param [argentMobileOptions.projectId] - WalletConnect project id
  * @param [argentMobileOptions.chainId] - Starknet chain ID (SN_MAIN or SN_SEPOLIA)
@@ -58,6 +70,7 @@ export const connect = async ({
   modalTheme,
   dappName,
   resultType = "wallet",
+  skipEmit = false,
   ...restOptions
 }: ConnectOptionsWithConnectors | ConnectOptions): Promise<ModalResult> => {
   const { webWalletUrl = DEFAULT_WEBWALLET_URL, argentMobileOptions } =
@@ -75,15 +88,32 @@ export const connect = async ({
         })
       : connectors
 
+  if (skipEmit) {
+    // This is ugly but needed fix for useStarknetkitConnectModal
+    availableConnectors?.map((connector) => {
+      if (isCompoundConnector(connector)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        if ("connector" in connector && "_options" in connector.connector) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          connector.connector._options.shouldEmit = false
+        }
+      }
+    })
+  }
+
   const lastWalletId = localStorage.getItem("starknetLastConnectedWallet")
   if (modalMode === "neverAsk") {
     try {
-      const connector =
-        availableConnectors.find((c) => c.id === lastWalletId) ?? null
+      const connector = findConnectorById(availableConnectors, lastWalletId)
+
       let connectorData: ConnectorData | null = null
 
       if (connector && resultType === "wallet") {
-        connectorData = await connector.connect()
+        connectorData = await connector.connect({
+          onlyQRCode: true,
+        })
       }
 
       return {
@@ -110,12 +140,15 @@ export const connect = async ({
         : undefined
 
     if (wallet) {
-      const connector = availableConnectors.find((c) => c.id === lastWalletId)
+      const connector = findConnectorById(availableConnectors, lastWalletId)
 
       let connectorData: ConnectorData | null = null
 
       if (resultType === "wallet") {
-        connectorData = (await connector?.connect()) ?? null
+        connectorData =
+          (await connector?.connect({
+            onlyQRCode: true,
+          })) ?? null
       }
 
       if (connector) {
@@ -130,74 +163,98 @@ export const connect = async ({
     } // otherwise fallback to modal
   }
 
+  // TODO: remove this when get-starknet will be updated
+  const discoveryWallets = (await sn.getDiscoveryWallets(restOptions)).map(
+    (wallet) => {
+      if (wallet.id.toLowerCase() === "argentx") {
+        return {
+          ...wallet,
+          name: "Ready Wallet (formerly Argent)",
+        }
+      }
+      return wallet
+    },
+  )
+
   const modalWallets: ModalWallet[] = mapModalWallets({
     availableConnectors,
     installedWallets,
-    discoveryWallets: await sn.getDiscoveryWallets(restOptions),
+    discoveryWallets,
     storeVersion,
     customOrder: connectors ? connectors?.length > 0 : false,
   })
 
-  const getTarget = (): ShadowRoot => {
-    const modalId = "starknetkit-modal-container"
-    const existingElement = document.getElementById(modalId)
-
-    if (existingElement) {
-      if (existingElement.shadowRoot) {
-        // element already exists, use the existing as target
-        return existingElement.shadowRoot
-      }
-      // element exists but shadowRoot cannot be accessed
-      // delete the element and create new
-      existingElement.remove()
-    }
-
-    const element = document.createElement("div")
-    // set id for future retrieval
-    element.id = modalId
-    document.body.appendChild(element)
-    const target = element.attachShadow({ mode: "open" })
-    target.innerHTML = `<style>${css}</style>`
-
-    return target
-  }
-
   return new Promise((resolve, reject) => {
     const modal = new Modal({
-      target: getTarget(),
+      target: getModalTarget(),
       props: {
         dappName,
-        callback: async (connector: StarknetkitConnector | null) => {
+        callback: async (
+          modalWallet: ModalWallet | null,
+          useFallback: boolean = false,
+        ) => {
           try {
-            selectedConnector = connector
+            if (!modalWallet) {
+              throw new Error("Connector error")
+            }
+
+            modal.$set({ selectedWallet: modalWallet })
+
+            if (!modalWallet.installed) {
+              modal.$set({ layout: Layout.download })
+              return
+            }
+
+            selectedConnector = extractConnector(
+              modalWallet.connector,
+              useFallback,
+            )
+
             if (resultType === "wallet") {
-              const connectorData = (await connector?.connect()) ?? null
-              if (connector !== null) {
-                setStarknetLastConnectedWallet(connector.id)
+              if (selectedConnector instanceof ArgentMobileBaseConnector) {
+                modal.$set({ layout: Layout.qrCode })
+              } else {
+                modal.$set({ layout: Layout.connecting })
+              }
+
+              const connectorData =
+                (await selectedConnector?.connect({
+                  onlyQRCode: true,
+                })) ?? null
+              if (selectedConnector !== null) {
+                setStarknetLastConnectedWallet(selectedConnector.id)
               }
 
               resolve({
-                connector,
+                connector: selectedConnector,
                 connectorData,
-                wallet: connector?.wallet ?? null,
+                wallet: selectedConnector?.wallet ?? null,
               })
+
+              modal.$set({ layout: Layout.success })
+              setTimeout(() => modal.$destroy(), 500)
             } else {
               resolve({
-                connector,
+                connector: selectedConnector,
                 wallet: null,
                 connectorData: null,
               })
+              modal.$destroy()
             }
           } catch (error) {
-            reject(error)
-          } finally {
-            setTimeout(() => modal.$destroy())
+            if (
+              [Layout.connecting, Layout.qrCode].includes(modal.getLayout())
+            ) {
+              modal.$set({ layout: Layout.loginFailure })
+            } else {
+              reject(error)
+            }
           }
         },
         theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
       },
-    })
+    }) as unknown as ModalInstance // Prevents vite build errors
   })
 }
 
@@ -228,6 +285,7 @@ export type {
   DisconnectOptions,
   StarknetWindowObject,
   StarknetkitConnector,
+  // StarknetkitCompoundConnector,
   defaultConnectors as starknetkitDefaultConnectors,
   ConnectOptions,
   ConnectOptionsWithConnectors,
