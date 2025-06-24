@@ -51,7 +51,7 @@ By default, the list of connectors is:
 
 - Ready Wallet
 - Braavos
-- Ready (prev. Argent)
+- Ready (formerly Argent)
 - Web Wallet
 
 ## Connect with specific connectors
