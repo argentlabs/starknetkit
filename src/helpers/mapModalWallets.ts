@@ -119,7 +119,10 @@ export const mapModalWallets = ({
                 : installed.icon
 
           // TODO: remove this when get-starknet will be updated
-          name = installed.id === "argentX" ? "Ready Wallet" : installed.name
+          name =
+            installed.id === "argentX"
+              ? "Ready Wallet (formerly Argent)"
+              : installed.name
         }
 
         const downloads = discoveryWallets.find(

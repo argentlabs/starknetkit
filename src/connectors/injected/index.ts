@@ -98,7 +98,7 @@ export class InjectedConnector extends Connector {
 
     // TODO: remove when get-starknet is updated
     if (this._options.id.toLowerCase() === "argentx") {
-      return "Ready Wallet"
+      return "Ready Wallet (formerly Argent)"
     }
 
     return this._options.name ?? this._wallet?.name ?? this._options.id

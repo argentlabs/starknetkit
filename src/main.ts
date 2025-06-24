@@ -169,7 +169,7 @@ export const connect = async ({
       if (wallet.id.toLowerCase() === "argentx") {
         return {
           ...wallet,
-          name: "Ready Wallet",
+          name: "Ready Wallet (formerly Argent)",
         }
       }
       return wallet
