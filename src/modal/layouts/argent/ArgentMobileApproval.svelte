@@ -28,7 +28,7 @@
 
     <hgroup class="flex flex-col gap-1">
       <h3 class="text-primary text-h4 font-bold">Approve the transaction</h3>
-      <h4 class="text-primary text-p3">Open Argent on your phone to <br/> approve the transaction</h4>
+      <h4 class="text-primary text-p3">Open Ready on your phone to <br/> approve the transaction</h4>
     </hgroup>
   </div>
 </section>

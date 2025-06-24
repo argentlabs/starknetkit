@@ -23,7 +23,7 @@ export function FallbackConnector({ handleClick }: FallbackConnectorProps) {
 	`}
       >
         <div className="flex flex-row-reverse items-center gap-2">
-          <span className="text-primary">Connect to Argent mobile instead</span>
+          <span className="text-primary">Connect to Ready mobile instead</span>
 
           <svg
             xmlns="http://www.w3.org/2000/svg"

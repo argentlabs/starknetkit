@@ -18,7 +18,7 @@
     <div class="flex flex-row-reverse items-center gap-2">
 
       <span class="text-primary">
-        Connect to Argent mobile instead
+        Connect to Ready mobile instead
       </span>
 
       <svg xmlns="http://www.w3.org/2000/svg" width="27" height="48" viewBox="0 0 27 48" fill="none">

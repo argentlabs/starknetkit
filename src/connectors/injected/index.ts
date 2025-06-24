@@ -179,7 +179,7 @@ export class InjectedConnector extends Connector {
     }
 
     /**
-     * @dev This emit ensures compatibility of Argent connector with starknet-react
+     * @dev This emit ensures compatibility of Ready connector with starknet-react
      */
     if (this._options.shouldEmit) {
       this.emit("connectionStatus", "init")
@@ -222,7 +222,7 @@ export class InjectedConnector extends Connector {
      */
     this.emit("connect", { account, chainId })
     /**
-     *  @dev This emit ensures compatibility of Argent connector with starknet-react
+     *  @dev This emit ensures compatibility of Ready connector with starknet-react
      */
     if (this._options.shouldEmit) {
       this.emit("connectionStatus", "success")

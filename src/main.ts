@@ -48,8 +48,8 @@ let selectedConnector: StarknetkitConnector | null = null
  * @param [resultType="wallet"] - It will by default return selected wallet's connector by default, otherwise null
  * @param [connectors] - Array of wallet connectors to show in the modal
  * @param [skipEmit] - Needed for internal handling of useStarknetkitConnectModal hook
- * @param [webWalletUrl="https://web.ready.co"] - Link to Argent's web wallet - Mainnet env by default, if as a dApp for integration and testing purposes, you need access to an internal testnet environment, please contact Argent
- * @param [argentMobileOptions] - Argent Mobile connector options - used only when `connectors` is not explicitly passed
+ * @param [webWalletUrl="https://web.ready.co"] - Link to Ready's web wallet - Mainnet env by default, if as a dApp for integration and testing purposes, you need access to an internal testnet environment, please contact Ready
+ * @param [argentMobileOptions] - Ready Mobile connector options - used only when `connectors` is not explicitly passed
  * @param [argentMobileOptions.dappName] - Name of the dapp
  * @param [argentMobileOptions.projectId] - WalletConnect project id
  * @param [argentMobileOptions.chainId] - Starknet chain ID (SN_MAIN or SN_SEPOLIA)
