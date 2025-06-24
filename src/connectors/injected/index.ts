@@ -35,7 +35,7 @@ export interface InjectedConnectorOptions {
   name?: string
   /** Wallet icons. */
   icon?: ConnectorIcons
-  /** Used for StarknetReactWrapper/Argent connector + sn-react */
+  /** Used for StarknetReactWrapper/Ready connector + sn-react */
   shouldEmit?: boolean
 }
 
