@@ -59,6 +59,23 @@
   export let theme: Theme = "dark"
   export let darkModeControlClass = (theme === "dark" ? "dark" : "") as Theme
 
+  const handleClose = () => {
+    console.log("HANDLE CLOSE CALLED")
+    nodeRef?.parentNode?.removeChild(nodeRef)
+  }
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      handleClose();
+    }
+  }
+
+  // close modal if user presses ESC key
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
+
   onMount(async () => {
     if (
       theme === "dark" ||
@@ -111,18 +128,29 @@
     bind:this={nodeRef}
     part="starknetkit-modal"
     class={`${darkModeControlClass} modal-font fixed inset-0 z-[9998] flex items-center justify-center backdrop-blur-sm bg-black/25`}
+    {...{/* on backdrop click, close the modal */}}
+    on:click={handleClose}
+    {...{/* this is for accessibility purposes */}}
+    on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && handleClose()}
+    tabindex="0"
+    role="button"
+    aria-label="Close modal by clicking the backdrop"
   >
+    <!-- on:click|stopPropagation is not interactive, it is safe to disable a11y check -->
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <main
       role="dialog"
       class={`
         rounded-3xl bg-surface-default shadow-modal dark:shadow-none flex flex-col
-        z-[9999] w-full max-w-[380px] mx-6 p-6 text-center gap-8
+        z-[9999] w-full max-w-[380px] mx-6 p-6 text-center gap-8 cursor-default
         ${layout !== Layout.walletList ? "min-h-[570px]" : ""}
       `}
+       on:click|stopPropagation
     >
       <Header
         handleBack={() => setLayout(Layout.walletList)}
-        handleClose={() => nodeRef?.parentNode?.removeChild(nodeRef)}
+        handleClose={handleClose}
         title={dappName}
         showBackButton={showBackButton &&
           ![Layout.walletList, Layout.success].includes(layout)}
