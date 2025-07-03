@@ -60,7 +60,6 @@
   export let darkModeControlClass = (theme === "dark" ? "dark" : "") as Theme
 
   const handleClose = () => {
-    console.log("HANDLE CLOSE CALLED")
     nodeRef?.parentNode?.removeChild(nodeRef)
   }
 
