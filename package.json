@@ -72,6 +72,11 @@
       "import": "./dist/braavosMobile.js",
       "require": "./dist/braavosMobile.cjs"
     },
+    "./controller": {
+      "types": "./dist/controllerConnector.d.ts",
+      "import": "./dist/controllerConnector.js",
+      "require": "./dist/controllerConnector.cjs"
+    },
     "./window": {
       "types": "./dist/window.d.ts",
       "import": "./dist/window.js",
@@ -91,6 +96,7 @@
   ],
   "dependencies": {
     "@argent/x-ui": "^1.70.1",
+    "@cartridge/controller": "^0.7.13",
     "@starknet-io/get-starknet": "^4.0.6",
     "@starknet-io/get-starknet-core": "^4.0.6",
     "@starknet-io/types-js": "^0.7.10",
