@@ -273,7 +273,7 @@ export class WebWalletConnector extends Connector {
       throw new ConnectorNotConnectedError()
     }
 
-    return new WalletAccount(provider, this._wallet, undefined, _address)
+    return new WalletAccount(provider, this._wallet, _address, undefined)
   }
 
   async chainId(): Promise<bigint> {

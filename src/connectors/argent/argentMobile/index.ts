@@ -140,7 +140,12 @@ export class ArgentMobileBaseConnector extends Connector {
       params: { silent_mode: true },
     })
 
-    return new WalletAccount(provider, this._wallet, undefined, accounts[0])
+    return new WalletAccount(provider, this._wallet, accounts[0], undefined)
+    /* constructor(providerOrOptions: ProviderOptions | ProviderInterface, 
+      walletProvider: StarknetWalletProvider, 
+      address: string, 
+      cairoVersion?: CairoVersion, 
+      paymaster?: PaymasterOptions | PaymasterInterface); */
   }
 
   async chainId(): Promise<bigint> {
