@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@argent/x-ui':
         specifier: ^1.70.1
-        version: 1.70.1(32cc7949e548783c8f1107d981d70665)
+        version: 1.70.1(35375c4d4d0ea7059d22f2361ae3276e)
       '@starknet-io/get-starknet':
         specifier: ^4.0.6
         version: 4.0.6
@@ -18,8 +18,8 @@ importers:
         specifier: ^4.0.6
         version: 4.0.6
       '@starknet-io/types-js':
-        specifier: ^0.7.10
-        version: 0.7.10
+        specifier: 0.8.4
+        version: 0.8.4
       '@trpc/client':
         specifier: ^10.38.1
         version: 10.45.2(@trpc/server@10.45.2)
@@ -7439,14 +7439,14 @@ snapshots:
       - encoding
       - typescript
 
-  '@argent/x-ui@1.70.1(32cc7949e548783c8f1107d981d70665)':
+  '@argent/x-ui@1.70.1(35375c4d4d0ea7059d22f2361ae3276e)':
     dependencies:
       '@argent/x-shared': 1.39.0(@scure/base@1.2.1)(@scure/bip39@1.4.0)(async-retry@1.3.3)(lodash-es@4.17.21)(typescript@5.5.4)(ua-parser-js@1.0.39)(url-join@5.0.0)(zod@3.23.8)
       '@chakra-ui/react': 2.10.2(@emotion/react@11.13.3(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(framer-motion@11.11.7(@emotion/is-prop-valid@1.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@emotion/react': 11.13.3(@types/react@18.3.18)(react@18.3.1)
       '@emotion/styled': 11.13.0(@emotion/react@11.13.3(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
       '@scure/bip39': 1.4.0
-      '@starknet-io/types-js': 0.7.10
+      '@starknet-io/types-js': 0.8.4
       '@zxcvbn-ts/core': 3.0.4
       '@zxcvbn-ts/language-common': 3.0.4
       '@zxcvbn-ts/language-en': 3.0.2
