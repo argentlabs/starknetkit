@@ -138,7 +138,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-svelte": "^2.44.1",
     "husky": "^9.0.0",
-    "lint-staged": "^15.0.0",
+    "lint-staged": "^16.0.0",
     "postcss": "^8.4.21",
     "postcss-load-config": "^6.0.0",
     "prettier": "^3.0.3",
