@@ -1,6 +1,7 @@
 import type { StarknetkitConnector } from "../connectors"
 import { type ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
+import { ControllerConnector } from "../connectors/controller"
 import { WebWalletConnector } from "../connectors/webwallet"
 import { Braavos } from "../connectors/injected/braavos"
 import { Fordefi } from "../connectors/injected/fordefi"
@@ -37,6 +38,8 @@ export const defaultConnectors = ({
       defaultConnectors.push(new Keplr())
     }
   }
+
+  defaultConnectors.push(new ControllerConnector())
 
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())

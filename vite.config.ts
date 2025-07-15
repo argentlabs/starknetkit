@@ -39,6 +39,10 @@ export default defineConfig({
           __dirname,
           "src/connectors/injected/index.ts",
         ),
+        controllerConnector: resolve(
+          __dirname,
+          "src/connectors/controller/index.ts",
+        ),
         // argent: resolve(__dirname, "src/connectors/argent/index.ts"),
         argentX: resolve(__dirname, "src/connectors/injected/argentX.ts"),
         braavos: resolve(__dirname, "src/connectors/injected/braavos.ts"),
