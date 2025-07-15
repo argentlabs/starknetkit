@@ -1,54 +1,81 @@
-import type { ProviderOptions, ProviderInterface, AccountInterface } from "starknet"
-import { constants } from "starknet";
+import type {
+  ProviderOptions,
+  ProviderInterface,
+  AccountInterface,
+} from "starknet"
+import { constants } from "starknet"
 
-import type { RequestFnCall, RpcMessage, RpcTypeToMessageMap, StarknetWindowObject, TypedData } from "@starknet-io/types-js"
+import type {
+  RequestFnCall,
+  RpcMessage,
+  RpcTypeToMessageMap,
+  StarknetWindowObject,
+  TypedData,
+} from "@starknet-io/types-js"
 
-import Controller, { type ControllerOptions } from "@cartridge/controller";
+import Controller, { type ControllerOptions } from "@cartridge/controller"
 import { Connector, type ConnectArgs, type ConnectorData } from "../connector"
-import { ConnectorNotConnectedError, UserNotConnectedError, UserRejectedRequestError } from "../../errors"
+import {
+  ConnectorNotConnectedError,
+  UserNotConnectedError,
+  UserRejectedRequestError,
+} from "../../errors"
 
-import { CONTROLLER_ICON, RPC_URLS } from "./constants";
+import { CONTROLLER_ICON, RPC_URLS } from "./constants"
 
 export class ControllerConnector extends Connector {
-  private controller: Controller | null;
+  private controller: Controller | null
 
   constructor(options: Partial<ControllerOptions> = {}) {
-    super();
+    super()
 
     // Can pass in defaultChainId = SN_SEPOLIA to connect to Sepolia testnet
-    options.defaultChainId = options.defaultChainId || constants.StarknetChainId.SN_MAIN;
-    options.chains = options.chains || [{ rpcUrl: RPC_URLS[options.defaultChainId as keyof typeof RPC_URLS] }];
+    options.defaultChainId =
+      options.defaultChainId || constants.StarknetChainId.SN_MAIN
+    options.chains = options.chains || [
+      { rpcUrl: RPC_URLS[options.defaultChainId as keyof typeof RPC_URLS] },
+    ]
 
     this.controller = this.available()
       ? new Controller(options as ControllerOptions)
-      : null;
+      : null
   }
 
-  get id() { return "cartridgeController" }
-  get name() { return "Cartridge Controller" }
-  get icon() { return { light: CONTROLLER_ICON, dark: CONTROLLER_ICON } }
+  get id() {
+    return "cartridgeController"
+  }
+  get name() {
+    return "Cartridge Controller"
+  }
+  get icon() {
+    return { light: CONTROLLER_ICON, dark: CONTROLLER_ICON }
+  }
 
   available() {
-    return typeof window !== "undefined";
+    return typeof window !== "undefined"
   }
 
   async ready() {
     if (!this.controller) {
-      return false;
+      return false
     }
 
-    const account = await this.controller.probe();
-    return account !== null;
+    const account = await this.controller.probe()
+    return account !== null
   }
 
   async connect(_args?: ConnectArgs): Promise<ConnectorData> {
-    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+    if (!this.controller) {
+      throw new ConnectorNotConnectedError()
+    }
 
-    const account = await this.controller.connect();
+    const account = await this.controller.connect()
 
-    if (!account) { throw new UserNotConnectedError(); }
+    if (!account) {
+      throw new UserNotConnectedError()
+    }
 
-    const chainId = await this.chainId();
+    const chainId = await this.chainId()
 
     /**
      * @dev This emit ensures compatibility with starknet-react
@@ -57,67 +84,83 @@ export class ControllerConnector extends Connector {
 
     return {
       account: account.address,
-      chainId: chainId
-    };
+      chainId: chainId,
+    }
   }
 
   async disconnect(): Promise<void> {
-    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+    if (!this.controller) {
+      throw new ConnectorNotConnectedError()
+    }
 
     /**
      * @dev This emit ensures compatibility with starknet-react
      */
     this.emit("disconnect")
 
-    return this.controller.disconnect();
+    return this.controller.disconnect()
   }
 
-  async account(_provider: ProviderOptions | ProviderInterface): Promise<AccountInterface> {
-    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+  async account(
+    _provider: ProviderOptions | ProviderInterface,
+  ): Promise<AccountInterface> {
+    if (!this.controller) {
+      throw new ConnectorNotConnectedError()
+    }
 
-    const account = await this.controller.probe();
+    const account = await this.controller.probe()
 
-    if (!account) { throw new UserNotConnectedError(); }
+    if (!account) {
+      throw new UserNotConnectedError()
+    }
 
-    return account;
+    return account
   }
 
   async chainId(): Promise<bigint> {
-    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+    if (!this.controller) {
+      throw new ConnectorNotConnectedError()
+    }
 
-    const account = await this.controller.probe();
+    const account = await this.controller.probe()
 
-    if (!account) { throw new UserNotConnectedError(); }
+    if (!account) {
+      throw new UserNotConnectedError()
+    }
 
-    return BigInt(await account.getChainId());
+    return BigInt(await account.getChainId())
   }
 
   async request<T extends RpcMessage["type"]>(
-    call: RequestFnCall<T>
+    call: RequestFnCall<T>,
   ): Promise<RpcTypeToMessageMap[T]["result"]> {
-    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+    if (!this.controller) {
+      throw new ConnectorNotConnectedError()
+    }
 
     // Handle SNIP-12 compliance for signTypedData requests
     if (call.type === "wallet_signTypedData") {
-      const params = call.params as TypedData;
+      const params = call.params as TypedData
       if (!params.types.StarknetDomain) {
-          throw new Error(
-            `Controller requires a SNIP-12 version 1 domain separator. ` +
-            `See: https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md#domain-separator`
-          );
-        }
+        throw new Error(
+          `Controller requires a SNIP-12 version 1 domain separator. ` +
+            `See: https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md#domain-separator`,
+        )
+      }
     }
 
     try {
-      return await this.controller.request(call);
+      return await this.controller.request(call)
     } catch {
-      throw new UserRejectedRequestError();
+      throw new UserRejectedRequestError()
     }
   }
 
   get wallet(): StarknetWindowObject {
-    if (!this.controller) { throw new ConnectorNotConnectedError(); }
+    if (!this.controller) {
+      throw new ConnectorNotConnectedError()
+    }
 
-    return this.controller;
+    return this.controller
   }
 }
