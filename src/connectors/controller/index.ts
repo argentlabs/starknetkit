@@ -25,14 +25,6 @@ export class ControllerConnector extends Connector {
   constructor(options: Partial<ControllerOptions> = {}) {
     super()
 
-    if (!options.policies) {
-      console.log(
-        "[Controller] You have no policies set for the Controller. " +
-          "This is not typical and may lead to unexpected behavior. " +
-          "Go to https://docs.cartridge.gg/controller/sessions to learn more about setting policies.",
-      )
-    }
-
     this.controller = this.available()
       ? new Controller(options as ControllerOptions)
       : null
