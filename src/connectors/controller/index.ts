@@ -1,9 +1,4 @@
-import type {
-  ProviderOptions,
-  ProviderInterface,
-  AccountInterface,
-} from "starknet"
-import { constants } from "starknet"
+import type { ProviderOptions, ProviderInterface, AccountInterface } from "starknet"
 
 import type {
   RequestFnCall,
@@ -15,13 +10,14 @@ import type {
 
 import Controller, { type ControllerOptions } from "@cartridge/controller"
 import { Connector, type ConnectArgs, type ConnectorData } from "../connector"
+
 import {
   ConnectorNotConnectedError,
   UserNotConnectedError,
   UserRejectedRequestError,
 } from "../../errors"
 
-import { CONTROLLER_ICON, RPC_URLS } from "./constants"
+import { CONTROLLER_ICON } from "./constants"
 
 export class ControllerConnector extends Connector {
   private controller: Controller | null
@@ -29,20 +25,13 @@ export class ControllerConnector extends Connector {
   constructor(options: Partial<ControllerOptions> = {}) {
     super()
 
-    // Can pass in defaultChainId = SN_SEPOLIA to connect to Sepolia testnet
-    options.defaultChainId =
-      options.defaultChainId || constants.StarknetChainId.SN_MAIN
-    options.chains = options.chains || [
-      { rpcUrl: RPC_URLS[options.defaultChainId as keyof typeof RPC_URLS] },
-    ]
-
     this.controller = this.available()
       ? new Controller(options as ControllerOptions)
       : null
   }
 
   get id() {
-    return "cartridgeController"
+    return "controller"
   }
   get name() {
     return "Cartridge Controller"
@@ -56,12 +45,7 @@ export class ControllerConnector extends Connector {
   }
 
   async ready() {
-    if (!this.controller) {
-      return false
-    }
-
-    const account = await this.controller.probe()
-    return account !== null
+    return !!this.controller && this.controller.isReady()
   }
 
   async connect(_args?: ConnectArgs): Promise<ConnectorData> {

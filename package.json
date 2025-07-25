@@ -96,7 +96,7 @@
   ],
   "dependencies": {
     "@argent/x-ui": "^1.109.0",
-    "@cartridge/controller": "^0.7.13",
+    "@cartridge/controller": "^0.9.2",
     "@starknet-io/get-starknet": "^4.0.6",
     "@starknet-io/get-starknet-core": "^4.0.6",
     "@starknet-io/types-js": "0.8.4",
