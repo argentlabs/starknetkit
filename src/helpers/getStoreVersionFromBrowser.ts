@@ -22,6 +22,7 @@ export function getStoreVersionFromBrowser(): StoreVersion | null {
     case "electron":
     case "opera": // opera is chromium based
     case "vivaldi": // vivaldi is chromium based
+    case "yandex browser": // yandex is chromium based
       return "chrome"
     default:
       return null
