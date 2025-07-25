@@ -1,4 +1,7 @@
-import { tailwindThemeConfig } from "@argent/x-ui"
+import {
+  tailwindThemeColors,
+  tailwindThemeFontSizeWeb,
+} from "@argent/x-ui/tailwind"
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -12,10 +15,10 @@ export default {
       colors: {
         "primary-orange-400": "var(--color-primary-orange-400)",
         "surface-default": "var(--color-surface-default)",
-        ...tailwindThemeConfig.colors,
+        ...tailwindThemeColors,
       },
       fontSize: {
-        ...tailwindThemeConfig.fontSize,
+        ...tailwindThemeFontSizeWeb,
       },
       boxShadow: {
         "list-item": "0px 4px 12px 0px rgba(0, 0, 0, 0.06)",
