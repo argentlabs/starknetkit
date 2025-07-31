@@ -21,7 +21,10 @@ export const getModalTarget = (): ShadowRoot => {
   const target = element.attachShadow({ mode: "open" })
 
   const styleElement = document.createElement("style")
-  styleElement.textContent = css
+  styleElement.textContent = css.replace(
+    /\.dark:root/g,
+    ":host-context(.dark), .dark",
+  )
   target.appendChild(styleElement)
 
   return target
