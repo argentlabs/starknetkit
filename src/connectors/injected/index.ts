@@ -168,7 +168,7 @@ export class InjectedConnector extends Connector {
       params: { silent_mode: true },
     })
 
-    return new WalletAccount(provider, this._wallet, undefined, accounts[0])
+    return new WalletAccount(provider, this._wallet, accounts[0], undefined)
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
