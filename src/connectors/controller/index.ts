@@ -98,7 +98,8 @@ export class ControllerConnector extends Connector {
       throw new UserNotConnectedError()
     }
 
-    return account
+    // TODO: Implement account.getSuggestedFee
+    return account as unknown as AccountInterface
   }
 
   async chainId(): Promise<bigint> {
