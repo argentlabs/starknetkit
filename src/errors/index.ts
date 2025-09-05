@@ -1,3 +1,8 @@
+export class ConnectorNotAvailableError extends Error {
+  name = "ConnectorNotAvailableError"
+  message = "Connector not available"
+}
+
 export class ConnectorNotConnectedError extends Error {
   name = "ConnectorNotConnectedError"
   message = "Connector not connected"

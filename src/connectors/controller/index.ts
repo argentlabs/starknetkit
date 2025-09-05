@@ -12,6 +12,7 @@ import Controller, { type ControllerOptions } from "@cartridge/controller"
 import { Connector, type ConnectArgs, type ConnectorData } from "../connector"
 
 import {
+  ConnectorNotAvailableError,
   ConnectorNotConnectedError,
   UserNotConnectedError,
   UserRejectedRequestError,
@@ -20,14 +21,12 @@ import {
 import { CONTROLLER_ICON } from "./constants"
 
 export class ControllerConnector extends Connector {
-  private controller: Controller | null
+  private controller: Controller | null = null
+  private options: Partial<ControllerOptions> = {}
 
   constructor(options: Partial<ControllerOptions> = {}) {
     super()
-
-    this.controller = this.available()
-      ? new Controller(options as ControllerOptions)
-      : null
+    this.options = { ...this.options, lazyload: true }
   }
 
   get id() {
@@ -49,8 +48,12 @@ export class ControllerConnector extends Connector {
   }
 
   async connect(_args?: ConnectArgs): Promise<ConnectorData> {
+    if (!this.available()) {
+      throw new ConnectorNotAvailableError()
+    }
+
     if (!this.controller) {
-      throw new ConnectorNotConnectedError()
+      this.controller = new Controller(this.options)
     }
 
     const account = await this.controller.connect()
