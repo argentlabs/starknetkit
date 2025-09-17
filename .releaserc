@@ -8,14 +8,6 @@
     {
       "name": "beta",
       "prerelease": true
-    },
-    {
-      "name": "beta-wallet-account",
-      "prerelease": true
-    },
-    {
-      "name": "beta-argent-ww-iframe",
-      "prerelease": true
     }
   ],
   "plugins": [
