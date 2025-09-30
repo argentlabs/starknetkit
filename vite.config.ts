@@ -27,6 +27,7 @@ export default defineConfig({
           __dirname,
           "src/connectors/webwallet/index.ts",
         ),
+        keplrMobile: resolve(__dirname, "src/connectors/keplrMobile/index.ts"),
         argentMobile: resolve(
           __dirname,
           "src/connectors/argent/argentMobile/index.ts",
