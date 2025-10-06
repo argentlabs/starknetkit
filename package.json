@@ -102,8 +102,8 @@
   "dependencies": {
     "@argent/x-ui": "^1.109.0",
     "@cartridge/controller": "^0.10.0",
-    "@starknet-io/get-starknet": "^4.0.7",
-    "@starknet-io/get-starknet-core": "^4.0.7",
+    "@starknet-io/get-starknet": "^4.0.8",
+    "@starknet-io/get-starknet-core": "^4.0.8",
     "@starknet-io/types-js": "0.8.4",
     "@trpc/client": "^10.38.1",
     "@trpc/server": "^10.38.1",
