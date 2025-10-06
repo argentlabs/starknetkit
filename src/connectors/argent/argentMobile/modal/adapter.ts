@@ -12,7 +12,7 @@ import {
 } from "@walletconnect/utils"
 import { EventEmitter } from "events"
 
-import { ProviderInterface } from "starknet"
+import type { ProviderInterface } from "starknet"
 import type { EthereumRpcConfig } from "./starknet/adapter"
 
 export interface NamespaceAdapterOptions {
@@ -63,7 +63,7 @@ export abstract class NamespaceAdapter {
     requiredNamespaces,
   }: SessionTypes.Struct) => {
     const chain = this.formatChainId(this.chainId)
-    if (requiredNamespaces) {
+    if (requiredNamespaces && Object.keys(requiredNamespaces).length > 0) {
       return !!requiredNamespaces[this.namespace]?.chains?.includes(chain)
     }
     return !!namespaces?.[this.namespace]?.accounts.some((account) =>
@@ -97,8 +97,7 @@ export abstract class NamespaceAdapter {
 
   protected setChainId(chain: string) {
     if (this.isCompatibleChainId(chain)) {
-      const chainId = this.parseChainId(chain)
-      this.chainId = chainId
+      this.chainId = this.parseChainId(chain)
       this.eventEmitter.emit("chainChanged", this.chainId)
     }
   }
