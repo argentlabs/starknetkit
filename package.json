@@ -67,6 +67,11 @@
       "import": "./dist/fordefi.js",
       "require": "./dist/fordefi.cjs"
     },
+    "./xverse": {
+      "types": "./dist/xverse.d.ts",
+      "import": "./dist/xverse.js",
+      "require": "./dist/xverse.cjs"
+    },
     "./braavosMobile": {
       "types": "./dist/braavosMobile.d.ts",
       "import": "./dist/braavosMobile.js",
