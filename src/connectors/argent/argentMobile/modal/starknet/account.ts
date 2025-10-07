@@ -23,7 +23,7 @@ export class StarknetRemoteAccount extends Account implements AccountInterface {
     signer: SignerInterface,
     private wallet: IStarknetRpc,
   ) {
-    super(provider, address, signer)
+    super({ provider, address, signer })
   }
 
   public async execute(
