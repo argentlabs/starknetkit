@@ -81,12 +81,7 @@ export const connect = async ({
   // force null in case it was disconnected from mobile app
   selectedConnector = null
   const availableConnectors =
-    !connectors || connectors.length === 0
-      ? defaultConnectors({
-          argentMobileOptions,
-          webWalletUrl,
-        })
-      : connectors
+    !connectors || connectors.length === 0 ? defaultConnectors() : connectors
 
   if (skipEmit) {
     // This is ugly but needed fix for useStarknetkitConnectModal

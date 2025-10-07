@@ -2,22 +2,16 @@ import type { StarknetkitConnector } from "../connectors"
 import { type ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
 import { ControllerConnector } from "../connectors/controller"
-import { WebWalletConnector } from "../connectors/webwallet"
 import { Braavos } from "../connectors/injected/braavos"
 import { Fordefi } from "../connectors/injected/fordefi"
 import { Keplr } from "../connectors/injected/keplr"
+import { Xverse } from "../connectors/injected/xverse"
 import { MetaMask } from "../connectors/injected/metamask"
 
 import { isMobileDevice, isSafari } from "./navigator"
 import { ArgentX } from "../connectors/injected/argentX"
 
-export const defaultConnectors = ({
-  argentMobileOptions,
-  webWalletUrl,
-}: {
-  argentMobileOptions: ArgentMobileConnectorOptions
-  webWalletUrl?: string
-}): StarknetkitConnector[] => {
+export const defaultConnectors = (): StarknetkitConnector[] => {
   // | StarknetkitCompoundConnector
   const defaultConnectors: StarknetkitConnector[] =
     // | StarknetkitCompoundConnector
@@ -36,6 +30,9 @@ export const defaultConnectors = ({
     }
     if (Keplr.isWalletInjected()) {
       defaultConnectors.push(new Keplr())
+    }
+    if (Xverse.isWalletInjected()) {
+      defaultConnectors.push(new Xverse())
     }
   }
 

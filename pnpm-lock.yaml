@@ -15,11 +15,11 @@ importers:
         specifier: ^0.10.0
         version: 0.10.0(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@starknet-io/get-starknet':
-        specifier: ^4.0.7
-        version: 4.0.7
+        specifier: ^4.0.8
+        version: 4.0.8
       '@starknet-io/get-starknet-core':
-        specifier: ^4.0.7
-        version: 4.0.7
+        specifier: ^4.0.8
+        version: 4.0.8
       '@starknet-io/types-js':
         specifier: 0.8.4
         version: 0.8.4
@@ -1609,11 +1609,11 @@ packages:
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
 
-  '@starknet-io/get-starknet-core@4.0.7':
-    resolution: {integrity: sha512-ocwQTdDvGa+0CvjGygyaTuFkda2R82dofydts8uXr9p0Diy/bmYW1fkuqJfi1nC5M+YcvvuEpl6wFvwXM1og5w==}
+  '@starknet-io/get-starknet-core@4.0.8':
+    resolution: {integrity: sha512-UCyaO5T+5IZN1qPiQhLPzCSmoy06FU42tZtDmpj0UifSP7vdSMe+KRnkegiikpPJ8wZmel1o26GQkBFoUrHQlQ==}
 
-  '@starknet-io/get-starknet@4.0.7':
-    resolution: {integrity: sha512-env/ZN5EmDJ6vDtIgjOjsEvvzdKBDaWZ0aLe79IVJ7lq2icqKbX86yR1/CUf4AU31AFYZHWZ3daOaGFT4nHSUQ==}
+  '@starknet-io/get-starknet@4.0.8':
+    resolution: {integrity: sha512-51qlJqQMQnpW9MwvVUzOsnuSK0YbP88EEuzFbVDmtvMICuOjZd+Dr7CYgF/yK2sVbX8eA/hmY74/9S1vIWhptg==}
 
   '@starknet-io/types-js@0.7.10':
     resolution: {integrity: sha512-1VtCqX4AHWJlRRSYGSn+4X1mqolI1Tdq62IwzoU2vUuEE72S1OlEeGhpvd6XsdqXcfHmVzYfj8k1XtKBQqwo9w==}
@@ -8602,15 +8602,15 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@starknet-io/get-starknet-core@4.0.7':
+  '@starknet-io/get-starknet-core@4.0.8':
     dependencies:
       '@module-federation/runtime': 0.1.21
       '@starknet-io/types-js': 0.7.10
       async-mutex: 0.5.0
 
-  '@starknet-io/get-starknet@4.0.7':
+  '@starknet-io/get-starknet@4.0.8':
     dependencies:
-      '@starknet-io/get-starknet-core': 4.0.7
+      '@starknet-io/get-starknet-core': 4.0.8
       bowser: 2.12.1
 
   '@starknet-io/types-js@0.7.10': {}

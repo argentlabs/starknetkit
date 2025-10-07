@@ -49,6 +49,7 @@ export default defineConfig({
         metamask: resolve(__dirname, "src/connectors/injected/metamask.ts"),
         keplr: resolve(__dirname, "src/connectors/injected/keplr.ts"),
         fordefi: resolve(__dirname, "src/connectors/injected/fordefi.ts"),
+        xverse: resolve(__dirname, "src/connectors/injected/xverse.ts"),
       },
       formats: ["es", "cjs"],
     },
