@@ -1,6 +1,7 @@
 import type { StarknetkitConnector } from "../connectors"
 import { type ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
+import { KeplrMobileBaseConnector } from "../connectors/keplrMobile"
 import { ControllerConnector } from "../connectors/controller"
 import { Braavos } from "../connectors/injected/braavos"
 import { Fordefi } from "../connectors/injected/fordefi"
@@ -40,6 +41,7 @@ export const defaultConnectors = (): StarknetkitConnector[] => {
 
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())
+    defaultConnectors.push(new KeplrMobileBaseConnector())
   }
 
   return defaultConnectors
