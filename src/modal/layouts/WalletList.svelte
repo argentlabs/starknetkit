@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Callback, ModalWallet, Theme } from "../../types/modal"
+  import type { Callback, ModalWallet, Theme } from "../../types/modal"
   import WalletButton from "../components/buttons/WalletButton.svelte"
 
   export let theme: Theme

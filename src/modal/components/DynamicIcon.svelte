@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Theme } from "../../types/modal"
-  import { ConnectorIcons } from "../../connectors"
+  import type { Theme } from "../../types/modal"
+  import type { ConnectorIcons } from "../../connectors"
 
   export let theme: Theme
   export let icon: ConnectorIcons

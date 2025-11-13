@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { StoreVersion } from "../../../types/modal"
+  import type { StoreVersion } from "../../../types/modal"
 
   import AppleIcon from "../../components/icons/brands/AppleIcon.svelte"
   import PlayStore from "../../components/icons/brands/PlayStore.svelte"

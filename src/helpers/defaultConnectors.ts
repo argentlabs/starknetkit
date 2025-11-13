@@ -1,5 +1,5 @@
 import type { StarknetkitConnector } from "../connectors"
-import { type ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
+import type { ArgentMobileConnectorOptions } from "../connectors/argent/argentMobile"
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
 import { ControllerConnector } from "../connectors/controller"
 import { Braavos } from "../connectors/injected/braavos"
@@ -11,7 +11,12 @@ import { MetaMask } from "../connectors/injected/metamask"
 import { isMobileDevice, isSafari } from "./navigator"
 import { ArgentX } from "../connectors/injected/argentX"
 
-export const defaultConnectors = (): StarknetkitConnector[] => {
+export const defaultConnectors = (
+  _options?: {
+    argentMobileOptions?: ArgentMobileConnectorOptions
+    webWalletUrl?: string
+  },
+): StarknetkitConnector[] => {
   // | StarknetkitCompoundConnector
   const defaultConnectors: StarknetkitConnector[] =
     // | StarknetkitCompoundConnector
