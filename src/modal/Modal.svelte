@@ -98,7 +98,9 @@
 
     if (modalWallets.length === 1) {
       try {
-        await callback(modalWallets[0])
+        setTimeout(() => {
+          void callback(modalWallets[0])
+        })
       } catch (e) {
         console.error(e)
       }
