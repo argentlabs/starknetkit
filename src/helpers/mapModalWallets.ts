@@ -54,7 +54,7 @@ export function getModalWallet(
     id: connector.id,
     icon: isCompound ? connectorOrCompoundConnector.icon : connector.icon,
     connector: connectorOrCompoundConnector,
-    installed: true,
+    installed: false,
     title:
       "title" in connector && isString(connector.title)
         ? connector.title
