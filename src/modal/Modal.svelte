@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte"
+  import type { WalletProvider } from "@starknet-io/get-starknet-core"
 
   import {
     type Callback,
@@ -39,6 +40,7 @@
     return layout
   }
 
+  export let discoveryWallets: WalletProvider[]
   export let modalWallets: ModalWallet[] = []
   export let selectedWallet: ModalWallet | null = null
   $: selectedConnector =
@@ -98,7 +100,9 @@
 
     if (modalWallets.length === 1) {
       try {
-        await callback(modalWallets[0])
+        setTimeout(() => {
+          void callback(modalWallets[0])
+        })
       } catch (e) {
         console.error(e)
       }
@@ -174,6 +178,8 @@
           extensionName={selectedWallet?.name.includes("Ready")
             ? "Ready Wallet (formerly Argent)"
             : selectedConnector?.name}
+          extensionId={selectedWallet?.id}
+          discoveryWallets={discoveryWallets}
         />
       {/if}
     </main>

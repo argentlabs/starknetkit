@@ -14,7 +14,6 @@ import type {
   StarknetkitConnector,
   ConnectorData,
 } from "./connectors"
-import { DEFAULT_WEBWALLET_URL } from "./connectors/webwallet/constants"
 
 import { ArgentMobileBaseConnector } from "./connectors/argent/argentMobile"
 import { defaultConnectors } from "./helpers/defaultConnectors"
@@ -73,9 +72,6 @@ export const connect = async ({
   skipEmit = false,
   ...restOptions
 }: ConnectOptionsWithConnectors | ConnectOptions): Promise<ModalResult> => {
-  const { webWalletUrl = DEFAULT_WEBWALLET_URL, argentMobileOptions } =
-    restOptions as ConnectOptions
-
   const { connectors } = restOptions as ConnectOptionsWithConnectors
 
   // force null in case it was disconnected from mobile app
@@ -248,6 +244,7 @@ export const connect = async ({
         },
         theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
+        discoveryWallets,
       },
     }) as unknown as ModalInstance // Prevents vite build errors
   })
