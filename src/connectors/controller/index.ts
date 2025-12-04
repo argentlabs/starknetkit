@@ -32,9 +32,11 @@ export class ControllerConnector extends Connector {
   get id() {
     return "controller"
   }
+
   get name() {
-    return "Cartridge Controller"
+    return "Controller"
   }
+
   get icon() {
     return { light: CONTROLLER_ICON, dark: CONTROLLER_ICON }
   }
