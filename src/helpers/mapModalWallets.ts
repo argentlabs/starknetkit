@@ -54,7 +54,7 @@ export function getModalWallet(
     id: connector.id,
     icon: isCompound ? connectorOrCompoundConnector.icon : connector.icon,
     connector: connectorOrCompoundConnector,
-    installed: false,
+    installed: connector.id === "argentMobile",
     title:
       "title" in connector && isString(connector.title)
         ? connector.title
@@ -156,7 +156,7 @@ export const mapModalWallets = ({
           id: discovery.id,
           icon: { light: discoveryIcon, dark: discoveryIcon },
           connector: _c,
-          installed: false,
+          installed: discovery.id === "argentMobile",
           download: downloads[storeVersion as keyof typeof downloads],
           downloads: downloads,
         }
