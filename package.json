@@ -1,6 +1,6 @@
 {
   "name": "starknetkit",
-  "version": "3.2.0",
+  "version": "3.4.1",
   "repository": "github:argentlabs/starknetkit",
   "private": false,
   "browser": {
@@ -61,6 +61,11 @@
       "types": "./dist/keplr.d.ts",
       "import": "./dist/keplr.js",
       "require": "./dist/keplr.cjs"
+    },
+    "./keplrMobile": {
+      "types": "./dist/keplrMobile.d.ts",
+      "import": "./dist/keplrMobile.js",
+      "require": "./dist/keplrMobile.cjs"
     },
     "./fordefi": {
       "types": "./dist/fordefi.d.ts",

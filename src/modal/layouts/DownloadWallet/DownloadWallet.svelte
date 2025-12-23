@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { StoreVersion } from "../../../types/modal"
+  import type { WalletProvider } from "@starknet-io/get-starknet-core"
+  import type { StoreVersion } from "../../../types/modal"
 
   import AppleIcon from "../../components/icons/brands/AppleIcon.svelte"
   import PlayStore from "../../components/icons/brands/PlayStore.svelte"
@@ -16,9 +17,14 @@
   import HorizontalLine from "../../components/HorizontalLine.svelte"
 
   export let isArgent: boolean = false
+  export let extensionId: string = ""
   export let extensionName: string = ""
   export let store: StoreVersion | null
   export let storeLink: string | undefined
+  export let discoveryWallets: WalletProvider[]
+
+  const discoveredWallet = discoveryWallets.find((w: WalletProvider) => w.id.toLowerCase() === extensionId.toLowerCase())
+  const discoveredWalletDownloads = Object.entries(discoveredWallet?.downloads || {})
 
   const storeData = {
     // @dev - Be mindful of name property length, it might break the UI
@@ -39,6 +45,7 @@
 
 <section class="flex flex-col flex-grow justify-between">
   <div class="flex flex-col gap-2">
+    <!--  Upon removal of Argent mobile, remove and code else `!isArgent` if case from line 84  -->
     {#if isArgent}
       <ArgentDownloadItem
         title="Ready mobile"
@@ -80,6 +87,16 @@
           {/if}
         </svelte:fragment>
       </ArgentDownloadItem>
+    {:else if !isArgent}
+      <p class="text-[16px] text-primary">
+        <span class="capitalize">{extensionName}</span> is not available on your browser.<br/><br/>
+        {#if discoveredWalletDownloads.length > 0}
+          Try on other browsers:{" "}
+          {#each discoveredWalletDownloads as discovery, i}
+            <Link as="a" className="capitalize" href={discovery[1]}>{discovery[0]}</Link>{i + 1 === discoveredWalletDownloads.length ? "." : ", "}
+          {/each}
+        {/if}
+      </p>
     {/if}
   </div>
 
