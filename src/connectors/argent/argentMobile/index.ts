@@ -232,7 +232,7 @@ export class ArgentMobileBaseConnector extends Connector {
       url,
       icons,
       rpcUrl: providerRpcUrl,
-      modalWallet: getModalWallet(this, discoveryWallets),
+      modalWallet: getModalWallet(this, { discoveryWallets }),
     }
 
     if (projectId === DEFAULT_PROJECT_ID) {
