@@ -245,6 +245,7 @@ export const connect = async ({
         theme: modalTheme === "system" ? null : (modalTheme ?? null),
         modalWallets,
         discoveryWallets,
+        installedWallets,
       },
     }) as unknown as ModalInstance // Prevents vite build errors
   })
