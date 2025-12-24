@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte"
   import type { WalletProvider } from "@starknet-io/get-starknet-core"
+  import type { StarknetWindowObject } from "@starknet-io/types-js"
 
   import {
     type Callback,
@@ -41,6 +42,7 @@
   }
 
   export let discoveryWallets: WalletProvider[]
+  export let installedWallets: StarknetWindowObject[]
   export let modalWallets: ModalWallet[] = []
   export let selectedWallet: ModalWallet | null = null
   $: selectedConnector =
@@ -75,7 +77,7 @@
     if (isInAppBrowser) {
       try {
         setTimeout(() => {
-          void callback(getModalWallet(new ArgentX()))
+          void callback(getModalWallet(new ArgentX(), { installedWallets }))
         })
       } catch (e) {
         console.error(e)
@@ -90,7 +92,7 @@
     if (isBraavosMobileApp) {
       try {
         setTimeout(() => {
-          void callback(getModalWallet(new Braavos()))
+          void callback(getModalWallet(new Braavos(), { installedWallets }))
         })
       } catch (e) {
         console.error(e)

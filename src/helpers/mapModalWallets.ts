@@ -1,7 +1,7 @@
 import type { WalletProvider } from "@starknet-io/get-starknet-core"
 import { isString } from "lodash-es"
 import type { StarknetWindowObject } from "@starknet-io/types-js"
-import {
+import type {
   Connector,
   StarknetkitCompoundConnector,
   StarknetkitConnector,
@@ -30,10 +30,13 @@ export function getModalWallet(
     | Connector
     | StarknetkitConnector
     | StarknetkitCompoundConnector,
-  discoveryWallets?: WalletProvider[],
-  _storeVersion?: StoreVersion | null,
+  options?: {
+    installedWallets?: StarknetWindowObject[]
+    discoveryWallets?: WalletProvider[]
+    storeVersion?: StoreVersion | null
+  },
 ): ModalWallet {
-  let storeVersion = _storeVersion
+  let storeVersion = options?.storeVersion
   if (!storeVersion) {
     storeVersion = getStoreVersionFromBrowser()
   }
@@ -44,17 +47,21 @@ export function getModalWallet(
 
   const isCompound = isCompoundConnector(connectorOrCompoundConnector)
 
-  const downloads = discoveryWallets?.find(
+  const downloads = options?.discoveryWallets?.find(
     (d) =>
       d.id === (connector.id === "argentMobile" ? "argentX" : connector.id),
   )?.downloads
 
+  const installed =
+    connector.id === "argentMobile" ||
+    Boolean(options?.installedWallets?.find((w) => w.id === connector.id))
+
   return {
+    installed,
     name: isCompound ? connectorOrCompoundConnector.name : connector.name,
     id: connector.id,
     icon: isCompound ? connectorOrCompoundConnector.icon : connector.icon,
     connector: connectorOrCompoundConnector,
-    installed: connector.id === "argentMobile",
     title:
       "title" in connector && isString(connector.title)
         ? connector.title
@@ -105,7 +112,6 @@ export const mapModalWallets = ({
       if (installed) {
         let icon
         let name
-        let download
 
         if (isCompound) {
           icon = _c.icon
@@ -166,7 +172,7 @@ export const mapModalWallets = ({
         return null
       }
 
-      return getModalWallet(_c, discoveryWallets)
+      return getModalWallet(_c, { discoveryWallets })
     })
     .filter((c): c is ModalWallet => c !== null)
 
