@@ -58,14 +58,8 @@ export class KeplrMobileBaseConnector extends Connector {
   }
 
   async connect(_args: ConnectArgs = {}): Promise<ConnectorData> {
-    await this.ensureWallet()
-
-    // will return empty data, connect will only open keplr mobile app
-    // will require to implement the wallet connection
-    return {
-      account: "",
-      chainId: BigInt(0),
-    }
+    this.ensureWallet()
+    throw new Error("Please continue in Keplr mobile app")
   }
 
   async disconnect(): Promise<void> {
