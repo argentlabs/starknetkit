@@ -12,8 +12,8 @@ importers:
         specifier: ^1.109.0
         version: 1.109.1(50baa19d61e59b7a5451649a04b14fca)
       '@cartridge/controller':
-        specifier: ^0.10.0
-        version: 0.10.0(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: ^0.12.1
+        version: 0.12.1(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@starknet-io/get-starknet':
         specifier: ^4.0.8
         version: 4.0.8
@@ -413,11 +413,11 @@ packages:
     resolution: {integrity: sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ==}
     engines: {node: '>=6.9.0'}
 
-  '@cartridge/controller-wasm@0.3.3':
-    resolution: {integrity: sha512-SWrARrA+kgtG9+YJlcWR0NEHhtNK+yl61oTWHjltId3pP/lcEEDiJ29ezV17UbINnUjSbk/SsHkmwofJeaaMvw==}
+  '@cartridge/controller-wasm@0.8.0':
+    resolution: {integrity: sha512-wxwrIMceVX/xyfv8z43sF+hCGunQZ6kV/h+VlZn8beDP3rlAEMTaSpjBox1YhKp+xImT4KvxuCSR6+3vVDJFMA==}
 
-  '@cartridge/controller@0.10.0':
-    resolution: {integrity: sha512-bY7AT8WRgyGuQR4ztaJnqIxqzc4Bdxr/4DGL3zj8sMalW3U/AV7/hu1mImXIBWabVWI9e/ZArN8jCONLgwZJUg==}
+  '@cartridge/controller@0.12.1':
+    resolution: {integrity: sha512-uBsCK0aX5N5NOlZ9iPDow5iTxI55LS62TN2vKdFpJ4bkaT0rZ6QkQvHNZgZY6DWCSiZFMB490VePQmFED8Ybrw==}
 
   '@cartridge/penpal@6.2.4':
     resolution: {integrity: sha512-tdpOnSJJBFMlgLZ1+z9Ho5e6cG5EgMAb1Cmmh1lGT2tmplogU/XPMjLE6CwvKAPDoe6a38iMnbH+ySTAWWIOKA==}
@@ -1641,6 +1641,7 @@ packages:
 
   '@telegram-apps/bridge@1.9.2':
     resolution: {integrity: sha512-SJLcNWLXhbbZr9MiqFH/g2ceuitSJKMxUIZysK4zUNyTUNuonrQG80Q/yrO+XiNbKUj8WdDNM86NBARhuyyinQ==}
+    deprecated: This package is not supported anymore. Use @tma.js/bridge instead
 
   '@telegram-apps/navigation@1.0.14':
     resolution: {integrity: sha512-bqNgF/J8Po7ZtsELm3E1a6aPr7awwxO3sIqD8J6u12urOlGoW5+1KxKKbkPa58mgXuQdsltd8apI+OVy0IYiUA==}
@@ -1656,9 +1657,11 @@ packages:
 
   '@telegram-apps/transformers@1.2.2':
     resolution: {integrity: sha512-vvMwXckd1D7Ozc0h66PSUwF5QLrRV9HlGJFFeBuUex8QEk5mSPtsJkLiqB8aBbwuFDa91+TUSM/CxqPZO/e9YQ==}
+    deprecated: This package is not supported anymore. Use @tma.js/transfomers instead
 
   '@telegram-apps/types@1.2.1':
     resolution: {integrity: sha512-so4HLh7clur0YyMthi9KVIgWoGpZdXlFOuQjk3+Q5NAvJZ11nAheBSwPlGw/Ko92+zwvrSBE/lQyN2+p17RP+w==}
+    deprecated: This package is not supported anymore. Use @tma.js/types instead
 
   '@trpc/client@10.45.2':
     resolution: {integrity: sha512-ykALM5kYWTLn1zYuUOZ2cPWlVfrXhc18HzBDyRhoPYN0jey4iQHEFSEowfnhg1RvYnrAVjNBgHNeSAXjrDbGwg==}
@@ -7089,11 +7092,11 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@cartridge/controller-wasm@0.3.3': {}
+  '@cartridge/controller-wasm@0.8.0': {}
 
-  '@cartridge/controller@0.10.0(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@cartridge/controller@0.12.1(@types/react@18.3.24)(bufferutil@4.0.9)(react@18.3.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
-      '@cartridge/controller-wasm': 0.3.3
+      '@cartridge/controller-wasm': 0.8.0
       '@cartridge/penpal': 6.2.4
       '@starknet-io/types-js': 0.9.1
       '@telegram-apps/sdk': 2.11.3
@@ -12709,9 +12712,9 @@ snapshots:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.6.2
-      '@scure/bip39': 1.5.4
-      abitype: 1.0.8(typescript@5.9.2)(zod@3.25.76)
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      abitype: 1.1.0(typescript@5.9.2)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.9.2
@@ -12726,7 +12729,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.0.8(typescript@5.9.2)(zod@3.25.76)
+      abitype: 1.1.0(typescript@5.9.2)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.9.2
