@@ -7,8 +7,8 @@ import type {
 } from "@starknet-io/types-js"
 import type {
   AccountInterface,
+  PaymasterInterface,
   ProviderInterface,
-  ProviderOptions,
 } from "starknet"
 import {
   Connector,
@@ -67,7 +67,8 @@ export class KeplrMobileBaseConnector extends Connector {
   }
 
   async account(
-    _: ProviderOptions | ProviderInterface,
+    _: ProviderInterface,
+    _paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface> {
     throw new Error("not implemented")
   }

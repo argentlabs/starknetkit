@@ -173,6 +173,8 @@ class ArgentModal {
       props: {
         layout: modalLayout,
         dappName: modalWallet?.dappName,
+        discoveryWallets: [],
+        installedWallets: [],
         showBackButton: false,
         selectedWallet: modalWallet,
         callback: async (wallet: ModalWallet | null) => {

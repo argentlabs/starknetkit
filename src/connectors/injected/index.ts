@@ -8,8 +8,8 @@ import {
 import {
   WalletAccount,
   type AccountInterface,
+  type PaymasterInterface,
   type ProviderInterface,
-  type ProviderOptions,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -159,7 +159,8 @@ export class InjectedConnector extends Connector {
   }
 
   async account(
-    provider: ProviderOptions | ProviderInterface,
+    provider: ProviderInterface,
+    _paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface> {
     this.ensureWallet()
     const locked = await this.isLocked()

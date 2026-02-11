@@ -1,4 +1,8 @@
-import type { ProviderOptions, ProviderInterface, AccountInterface } from "starknet"
+import type {
+  AccountInterface,
+  PaymasterInterface,
+  ProviderInterface,
+} from "starknet"
 
 import type {
   RequestFnCall,
@@ -89,7 +93,8 @@ export class ControllerConnector extends Connector {
   }
 
   async account(
-    _provider: ProviderOptions | ProviderInterface,
+    _provider: ProviderInterface,
+    _paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface> {
     if (!this.controller) {
       throw new ConnectorNotConnectedError()

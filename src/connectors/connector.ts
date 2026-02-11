@@ -2,7 +2,7 @@ import EventEmitter from "eventemitter3"
 import {
   AccountInterface,
   ProviderInterface,
-  type ProviderOptions,
+  type PaymasterInterface,
 } from "starknet"
 import type {
   RequestFnCall,
@@ -60,7 +60,8 @@ export abstract class Connector extends EventEmitter<ConnectorEvents> {
   abstract disconnect(): Promise<void>
   /** Get current account silently. Return null if the account is not authorized */
   abstract account(
-    provider: ProviderOptions | ProviderInterface,
+    provider: ProviderInterface,
+    paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface>
   /** Get current chain id. */
   abstract chainId(): Promise<bigint>

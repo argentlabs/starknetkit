@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Callback, ModalWallet, Theme } from "../../../types/modal"
+  import type { Callback, ModalWallet, Theme } from "../../../types/modal"
 
   import LargeButton from "./LargeButton.svelte";
   import DynamicIcon from "../DynamicIcon.svelte"
