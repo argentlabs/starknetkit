@@ -81,7 +81,7 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   get name(): string {
-    return "Ready (formerly Argent)"
+    return "Ready X"
   }
 
   get icon(): ConnectorIcons {
@@ -217,7 +217,7 @@ export class ArgentMobileBaseConnector extends Connector {
       if (wallet.id.toLowerCase() === "argentx") {
         return {
           ...wallet,
-          name: "Ready Wallet (formerly Argent)",
+          name: "Ready X",
         }
       }
       return wallet
