@@ -106,7 +106,7 @@
   ],
   "dependencies": {
     "@argent/x-ui": "^1.109.0",
-    "@cartridge/controller": "^0.10.0",
+    "@cartridge/controller": "^0.12.1",
     "@starknet-io/get-starknet": "^4.0.8",
     "@starknet-io/get-starknet-core": "^4.0.8",
     "@starknet-io/types-js": "0.8.4",
@@ -126,7 +126,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
-    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/git": "10.0.1",
     "@sveltejs/vite-plugin-svelte": "^2.2.0",
     "@tsconfig/svelte": "^5.0.0",
     "@types/async-retry": "^1.4.5",
@@ -153,7 +153,7 @@
     "postcss-load-config": "^6.0.0",
     "prettier": "^3.0.3",
     "prettier-plugin-import-sort": "^0.0.7",
-    "semantic-release": "^24.0.0",
+    "semantic-release": "25.0.2",
     "starknet": "^8.5.2",
     "svelte": "^4.0.0",
     "svelte-check": "^3.5.1",
