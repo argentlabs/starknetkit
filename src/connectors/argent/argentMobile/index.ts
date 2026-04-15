@@ -11,8 +11,8 @@ import {
   constants,
   WalletAccount,
   type AccountInterface,
+  type PaymasterInterface,
   type ProviderInterface,
-  type ProviderOptions,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -130,7 +130,8 @@ export class ArgentMobileBaseConnector extends Connector {
   }
 
   async account(
-    provider: ProviderOptions | ProviderInterface,
+    provider: ProviderInterface,
+    _paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface> {
     if (!this._wallet) {
       throw new ConnectorNotConnectedError()

@@ -7,8 +7,8 @@ import type {
 } from "@starknet-io/types-js"
 import {
   AccountInterface,
+  type PaymasterInterface,
   ProviderInterface,
-  type ProviderOptions,
 } from "starknet"
 import {
   Connector,
@@ -73,7 +73,8 @@ export class BraavosMobileBaseConnector extends Connector {
   }
 
   async account(
-    _: ProviderOptions | ProviderInterface,
+    _: ProviderInterface,
+    _paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface> {
     throw new Error("not implemented")
   }

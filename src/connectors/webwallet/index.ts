@@ -11,8 +11,8 @@ import type { TRPCClientError } from "@trpc/client"
 import {
   WalletAccount,
   type AccountInterface,
+  type PaymasterInterface,
   type ProviderInterface,
-  type ProviderOptions,
 } from "starknet"
 import {
   ConnectorNotConnectedError,
@@ -261,7 +261,8 @@ export class WebWalletConnector extends Connector {
   }
 
   async account(
-    provider: ProviderOptions | ProviderInterface,
+    provider: ProviderInterface,
+    _paymasterProvider?: PaymasterInterface,
   ): Promise<AccountInterface> {
     this._wallet = _wallet
 
