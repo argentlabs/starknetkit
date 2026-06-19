@@ -26,10 +26,10 @@ import { CHIPI_ICON } from "./constants"
 
 /** Starknet mainnet chain id (felt of the shortstring "SN_MAIN"). */
 const SN_MAIN = BigInt("0x534e5f4d41494e")
-const DEFAULT_WALLET_URL = "https://connect.chipipay.com"
+const DEFAULT_WALLET_URL = "https://wallet.chipipay.com"
 
 export interface ChipiConnectorOptions {
-  /** Hosted wallet base URL. Defaults to `https://connect.chipipay.com`. */
+  /** Hosted wallet base URL. Defaults to `https://wallet.chipipay.com`. */
   walletUrl?: string
 }
 
