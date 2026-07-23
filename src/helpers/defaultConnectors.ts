@@ -3,6 +3,7 @@ import { type ArgentMobileConnectorOptions } from "../connectors/argent/argentMo
 import { BraavosMobileBaseConnector } from "../connectors/braavosMobile"
 import { KeplrMobileBaseConnector } from "../connectors/keplrMobile"
 import { ControllerConnector } from "../connectors/controller"
+import { ChipiConnector } from "../connectors/chipi"
 import { Braavos } from "../connectors/injected/braavos"
 import { Fordefi } from "../connectors/injected/fordefi"
 import { Keplr } from "../connectors/injected/keplr"
@@ -38,6 +39,7 @@ export const defaultConnectors = (): StarknetkitConnector[] => {
   }
 
   defaultConnectors.push(new ControllerConnector())
+  defaultConnectors.push(new ChipiConnector())
 
   if (isMobileDevice()) {
     defaultConnectors.push(new BraavosMobileBaseConnector())

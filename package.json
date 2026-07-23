@@ -107,6 +107,7 @@
   "dependencies": {
     "@argent/x-ui": "^1.109.0",
     "@cartridge/controller": "^0.12.1",
+    "@chipi-stack/starknet-connector": "^0.2.0",
     "@starknet-io/get-starknet": "^4.0.8",
     "@starknet-io/get-starknet-core": "^4.0.8",
     "@starknet-io/types-js": "0.8.4",
