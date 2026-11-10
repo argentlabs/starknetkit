@@ -49,10 +49,8 @@ const wallet = await connect()
 
 By default, the list of connectors is:
 
-- Ready Wallet
+- Ready X
 - Braavos
-- Ready (formerly Argent)
-- Web Wallet
 
 ## Connect with specific connectors
 

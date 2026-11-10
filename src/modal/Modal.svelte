@@ -178,10 +178,10 @@
           )}
           storeLink={selectedWallet?.download}
           extensionName={selectedWallet?.name.includes("Ready")
-            ? "Ready Wallet (formerly Argent)"
+            ? "Ready X"
             : selectedConnector?.name}
           extensionId={selectedWallet?.id}
-          discoveryWallets={discoveryWallets}
+          {discoveryWallets}
         />
       {/if}
     </main>
