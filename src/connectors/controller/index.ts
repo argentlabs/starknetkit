@@ -116,7 +116,7 @@ export class ControllerConnector extends Connector {
       throw new UserNotConnectedError()
     }
 
-    return BigInt(await account.getChainId())
+    return BigInt(await account.provider.getChainId())
   }
 
   async request<T extends RpcMessage["type"]>(
